@@ -1,5 +1,9 @@
 # Start CentOS 7.8 installation with Hetzner
 
+< [Install Centos 7.8](00_install_centos.md)
+
+* * *
+
 ## Prepare Firewall
 
 Only SSH and ICMP will be allowed at the end. However, during VNC installation we additionally need an open VNC Port `5901`. This port will be removed after the VNC installation.

@@ -40,7 +40,7 @@ You can do it with less but than you have to [tweak some settings and/or strip o
 __95% of the installation process is copy&paste. No deep Linux or OKD4/Kubernetes skills needed!*__
 
 - [Install CentOS 7.8](docs/00_install_centos.md)
-- [Install - lab.okd.example.com](01_install_lab.md)
+- [Install - lab.okd.example.com](docs/01_install_lab.md)
 - [Provision infrastructure](docs/02_provision_infrastructure.md)
 - [Install OKD4](docs/03_install_okd.md)
 
@@ -99,7 +99,7 @@ OKD4 Storage:
 
 This guide is not about installing and maintaining Linux at the highest possible levels. It's not about being the best of class automation expert. And it's a controlled environment with intentionally 95% static settings. But if you know what you do, you can change and expand  everything with ease and apply it to your needs. Have fun!
 
-Thanks to all in the Open Source Community and especially to @cgruver for [inspiration](https://github.com/cgruver/okd4-upi-lab-setup) and help!
+Thanks to all in the Open Source Community and especially to [@cgruver](https://github.com/cgruver) for [inspiration](https://github.com/cgruver/okd4-upi-lab-setup) and help!
 
 * * *
 

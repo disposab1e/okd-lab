@@ -184,7 +184,7 @@ ssh core@master-0 "chronyc sources"
 
 ## OKD Web Console
 
-Point your Firefox to OKD Web Console at [http://console-openshift-console.apps.okd.example.com](http://console-openshift-console.apps.okd.example.com) and login with `kube:admin`.
+Point your Firefox to OKD Web Console at [https://console-openshift-console.apps.okd.example.com](https://console-openshift-console.apps.okd.example.com) and login with `kube:admin`.
 
 ```bash
 User: kubeadmin

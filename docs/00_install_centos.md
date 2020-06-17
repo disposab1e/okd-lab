@@ -118,4 +118,4 @@ Attention! __DO NOT__ use a different User name!
 
 * * *
 
-Next: > [Install - lab.okd.example.com](01_install_lab.md)
+Next > [Install - lab.okd.example.com](01_install_lab.md)
