@@ -85,6 +85,10 @@ terraform apply -auto-approve
 
 ```
 
+## URL's and User accounts
+
+Check the [Appendix](99_appendix.md) for detailed information.
+
 ## Reboot
 
 Test all comes up again as expected :-)
