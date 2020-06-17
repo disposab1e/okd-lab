@@ -8,7 +8,7 @@ It is probably worth the time to read a little further....
 
 Naturally when we do some experiments we can destroy our cluster and bring it in a state we can't fix or recover. From this point of view we should try to keep complex things __simple and repeatable__. This is what this lab wants to address to.
 
-You can expect a fully virtualized small IT center with everything you need to install a `User Provisioned Installation of OKD4` based on KVM. You get some great [Rook Cloud-native Storage](https://rook.io/) for your cluster and many more.
+You can expect a fully virtualized small IT center with everything you need to install a `User Provisioned Infrastructure (UPI)` of OKD4 based on KVM. You get some great [Rook Cloud-native Storage](https://rook.io/) for your cluster and many more.
 
 Additionally you get mostly all you need for a development environment including git, artifact management, private container registry, centralized user registries..... everything pre-configured and tightly integrated.
 
