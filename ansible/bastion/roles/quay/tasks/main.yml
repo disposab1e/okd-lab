@@ -1,0 +1,67 @@
+---
+- name: Allow 5000/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="5000/tcp"
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Create Directories
+  file:
+    path: '{{ item.dir }}'
+    state: directory
+  with_items:
+    - { dir: '~/docker/quay' }
+    - { dir: '~/docker/mounts/postgres' }
+    - { dir: '~/docker/mounts/quay' }
+    - { dir: '~/docker/mounts/quay/conf' }
+    - { dir: '~/docker/mounts/quay/datastorage' }
+
+- name: ACL for datastorage 
+  command: setfacl -m u:1001:-wx ~/docker/mounts/quay/datastorage
+
+- name: Publish config.yaml
+  template: 
+    src:  config.yaml.j2
+    dest: ~/docker/mounts/quay/conf/config.yaml
+
+- name: Publish ssl.cert
+  template: 
+    src:  ssl.cert.j2
+    dest: ~/docker/mounts/quay/conf/ssl.cert
+
+- name: Publish ssl.key
+  template: 
+    src:  ssl.key.j2
+    dest: ~/docker/mounts/quay/conf/ssl.key
+
+- name: Publish docker-compose-postgres.yaml
+  template: 
+    src:  docker-compose-postgres.yaml.j2
+    dest: ~/docker/quay/docker-compose.yaml
+
+- name: Start postgres
+  command: docker-compose up -d
+  args:
+    chdir: ~/docker/quay
+
+- name: Sleep for 30 seconds
+  wait_for:
+    timeout: 30
+
+- name: Prepare postgres
+  command: docker exec -it postgres /bin/bash -c 'echo "CREATE EXTENSION IF NOT EXISTS pg_trgm" | psql -d quay -U user' CREATE EXTENSION
+
+- name: Stop postgres
+  command: docker-compose down
+  args:
+    chdir: ~/docker/quay
+
+- name: Publish docker-compose.yaml
+  template: 
+    src:  docker-compose.yaml.j2
+    dest: ~/docker/quay/docker-compose.yaml
+
+- name: Start quay
+  command: docker-compose up -d
+  args:
+    chdir: ~/docker/quay

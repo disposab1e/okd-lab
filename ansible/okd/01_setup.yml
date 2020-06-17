@@ -1,0 +1,22 @@
+---
+- hosts: bastion
+  vars:
+    # Unique name of this installation
+    okd_lab_install_name: '4-4-0-okd-2020-05-23-beta-5'
+
+    # OKD installation version
+    okd_lab_install_okd_version: 4.4.0-0.okd-2020-05-23-055148-beta5
+    
+    # Fedora CoreOS installation version and stream
+    okd_lab_install_fcos_version: '31.20200517.3.0'
+    okd_lab_install_fcos_stream: 'stable'
+
+    # Download URL for stable oc 4 client
+    okd_lab_install_okd_client_stable_url: 'https://github.com/openshift/okd/releases/download/4.4.0-0.okd-2020-05-23-055148-beta5/openshift-client-linux-4.4.0-0.okd-2020-05-23-055148-beta5.tar.gz'  
+
+  gather_facts: no
+  roles:
+    - setup
+    - fcos
+    - mirror
+    - installer

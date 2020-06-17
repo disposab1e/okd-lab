@@ -1,0 +1,22 @@
+---
+- name: Publish temporary manifest
+  template:
+    src: '{{ item.file }}.j2'
+    dest: /tmp/{{ item.file }}
+  with_items:
+    - { file: 'pvc.yml' }
+
+- name: Create PVC for internal registry with block storage
+  command: oc apply -f /tmp/{{ item.file }}
+  with_items:
+    - { file: 'pvc.yml' }
+
+- name: Cleanup
+  file:
+    path: /tmp/{{ item.file }}
+    state: absent
+  with_items:
+    - { file: 'pvc.yml' }
+
+- name: Patch internal registry to use PVC
+  command: "oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{\"spec\":{\"rolloutStrategy\":\"Recreate\",\"managementState\":\"Managed\",\"storage\":{\"emptyDir\": null,\"pvc\":{\"claim\":\"openshift-image-registry\"}}}}'"

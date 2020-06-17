@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:10.12
+    container_name: postgres
+    restart: always
+    environment:
+    - POSTGRES_USER=user
+    - POSTGRES_PASSWORD=pass
+    - POSTGRES_DB=quay
+    ports:
+      - 5001:5432
+    volumes:
+      - ~/docker/mounts/postgres:/var/lib/postgresql/data
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.3
+    links:
+      - redis
+
+  redis:
+    image: redis:5.0.7
+    container_name: redis
+    restart: always
+    entrypoint: redis-server --requirepass strongpassword
+    ports:
+      - 5002:6379
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.4
+    links:
+      - quay
+
+  quay:
+    image: quay.io/projectquay/quay:{{ okd_lab_quay_version }}
+    container_name: quay
+    privileged: true
+    restart: always
+    ports:
+      - 5000:8443
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.5
+    volumes:
+      - ~/docker/mounts/quay/conf:/conf/stack
+      - ~/docker/mounts/quay/datastorage:/datastorage
+
+#  quay:
+#    image: quay.io/projectquay/quay:latest
+#    container_name: quay_config
+#    restart: always
+#    entrypoint: /quay-registry/quay-entrypoint.sh config secret
+#    ports:
+#      - 5000:8443
+#    networks:
+#      app_net:
+#        ipv4_address: 172.30.0.5
+
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.30.0.0/24"

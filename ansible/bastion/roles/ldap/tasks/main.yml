@@ -1,0 +1,165 @@
+---
+# ldapsearch -x -h 10.0.0.2 -D "cn=ldapadm,dc=example,dc=com" -w "root" -b "ou=users,dc=example,dc=com"
+# ldapsearch -x -h 10.0.0.2 -D "cn=ldapadm,dc=example,dc=com" -w "root" -b "ou=groups,dc=example,dc=com"
+# ldapsearch -x -h 10.0.0.2 -b "ou=groups,dc=example,dc=com"
+# ldapsearch -x -h 10.0.0.2 -b "uid=admin,ou=users,dc=example,dc=com"
+
+- name: Install openldap
+  yum:
+    pkg: openldap
+    state: installed
+
+- name: Install openldap-servers 
+  yum:
+    name: openldap-servers
+    state: installed
+
+- name: Install openldap-clients
+  yum:
+    name: openldap-clients
+    state: installed
+
+- name: Allow 389/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="389/tcp"
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Enable slapd
+  service:
+    name: slapd
+    state: started
+    enabled: yes
+
+- name: Generate root password
+  shell: slappasswd -s root
+  register: root_password
+- name: Copy db.ldif
+  template:
+    src: db.ldif.j2
+    dest: /tmp/db.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd db.ldif
+  command: ldapmodify -Y EXTERNAL  -H ldapi:/// -f /tmp/db.ldif
+- name: Copy monitor.ldif
+  template:
+    src: monitor.ldif.j2
+    dest: /tmp/monitor.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd monitor.ldif
+  command: ldapmodify -Y EXTERNAL  -H ldapi:/// -f /tmp/monitor.ldif
+- name: Copy DB_CONFIG
+  copy: 
+    remote_src: true 
+    src: /usr/share/openldap-servers/DB_CONFIG.example  
+    dest: /var/lib/ldap/DB_CONFIG
+- name: Owner DB_CONFIG
+  file:
+    path: /var/lib/ldap
+    state: directory
+    owner: ldap
+    group: ldap
+- name: ldapadd cosine.ldif
+  command: ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
+- name: ldapadd nis.ldif
+  command: ldapadd -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/schema/nis.ldif
+- name: ldapadd inetorgperson.ldif
+  command: ldapadd -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
+- name: Copy base.ldif
+  template:
+    src: base.ldif.j2
+    dest: /tmp/base.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd base.ldif
+  command: ldapadd -x -w root -D "cn=ldapadm,dc=example,dc=com" -f /tmp/base.ldif
+
+- name: Prepare admin.ldif
+  template:
+    src: admin.ldif.j2
+    dest: /tmp/admin.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd admin.ldif
+  command: ldapadd -x -w root -D "cn=ldapadm,dc=example,dc=com" -f /tmp/admin.ldif
+- name: ldappasswd admin
+  command: ldappasswd -s admin -w root -D "cn=ldapadm,dc=example,dc=com" -x "uid=admin,ou=users,dc=example,dc=com"
+
+- name: Prepare administrator.ldif
+  template:
+    src: administrator.ldif.j2
+    dest: /tmp/administrator.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd administrator.ldif
+  command: ldapadd -x -w root -D "cn=ldapadm,dc=example,dc=com" -f /tmp/administrator.ldif
+- name: ldappasswd administrator
+  command: ldappasswd -s administrator -w root -D "cn=ldapadm,dc=example,dc=com" -x "uid=administrator,ou=users,dc=example,dc=com"
+
+- name: Prepare kubeadmin.ldif
+  template:
+    src: kubeadmin.ldif.j2
+    dest: /tmp/kubeadmin.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd kubeadmin.ldif
+  command: ldapadd -x -w root -D "cn=ldapadm,dc=example,dc=com" -f /tmp/kubeadmin.ldif
+- name: ldappasswd kubeadmin
+  command: ldappasswd -s kubeadmin -w root -D "cn=ldapadm,dc=example,dc=com" -x "uid=kubeadmin,ou=users,dc=example,dc=com"
+
+- name: Prepare lab.ldif
+  template:
+    src: lab.ldif.j2
+    dest: /tmp/lab.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd lab.ldif
+  command: ldapadd -x -w root -D "cn=ldapadm,dc=example,dc=com" -f /tmp/lab.ldif
+- name: ldappasswd lab
+  command: ldappasswd -s lab -w root -D "cn=ldapadm,dc=example,dc=com" -x "uid=lab,ou=users,dc=example,dc=com"
+
+- name: Prepare developer.ldif
+  template:
+    src: developer.ldif.j2
+    dest: /tmp/developer.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd developer.ldif
+  command: ldapadd -x -w root -D "cn=ldapadm,dc=example,dc=com" -f /tmp/developer.ldif
+- name: ldappasswd developer
+  command: ldappasswd -s developer -w root -D "cn=ldapadm,dc=example,dc=com" -x "uid=developer,ou=users,dc=example,dc=com"
+
+- name: Prepare groups.ldif
+  template:
+    src: groups.ldif.j2
+    dest: /tmp/groups.ldif
+    owner: root
+    group: ldap
+    mode: '0660'
+- name: ldapadd groups.ldif
+  command: ldapadd -x -w root -D "cn=ldapadm,dc=example,dc=com" -f /tmp/groups.ldif
+
+- name: Clean tmp files
+  file:
+    state: absent
+    path: "/tmp/{{ item.name }}.ldif"
+  with_items:
+    - { name: 'admin' }
+    - { name: 'administrator' }
+    - { name: 'kubeadmin' }
+    - { name: 'developer' }
+    - { name: 'lab' }
+    - { name: 'base' }
+    - { name: 'db' }
+    - { name: 'groups' }
+    - { name: 'monitor' }

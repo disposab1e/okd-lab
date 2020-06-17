@@ -1,0 +1,16 @@
+---
+- name: Allow 123/udp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="123/udp"
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Publish chrony.conf
+  template: 
+    src:  chrony.conf.j2 
+    dest: /etc/chrony.conf
+
+- name: Restart chronyd service
+  service:
+    name: chronyd
+    state: restarted

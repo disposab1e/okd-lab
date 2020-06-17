@@ -1,0 +1,8 @@
+---
+# dynamic
+_okd_lab_install_name: "{{ okd_lab_install_name | default('default') }}"
+_okd_lab_install_fcos_stream: "{{ okd_lab_install_fcos_stream | default('stable') }}" 
+_okd_lab_install_fcos_version: "{{ okd_lab_install_fcos_version | default('31.20200517.3.0') }}"
+
+# static
+_okd_lab_fedora_coreos_base_url: 'https://builds.coreos.fedoraproject.org/prod/streams/{{ _okd_lab_install_fcos_stream }}/builds/{{ _okd_lab_install_fcos_version }}/x86_64/fedora-coreos-{{ _okd_lab_install_fcos_version }}-'

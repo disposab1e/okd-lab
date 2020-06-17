@@ -1,0 +1,46 @@
+---
+- name: Install tftp
+  yum:
+    name: tftp
+    state: installed
+
+- name: Install tftp-server
+  yum:
+    name: tftp-server
+    state: installed
+
+- name: Install xinetd
+  yum:
+    name: xinetd
+    state: installed
+
+- name: Start service xinetd
+  service:
+    name: xinetd
+    state: started
+
+- name: Enable service xinetd
+  service:
+    name: xinetd
+    enabled: yes
+
+- name: Allow 69/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="69/tcp"
+
+- name: Allow 69/udp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="69/udp"
+
+- name: Restart service firewalld
+  service:
+    name: firewalld
+    state: restarted
+
+- name: Publish tftp
+  template: 
+    src:  tftp.j2 
+    dest: /etc/xinetd.d/tftp
+
+- name: Retart service xinetd
+  service:
+    name: xinetd
+    state: started

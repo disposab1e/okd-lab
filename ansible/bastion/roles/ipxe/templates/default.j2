@@ -1,0 +1,14 @@
+default menu.c32
+prompt 0
+timeout 30
+MENU TITLE OKD LAB - PXE MENU
+
+LABEL Centos 7.8 - Standard Kickstart
+    MENU LABEL Centos 7.8 - Standard Kickstart
+    KERNEL /networkboot/vmlinuz
+    APPEND  initrd=/networkboot/initrd.img  inst.repo=http://10.0.0.2/centos  ks=http://10.0.0.2/kickstart/ks.cfg
+
+LABEL Centos 7.8 - Graphical Installer
+    MENU LABEL Centos 7.8 - Graphical Installer
+    KERNEL /networkboot/vmlinuz
+    APPEND  initrd=/networkboot/initrd.img  method=http://10.0.0.2/centos

@@ -1,0 +1,17 @@
+<network>
+  <name>okd</name>
+  <forward mode='nat'/>
+  <bridge name='okd-br'/>
+  <mac address='52:54:00:c2:4c:5f'/>
+  <dns>
+    <forwarder addr="10.0.0.2"/>
+  </dns>
+  <ip family='ipv4' address='10.0.0.1' prefix='24'>
+    <dhcp>
+      <bootp file="boot.ipxe" server="10.0.0.2"/>  
+      <range start='10.0.0.200' end='10.0.0.254'/>
+      <host mac="52:54:00:7b:14:8c" name="bastion.okd.example.com" ip="10.0.0.2"/>
+      <host mac="52:54:00:48:b5:f9" name="lb.okd.example.com" ip="10.0.0.99"/>
+    </dhcp>
+  </ip>
+</network>

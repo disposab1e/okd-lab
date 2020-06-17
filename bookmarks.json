@@ -1,0 +1,172 @@
+{
+    "guid": "root________",
+    "title": "",
+    "index": 0,
+    "dateAdded": 1168028118000000,
+    "lastModified": 1592108740098000,
+    "id": 1,
+    "typeCode": 2,
+    "type": "text/x-moz-place-container",
+    "root": "placesRoot",
+    "children": [
+        {
+            "guid": "menu________",
+            "title": "menu",
+            "index": 0,
+            "dateAdded": 1592101345167000,
+            "lastModified": 1592101573089000,
+            "id": 2,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "bookmarksMenuFolder"
+        },
+        {
+            "guid": "toolbar_____",
+            "title": "toolbar",
+            "index": 1,
+            "dateAdded": 1168028118000000,
+            "lastModified": 1592108740098000,
+            "id": 3,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "toolbarFolder",
+            "children": [
+                {
+                    "guid": "kiTo3ySY62ki",
+                    "title": "lab.okd.example.com",
+                    "index": 0,
+                    "dateAdded": 1591901972850000,
+                    "lastModified": 1591901983872000,
+                    "id": 7,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "http://localhost:9090/system"
+                },
+                {
+                    "guid": "fIdrFSPTni1d",
+                    "title": "HAProxy",
+                    "index": 1,
+                    "dateAdded": 1591902393579000,
+                    "lastModified": 1591902403002000,
+                    "id": 8,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "http://lb.okd.example.com:9000/"
+                },
+                {
+                    "guid": "jvnb06Jyhtqq",
+                    "title": "Keycloak",
+                    "index": 2,
+                    "dateAdded": 1591902537860000,
+                    "lastModified": 1591902601697000,
+                    "id": 9,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "http://keycloak.okd.example.com:4444/"
+                },
+                {
+                    "guid": "gHw0jPJGpMu_",
+                    "title": "Portainer",
+                    "index": 3,
+                    "dateAdded": 1591902598798000,
+                    "lastModified": 1591902609345000,
+                    "id": 10,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "http://portainer.okd.example.com:9999/"
+                },
+                {
+                    "guid": "CqJRncNX-RtD",
+                    "title": "GitLab",
+                    "index": 4,
+                    "dateAdded": 1591902455540000,
+                    "lastModified": 1591902466009000,
+                    "id": 11,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "http://gitlab.okd.example.com:8888/"
+                },
+                {
+                    "guid": "Kc1dktUIouYD",
+                    "title": "Artifactory",
+                    "index": 5,
+                    "dateAdded": 1591902504328000,
+                    "lastModified": 1591902514079000,
+                    "id": 12,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "http://artifactory.okd.example.com:7777/ui/login/"
+                },
+                {
+                    "guid": "ISsKw5lCF0gr",
+                    "title": "Quay",
+                    "index": 6,
+                    "dateAdded": 1591902565994000,
+                    "lastModified": 1592101827691000,
+                    "id": 13,
+                    "typeCode": 1,
+                    "iconuri": "https://quay.okd.example.com:5000/static/img/quay_favicon.png",
+                    "type": "text/x-moz-place",
+                    "uri": "https://quay.okd.example.com:5000/"
+                },
+                {
+                    "guid": "pH8KUlYjrBpY",
+                    "title": "OKD",
+                    "index": 7,
+                    "dateAdded": 1591904837839000,
+                    "lastModified": 1591904845398000,
+                    "id": 14,
+                    "typeCode": 1,
+                    "iconuri": "https://console-openshift-console.apps.okd.example.com/static/assets/okd-apple-touch-icon-precomposed.png",
+                    "type": "text/x-moz-place",
+                    "uri": "https://console-openshift-console.apps.okd.example.com/dashboards"
+                },
+                {
+                    "guid": "RsrwNH4n3Ijv",
+                    "title": "Ceph",
+                    "index": 8,
+                    "dateAdded": 1591936392586000,
+                    "lastModified": 1591936392586000,
+                    "id": 15,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://rook-dashboard.apps.okd.example.com/#/dashboard"
+                },
+                {
+                    "guid": "msAb4JQX5iQB",
+                    "title": "Grafana",
+                    "index": 9,
+                    "dateAdded": 1592108740098000,
+                    "lastModified": 1592108747973000,
+                    "id": 16,
+                    "typeCode": 1,
+                    "iconuri": "https://grafana-openshift-monitoring.apps.okd.example.com/public/img/apple-touch-icon.png",
+                    "type": "text/x-moz-place",
+                    "uri": "https://grafana-openshift-monitoring.apps.okd.example.com/?orgId=1"
+                }
+            ]
+        },
+        {
+            "guid": "unfiled_____",
+            "title": "unfiled",
+            "index": 3,
+            "dateAdded": 1592101345167000,
+            "lastModified": 1592101573089000,
+            "id": 5,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "unfiledBookmarksFolder"
+        },
+        {
+            "guid": "mobile______",
+            "title": "mobile",
+            "index": 4,
+            "dateAdded": 1592101345169000,
+            "lastModified": 1592101573089000,
+            "id": 6,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "mobileFolder"
+        }
+    ]
+}

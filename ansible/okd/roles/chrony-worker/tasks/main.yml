@@ -1,0 +1,13 @@
+---
+- name: Publish MachineConfig
+  template:
+    src: 00-worker-chrony-config.yaml.j2
+    dest: /tmp/00-worker-chrony-config.yaml
+
+- name: Apply chronyd configuration for workers
+  command: oc apply -f /tmp/00-worker-chrony-config.yaml
+
+- name: Cleanup
+  file:
+    path: /tmp/00-worker-chrony-config.yaml
+    state: absent

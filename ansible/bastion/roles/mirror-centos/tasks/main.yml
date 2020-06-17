@@ -1,0 +1,33 @@
+---
+- name: Create Directories
+  file:
+    path: /usr/share/nginx/html/{{ item.dir }}
+    state: directory
+  with_items:
+    - { dir: 'centos' }
+
+- name: Download CentOS iso
+  get_url:
+    url: '{{ okd_lab_centos_mirror }}/{{ okd_lab_centos_iso }}'
+    dest: /tmp
+
+- name: Mount iso
+  mount:
+    path: /tmp/centos-iso-mount
+    src: /tmp/{{ okd_lab_centos_iso }}
+    fstype: iso9660
+    opts: loop
+    state: mounted
+
+- name: Synchronize
+  command: rsync -av /tmp/centos-iso-mount/ /usr/share/nginx/html/centos/
+
+- name: Unmount iso
+  mount:
+    path: /tmp/centos-iso-mount
+    state: absent
+
+- name: Clean tmp files
+  file:
+    state: absent
+    path: /tmp/{{ okd_lab_centos_iso }}

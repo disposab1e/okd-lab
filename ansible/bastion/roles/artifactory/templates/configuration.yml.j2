@@ -1,0 +1,193 @@
+urlBase : {{ okd_lab_artifactory_base }}/
+fileUploadMaxSizeMb: 999
+
+trashcanConfig:
+  enabled: true
+  retentionPeriodDays: 1
+quotaConfig:
+  diskSpaceLimitPercentage: 90
+  diskSpaceWarningPercentage: 90
+  enabled: true
+
+security:   
+  ldapSettings:
+    ldap:
+      emailAttribute: mail
+      ldapPoisoningProtection: true
+      ldapUrl: ldap://ldap.okd.example.com:389/dc=example,dc=com
+      search:
+        #managerDn: cn=ldapadm,dc=example,dc=com
+        #managerPassword: root
+        #searchBase: searchbase1
+        searchFilter: uid
+        searchSubTree: true
+      userDnPattern: uid={0},ou=users
+      allowUserToAccessProfile: true
+      autoCreateUser: true
+      enabled: true
+
+localRepositories:   
+  example-repo-local: null
+  helm:
+    type: generic
+    description: "Helm Repository"
+    excludesPattern:
+    includesPattern:  "**/*"
+    repoLayout: simple-default
+    blackedOut: false
+  mvn-snapshots:   
+    type: maven   
+    checksumPolicyType: client-checksums   
+    description: "Maven Snapshot Repository"   
+    excludesPattern:  
+    includesPattern:  "**/*"
+    maxUniqueSnapshots: 10   
+    repoLayout: maven-2-default   
+    snapshotVersionBehavior: non-unique   
+    blackedOut: false   
+    handleSnapshots: true   
+    handleReleases: false
+    suppressPomConsistencyChecks: false   
+  mvn-releases:   
+    type: maven
+    checksumPolicyType: client-checksums
+    description: "Maven Release Repository"
+    excludesPattern:  
+    includesPattern:  "**/*"
+    maxUniqueSnapshots: 0
+    repoLayout: maven-2-default
+    snapshotVersionBehavior: unique
+    blackedOut: false
+    handleSnapshots: false
+    handleReleases: true
+    suppressPomConsistencyChecks: true
+remoteRepositories:
+  maven-central-remote:
+    type: maven 
+    description: "Maven Central"
+    url: https://repo1.maven.org/maven2/
+    assumedOfflinePeriodSecs: 300
+    repoLayout: maven-2-default
+    maxUniqueSnapshots: 0
+    remoteRepoChecksumPolicyType: generate-if-absent
+    fetchJarsEagerly: false
+    fetchSourcesEagerly: false
+    handleReleases: true
+    handleSnapshots: true
+    excludesPattern:
+    includesPattern:  "**/*"
+    socketTimeoutMillis: 15000
+    queryParams: 
+    blackedOut: false
+    enableCookieManagement: false
+    synchronizeProperties: false
+    retrievalCachePeriodSecs: 600
+    missedRetrievalCachePeriodSecs: 1800
+    listRemoteFolderItems: true
+    blockMismatchingMimeTypes: true
+    unusedArtifactsCleanupPeriodHours: 0
+  redhat-ga-remote:
+    type: maven 
+    description: "JBoss Enterprise Maven Repository (Global Access)"
+    url: https://maven.repository.redhat.com/ga/
+    assumedOfflinePeriodSecs: 300
+    repoLayout: maven-2-default
+    maxUniqueSnapshots: 0
+    remoteRepoChecksumPolicyType: pass-thru
+    fetchJarsEagerly: false
+    fetchSourcesEagerly: false
+    handleReleases: true
+    handleSnapshots: true
+    excludesPattern:
+    includesPattern:  "**/*"
+    socketTimeoutMillis: 15000
+    queryParams: 
+    blackedOut: false
+    enableCookieManagement: false
+    synchronizeProperties: false
+    retrievalCachePeriodSecs: 600
+    missedRetrievalCachePeriodSecs: 1800
+    listRemoteFolderItems: true
+    blockMismatchingMimeTypes: true
+    unusedArtifactsCleanupPeriodHours: 0
+  redhat-early-remote:
+    type: maven 
+    description: "JBoss Enterprise Maven Repository (Early Access)"
+    url: https://maven.repository.redhat.com/earlyaccess/all/
+    assumedOfflinePeriodSecs: 300
+    repoLayout: maven-2-default
+    maxUniqueSnapshots: 0
+    remoteRepoChecksumPolicyType: pass-thru
+    fetchJarsEagerly: false
+    fetchSourcesEagerly: false
+    handleReleases: true
+    handleSnapshots: true
+    excludesPattern:
+    includesPattern:  "**/*"
+    socketTimeoutMillis: 45000
+    queryParams: 
+    blackedOut: false
+    enableCookieManagement: false
+    synchronizeProperties: false
+    retrievalCachePeriodSecs: 600
+    missedRetrievalCachePeriodSecs: 1800
+    listRemoteFolderItems: true
+    blockMismatchingMimeTypes: true
+    unusedArtifactsCleanupPeriodHours: 0
+  apache-remote:
+    type: generic 
+    description: "Apache Software Foundation Distribution Directory"
+    url: http://www-eu.apache.org/dist/
+    assumedOfflinePeriodSecs: 300
+    retrievalCachePeriodSecs: 600
+    missedRetrievalCachePeriodSecs: 1800
+    socketTimeoutMillis: 45000
+    repoLayout: simple-default
+    excludesPattern:
+    includesPattern:  "**/*"
+    listRemoteFolderItems: true
+    blockMismatchingMimeTypes: true
+virtualRepositories:
+  mvn-dev:
+    type: maven
+    repositories:
+      - mvn-releases
+      - mvn-snapshots
+      - redhat-ga-remote
+      - redhat-early-remote
+      - maven-central-remote
+    description: "Development Maven Repository"
+    includesPattern:  "**/*"
+    excludesPattern:
+    artifactoryRequestsCanRetrieveRemoteArtifacts: false
+    pomRepositoryReferencesCleanupPolicy: discard_active_reference
+    repoLayout: maven-2-default
+  mvn-prod:
+    type: maven
+    repositories:
+      - mvn-releases
+      - redhat-ga-remote
+      - maven-central-remote
+    description: "Production Maven Repository"
+    includesPattern:  "**/*"
+    excludesPattern:
+    artifactoryRequestsCanRetrieveRemoteArtifacts: false
+    pomRepositoryReferencesCleanupPolicy: discard_active_reference
+    repoLayout: maven-2-default
+backups:   #Manage the automatic and periodic backups of the entire Artifactory instance
+  backup-daily: null
+  backup-weekly: null
+  backup-weekly-saturday:
+    cronExp: "0 0 2 ? * SAT"
+    excludedRepositories:
+      - mvn-snapshots
+      - apache-remote
+      - redhat-ga-remote
+      - redhat-early-remote
+      - maven-central-remote
+    retentionPeriodHours: 1000
+    createArchive: true
+    enabled: true
+    excludeNewRepositories: true
+    sendMailOnError: false
+

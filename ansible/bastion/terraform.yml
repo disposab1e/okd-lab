@@ -1,0 +1,15 @@
+---
+- hosts: 10.0.0.2
+  gather_facts: no
+  remote_user: root
+  roles:
+# required
+    - ipxe
+    - jq
+    - docker
+    - quay
+# optional
+    - gitlab
+    - portainer
+    - keycloak
+    - artifactory

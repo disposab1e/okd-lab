@@ -1,0 +1,19 @@
+---
+- name: Publish temporary manifest
+  template:
+    src: '{{ item.file }}.j2'
+    dest: /tmp/{{ item.file }}
+  with_items:
+    - { file: 'toolbox.yml' }
+
+- name: Apply manifest
+  command: oc apply -f /tmp/{{ item.file }}
+  with_items:
+    - { file: 'toolbox.yml' }
+
+- name: Cleanup
+  file:
+    path: /tmp/{{ item.file }}
+    state: absent
+  with_items:
+    - { file: 'toolbox.yml' }

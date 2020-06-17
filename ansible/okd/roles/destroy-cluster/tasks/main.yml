@@ -1,0 +1,10 @@
+---
+- name: Destroy worker
+  terraform:
+    project_path: '~/okd-lab/terraform/worker'
+    state: absent
+    
+- name: Destroy master
+  terraform:
+    project_path: '~/okd-lab/terraform/master'
+    state: absent    

@@ -1,0 +1,9 @@
+zone "example.com" {
+    type master;
+    file "/etc/named/zones/db.example.com";
+};
+
+zone "10.0.0.in-addr.arpa" {
+    type master;
+    file "/etc/named/zones/db.10.0.0";
+};

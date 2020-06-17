@@ -1,0 +1,21 @@
+---
+# Apply bootsrap
+- name: Apply bootstrap
+  terraform:
+    project_path: '~/okd-lab/terraform/bootstrap'
+    force_init: true
+    state: present
+
+# Apply master
+- name: Apply master
+  terraform:
+    project_path: '~/okd-lab/terraform/master'
+    force_init: true
+    state: present
+
+# Apply worker
+- name: Apply worker
+  terraform:
+    project_path: '~/okd-lab/terraform/worker'
+    force_init: true
+    state: present

@@ -1,0 +1,3 @@
+---
+okd_lab_centos_mirror: 'http://mirror.netcologne.de/centos/7.8.2003/isos/x86_64'
+okd_lab_centos_iso: 'CentOS-7-x86_64-Minimal-2003.iso'

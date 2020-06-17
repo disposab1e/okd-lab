@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:10.12
+    container_name: postgres
+    restart: always
+    environment:
+    - POSTGRES_USER=user
+    - POSTGRES_PASSWORD=pass
+    - POSTGRES_DB=quay
+    ports:
+      - 5001:5432
+    volumes:
+      - ~/docker/mounts/postgres:/var/lib/postgresql/data
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.3
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.30.0.0/24"

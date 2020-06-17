@@ -1,0 +1,5 @@
+---
+- name: Apply bootstrap
+  terraform:
+    project_path: '~/okd-lab/terraform/bootstrap'
+    state: present

@@ -1,0 +1,8 @@
+---
+# dynamic
+_okd_lab_install_name: "{{ okd_lab_install_name | default('default') }}"
+_okd_lab_install_okd_version: "{{ okd_lab_install_okd_version }}"
+
+# static
+_okd_lab_install_mirror_from: 'registry.svc.ci.openshift.org/origin/release'
+_okd_lab_quay_url: 'quay.okd.example.com:5000'

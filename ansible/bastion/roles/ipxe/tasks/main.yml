@@ -1,0 +1,57 @@
+---
+- name: Install syslinux
+  yum:
+    name: syslinux
+    state: installed
+
+- name: Create Directories in /var/lib/tftpboot
+  file:
+    path: /var/lib/tftpboot/{{ item.dir }}
+    state: directory
+  with_items:
+    - { dir: 'networkboot' }
+    - { dir: 'pxelinux.cfg' }
+
+- name: Copy vmlinuz and initrd.img
+  copy:
+    src: /usr/share/nginx/html/centos/isolinux/{{ item.file }}
+    dest: /var/lib/tftpboot/networkboot
+    remote_src: yes
+  with_items:
+    - { file: 'vmlinuz' }
+    - { file: 'initrd.img' }
+
+- name: Copy iPXE files
+  copy:
+    src: /usr/share/syslinux/{{ item.file }}
+    dest: /var/lib/tftpboot
+    remote_src: yes
+  with_items:
+    - { file: 'pxelinux.0' }
+    - { file: 'chain.c32' }
+    - { file: 'mboot.c32' }
+    - { file: 'menu.c32' }
+    - { file: 'memdisk' }
+
+
+- name: Publish pxelinux.cfg/default
+  template:
+    src: default.j2
+    dest: /var/lib/tftpboot/pxelinux.cfg/default
+
+- name: Publish boot.ipxe
+  template:
+    src: boot.ipxe.j2
+    dest: /var/lib/tftpboot/boot.ipxe
+
+- name: Create Directories in /usr/share/nginx/html
+  file:
+    path: /usr/share/nginx/html/{{ item.dir }}
+    state: directory
+  with_items:
+    - { dir: 'kickstart' }
+
+- name: Publish ks.cfg
+  template:
+    src: ks.cfg.j2
+    dest: /usr/share/nginx/html/kickstart/ks.cfg

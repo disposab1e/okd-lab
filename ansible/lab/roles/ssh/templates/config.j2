@@ -1,0 +1,60 @@
+
+Host 10.0.0.2
+  HostName 10.0.0.2
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host bastion
+  HostName bastion
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host lb
+  HostName 10.0.0.99
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host bootstrap
+  HostName 10.0.0.10
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host master-0
+  HostName 10.0.0.100
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host master-1
+  HostName 10.0.0.101
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host master-2
+  HostName 10.0.0.102
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host worker-0
+  HostName 10.0.0.100
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host worker-1
+  HostName 10.0.0.101
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no
+
+Host worker-2
+  HostName 10.0.0.102
+  IdentityFile ~/okd-lab/.ssh/id_rsa
+  User root
+  CheckHostIP no

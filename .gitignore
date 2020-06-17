@@ -1,0 +1,8 @@
+terraform.tfstate
+terraform.tfstate.backup
+.terraform
+packer_cache
+output-bastion
+output-lb
+tools
+.DS_Store

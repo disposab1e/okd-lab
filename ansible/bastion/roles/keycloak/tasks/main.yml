@@ -1,0 +1,32 @@
+---
+- name: Allow 4444/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="4444/tcp"
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Create Directories
+  file:
+    path: '{{ item.dir }}'
+    state: directory
+  with_items:
+    - { dir: '~/docker/keycloak' }
+    - { dir: '~/docker/mounts/keycloak' }
+
+- name: Publish docker-compose.yaml
+  template: 
+    src:  docker-compose.yaml.j2
+    dest: ~/docker/keycloak/docker-compose.yaml
+
+- name: Publish lab-realm.json
+  template: 
+    src:  lab-realm.json.j2
+    dest: ~/docker/mounts/keycloak/lab-realm.json
+
+- name: ACL for datastorage 
+  command: setfacl -m u:1000:-wx ~/docker/mounts/keycloak
+
+- name: Start Keycloak
+  command: docker-compose up -d
+  args:
+    chdir: ~/docker/keycloak

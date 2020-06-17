@@ -1,0 +1,79 @@
+---
+- name: Allow 7777/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="7777/tcp"
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Create Directories
+  file:
+    path: '{{ item.dir }}'
+    state: directory
+  with_items:
+    - { dir: '~/docker/artifactory' }
+    - { dir: '~/docker/mounts/artifactory' }
+
+- name: ACL for datastorage 
+  command: setfacl -m u:1030:-wx ~/docker/mounts/artifactory
+
+- name: Publish docker-compose.yaml
+  template: 
+    src:  docker-compose.yaml.j2
+    dest: ~/docker/artifactory/docker-compose.yaml
+
+- name: Start Artifacory
+  command: docker-compose up -d
+  args:
+    chdir: ~/docker/artifactory
+
+- name: Sleep for 30 seconds
+  wait_for:
+    timeout: 30
+
+- name: Publish artifactory.config.import.yml
+  template: 
+    src:  artifactory.config.import.yml.j2
+    dest: ~/docker/mounts/artifactory/etc/artifactory.config.import.yml
+    owner: '1030'
+    group: '1030'
+
+- name: "Wait for Artifactory to be ready"
+  uri:
+    url: "{{ okd_lab_artifactory_base }}/artifactory/api/system/ping"
+    follow_redirects: none
+    method: GET
+  register: _result
+  until: _result.status == 200
+  retries: 720 
+  delay: 5 
+
+- name: Create and get admin API Key
+  uri: 
+    url: '{{ okd_lab_artifactory_base }}/artifactory/api/security/apiKey'
+    method: POST
+    user: admin
+    password: password
+    return_content: yes
+    force_basic_auth: yes
+    status_code: '201'
+  register: apikey_response
+ 
+- set_fact: 
+    apikey: '{{ apikey_response.json.apiKey }}'
+
+- name: Apply Custom Configuration
+  uri: 
+    url: '{{ okd_lab_artifactory_base }}/artifactory/api/system/configuration'
+    method: PATCH
+    user: admin
+    password: '{{ apikey }}'
+    return_content: yes
+    force_basic_auth: yes
+    headers:
+      Content-Type: "application/yaml"
+    body: "{{ lookup('template','configuration.yml.j2') }}"
+    status_code: '200'
+
+- name: Create Access Token
+  command: curl -uadmin:{{ apikey }} -XPOST {{ okd_lab_artifactory_base }}/artifactory/api/security/token -d "expires_in=0" -d "refreshable=true" -d "username=admin" -d "scope=member-of-groups:admin"
+  register: token_response

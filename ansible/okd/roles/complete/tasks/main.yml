@@ -1,0 +1,38 @@
+---
+- name: Waiting bootstrap to complete
+  command: "openshift-install wait-for bootstrap-complete --dir /root/openshift-install --log-level debug"
+  register: bootstrap_status
+  retries: 60
+  delay: 60
+  until: bootstrap_status.rc == 0
+
+- name: Waiting installation to complete
+  command: "openshift-install wait-for install-complete --dir /root/openshift-install"
+  register: install_status
+  retries: 60
+  delay: 60
+  until: install_status.rc == 0
+
+- name: Approve crs's and join workers
+  shell:
+    cmd: oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve
+  ignore_errors: yes
+
+- name: Sleep for 15 seconds
+  wait_for:
+    timeout: 15
+
+- name: Approve csr's and join workers
+  shell:
+    cmd: oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve
+  ignore_errors: yes
+
+- name: Sleep for 15 seconds
+  wait_for:
+    timeout: 15
+
+- name: Approve csr's and join workers (intentionally an error but ignored)
+  shell:
+    cmd: oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve
+  ignore_errors: yes
+

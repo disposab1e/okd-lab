@@ -1,0 +1,11 @@
+---
+- name: Kickstart Bastion Host with packer.io
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - bind
+    - chrony
+    - ldap
+    - tftp
+    - nginx
+    - mirror-centos

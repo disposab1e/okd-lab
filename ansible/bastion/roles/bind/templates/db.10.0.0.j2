@@ -1,0 +1,20 @@
+@       IN      SOA     bastion.okd.example.com. admin.example.com. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+
+; name servers - NS records
+      IN      NS      bastion.okd.example.com.
+
+; PTR Records
+2     IN      PTR    bastion.okd.example.com.
+10    IN      PTR    bootstrap.okd.example.com.
+99    IN      PTR    lb.okd.example.com.  
+100   IN      PTR    master-0.okd.example.com. 
+101   IN      PTR    master-1.okd.example.com. 
+102   IN      PTR    master-2.okd.example.com. 
+110   IN      PTR    worker-0.okd.example.com. 
+111   IN      PTR    worker-1.okd.example.com. 
+112   IN      PTR    worker-2.okd.example.com. 

@@ -1,0 +1,6 @@
+---
+# dynamic
+_okd_lab_install_okd_client_stable_url: "{{ okd_lab_install_okd_client_stable_url }}"
+
+# static 
+_okd_lab_install_helm_client_stable_url: "https://get.helm.sh/helm-v2.16.9-linux-amd64.tar.gz"

@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+  portainer:
+    image: portainer/portainer:{{ okd_lab_portainer_version }}
+    command: -H unix:///var/run/docker.sock --admin-password='$$2y$$05$$KJ/cZ8gb9dopAxBf0E8EYuXX5dh248pkG7MKtCxIIT/Fd27UY/sjm'
+    restart: always
+    ports:
+      - 9999:9000
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '~/docker/mounts/portainer/data:/data'

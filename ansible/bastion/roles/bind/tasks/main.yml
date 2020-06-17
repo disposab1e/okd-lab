@@ -1,0 +1,97 @@
+---
+- name: Install bind
+  yum:
+    name: bind
+    state: installed
+
+- name: Install bind-utils
+  yum:
+    name: bind-utils
+    state: installed
+
+- name: Allow 53/udp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="53/udp"
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Publish named.conf
+  template:
+    src: named.conf.j2
+    dest: /etc/named.conf
+    owner: root
+    group: named
+    mode: '0660'
+
+- name: Publish named.conf.local
+  template:
+    src: named.conf.local.j2
+    dest: /etc/named/named.conf.local
+    owner: root
+    group: named
+    mode: '0660'
+
+- name: Publish named.rfc1912.zones
+  template:
+    src: named.rfc1912.zones.j2
+    dest: /etc/named.rfc1912.zones
+    owner: root
+    group: named
+    mode: '0660'
+
+- name: Create zones directory
+  file:
+    path: /etc/named/zones
+    state: directory
+
+- name: Publish db.10.0.0
+  template:
+    src: db.10.0.0.j2
+    dest: /etc/named/zones/db.10.0.0
+    owner: root
+    group: named
+    mode: '0660'
+
+- name: Publish db.example.com
+  template:
+    src: db.example.com.j2
+    dest: /etc/named/zones/db.example.com
+    owner: root
+    group: named
+    mode: '0660'
+
+- name: Start service named
+  service:
+    name: named
+    state: started
+
+- name: Enable service named
+  service:
+    name: named
+    enabled: yes
+
+- name: Install NetworkManager-glib
+  yum:
+    name: NetworkManager-glib.x86_64
+    state: installed
+
+- name: Change DNS IP with NetworkManager
+  nmcli:
+    conn_name: "eth0"
+    type: ethernet
+    dns4:
+      - "10.0.0.2"
+    state: present
+
+- name: Change DNS search with NetworkManager
+  nmcli:
+    conn_name: "eth0"
+    type: ethernet
+    dns4_search:
+      - "example.com"
+    state: present
+
+- name: Restart NetworkManager
+  service:
+    name: NetworkManager
+    state: restarted

@@ -1,0 +1,39 @@
+---
+- name: Enable dnsmasq
+  template:
+    src: 00-dnsmasq.conf.j2
+    dest: /etc/NetworkManager/conf.d/00-dnsmasq.conf
+  become_user: root
+
+- name: Enable okd-lab dns
+  template:
+    src: 00-okd-lab.conf.j2
+    dest: /etc/NetworkManager/dnsmasq.d/00-okd-lab.conf
+  become_user: root
+
+- name: Restart NetworkManager
+  service:
+    name: NetworkManager
+    state: restarted
+  become_user: root
+
+- name: Define network okd
+  virt_net:
+    command: define
+    name: "okd"
+    xml: "{{ lookup('template', 'templates/okd.xml.j2') }}"
+
+- name: Active network okd
+  virt_net:
+    state: active
+    name: "okd"
+
+- name: Autostart network okd
+  virt_net:
+    autostart: yes
+    name: "okd"
+
+- name: Delete network default
+  virt_net:
+    state: absent
+    name: "default"

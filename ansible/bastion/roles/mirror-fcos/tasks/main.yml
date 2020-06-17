@@ -1,0 +1,19 @@
+---
+- name: Create Directories
+  file:
+    path: /usr/share/nginx/html/{{ item.dir }}
+    state: directory
+  with_items:
+    - { dir: 'fcos' }
+
+- name: Mirror Fedora CoreOS
+  get_url:
+    url: '{{ okd_lab_fedora_coreos_base_url }}{{ item.file }}'
+    dest: /usr/share/nginx/html/fcos/{{ item.dest }}
+  with_items:
+    - { file: 'metal.x86_64.raw.xz', dest: 'install.xz' }
+    - { file: 'metal.x86_64.raw.xz.sig', dest: 'install.xz.sig' }
+    - { file: 'live-kernel-x86_64', dest: 'vmlinuz' }
+    - { file: 'live-initramfs.x86_64.img', dest: 'initrd' }
+
+    

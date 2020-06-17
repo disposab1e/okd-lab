@@ -1,0 +1,72 @@
+---
+- name: Extract Tools
+  command: oc adm release extract --tools {{ _okd_lab_install_mirror_from }}:{{ _okd_lab_install_okd_version }}
+  args:
+    chdir: /root/openshift-install
+    
+- name: Unarchive oc and kubectl
+  unarchive:
+    src: /root/openshift-install/openshift-client-linux-{{ _okd_lab_install_okd_version }}.tar.gz
+    dest: /root/openshift-install
+    remote_src: yes
+
+- name: Create symbolic links for oc
+  file:
+    src: "/root/openshift-install/oc"
+    dest: "/usr/local/bin/oc"
+    mode: '0755'
+    force: yes
+    state: link
+
+- name: Create symbolic links for kubectl
+  file:
+    src: "/root/openshift-install/kubectl"
+    dest: "/usr/local/bin/kubectl"
+    mode: '0755'
+    force: yes
+    state: link
+
+- name: Create installer for mirror
+  command: oc adm -a /root/.secrets/okd-lab-pull-secret.json release extract --insecure --command=openshift-install "{{ _okd_lab_quay_url }}/kubeadmin/{{ _okd_lab_install_name }}:{{ _okd_lab_install_okd_version }}"
+  args:
+    chdir: /root/openshift-install
+
+- name: Create symbolic links for openshift-install
+  file:
+    src: "/root/openshift-install/openshift-install"
+    dest: "/usr/local/bin/openshift-install"
+    mode: '0755'
+    force: yes
+    state: link
+
+- name: Publish install-config.yaml
+  template:
+    src: 'install-config.yaml.j2'
+    dest: /root/openshift-install/install-config.yaml
+
+- name: Keep a copy of install-config.yaml
+  copy:
+    src: /root/openshift-install/install-config.yaml
+    dest: /root/openshift-install/install-config.yaml.original
+    remote_src: yes
+  
+- name: Generate ignition files
+  command: openshift-install create ignition-configs
+  args:
+    chdir: /root/openshift-install
+
+- name: Create ignition directory
+  file:
+    path: /usr/share/nginx/html/ignition/{{ _okd_lab_install_name }}
+    state: directory
+
+- name: Move ignition files to nginx
+  copy:
+    src: /root/openshift-install/{{ item.file }}
+    dest: /usr/share/nginx/html/ignition/{{ _okd_lab_install_name }}/{{ item.file }}
+    remote_src: yes
+    force: yes
+  with_items:
+    - { file: 'bootstrap.ign' }
+    - { file: 'master.ign' }
+    - { file: 'worker.ign' }

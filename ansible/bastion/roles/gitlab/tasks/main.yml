@@ -1,0 +1,27 @@
+---
+- name: Allow 8888/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="8888/tcp"
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Create Directories
+  file:
+    path: '{{ item.dir }}'
+    state: directory
+  with_items:
+    - { dir: '~/docker/gitlab' }
+    - { dir: '~/docker/mounts/gitlab' }
+    - { dir: '~/docker/mounts/gitlab/config' }
+    - { dir: '~/docker/mounts/gitlab/logs' }
+    - { dir: '~/docker/mounts/gitlab/data' }
+
+- name: Publish docker-compose.yaml
+  template: 
+    src:  docker-compose.yaml.j2
+    dest: ~/docker/gitlab/docker-compose.yaml
+
+- name: Start GitLab
+  command: docker-compose up -d
+  args:
+    chdir: ~/docker/gitlab

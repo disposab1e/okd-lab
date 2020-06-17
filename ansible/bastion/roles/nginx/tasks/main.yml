@@ -1,0 +1,46 @@
+---
+- name: Install nginx
+  yum:
+    pkg: nginx
+    state: installed
+
+- name: Allow 80/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-service=http
+
+- name: Restart service firewalld
+  service:
+    name: firewalld
+    state: restarted
+
+- name: Publish nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0660'
+
+- name: Start service nginx
+  service:
+    name: nginx
+    state: started
+
+- name: Enable service nginx
+  service:
+    name: nginx
+    enabled: yes
+
+- name: Remove files
+  file:
+    path: /usr/share/nginx/html/{{ item.file }}
+    state: absent
+  with_items:
+    - { file: 'en-US' }
+    - { file: 'icons' }
+    - { file: 'img' }
+    - { file: '50x.html' }
+    - { file: '404.html' }
+    - { file: 'nginx-logo.png' }
+    - { file: 'poweredby.png' }
+    - { file: 'modules' }
+    - { file: 'index.html' }

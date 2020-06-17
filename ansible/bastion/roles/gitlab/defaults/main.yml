@@ -1,0 +1,3 @@
+---
+okd_lab_gitlab_base: 'http://gitlab.okd.example.com:8888'
+okd_lab_gitlab_version: '13.0.5-ce.0'
