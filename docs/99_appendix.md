@@ -18,7 +18,7 @@
 ## Users in OpenLDAP user registry
 
 | Username  	| Password  	| Email  	|
-|---	|---	|---	|---	|
+|---	|---	|---	|
 | admin  	| admin  	| admin@example.com  	|
 | administrator  	| administrator  	| administrator@example.com  	|
 | kubeadmin  	| kubeadmin  	| kubeadmin@example.com  	|
@@ -43,9 +43,4 @@
 
 ## Network
 
-| Hostname  	| IP  	| MAC  	| DNS  	|
-|---	|---	|---	|---	|
-| lab.okd.example.com  	|   	|   	|   	|   	|
-|   	|   	|   	|   	|   	|
-|   	|   	|   	|   	|   	|
-
+Inspect the DNS [example.com zone file](https://github.com/disposab1e/okd-lab/blob/master/ansible/bastion/roles/bind/templates/db.example.com.j2) to get an overview.
