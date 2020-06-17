@@ -72,7 +72,7 @@ Bastion (KVM):
 - [Keycloak](https://www.keycloak.org/)
 - [OpenLDAP](https://www.openldap.org/)
 - [Project Quay](https://www.projectquay.io/)
-- [OKD4](https://www.okd.io) installation environment:
+- [OKD4](https://www.okd.io) UPI installation environment:
   - Mirrored OKD4 Container Registry
   - Mirrored Fedora CoreOS
   - DNS
