@@ -1,6 +1,6 @@
 [![OKD](https://img.shields.io/badge/okd-4--4--0--okd--2020--05--23--beta--5-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-31.20200517.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![CentOS](https://img.shields.io/badge/centos-7.8.2003-orange.svg)](https://www.centos.org/) [![KVM/QEMU](https://img.shields.io/badge/kvm%2Fqemu-0.12.0-red.svg)](https://www.linux-kvm.org/) [![Terraform](https://img.shields.io/badge/terraform-0.12.26-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.6.0-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.9-red.svg)](https://www.ansible.com/)
 
-# ODK-LAB: Controlled Environment for OKD4 experiments
+# OKD-LAB: Controlled Environment for OKD4 experiments
 
 You plan a dedicated machine to install and experiment with the [Community Distribution of Kubernetes](https://www.okd.io/), maybe even on an rented root server in the wild wild world?
 
