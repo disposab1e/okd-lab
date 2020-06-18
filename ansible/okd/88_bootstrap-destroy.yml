@@ -5,4 +5,4 @@
   become_user: lab
   connection: local
   roles:
-    - bootstrap-destroy
+    - destroy-bootstrap
