@@ -49,6 +49,9 @@ resource "libvirt_domain" "bootstrap" {
     volume_id = "${libvirt_volume.bootstrap.id}"
   }
 
+  graphics {
+    listen_type = "none"
+  }
   console {
     type        = "pty"
     target_type = "serial"
