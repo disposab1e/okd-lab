@@ -50,7 +50,7 @@ ansible-playbook ~/okd-lab/ansible/okd/02_installation.yml
 
 ansible-playbook -i bastion, ~/okd-lab/ansible/okd/03_complete.yml
 
-ansible-playbook ~/okd-lab/ansible/okd/88_destroy-bootstrap.yml
+ansible-playbook ~/okd-lab/ansible/okd/88_bootstrap-destroy.yml
 
 ```
 
