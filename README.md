@@ -105,4 +105,4 @@ Thanks to all in the Open Source Community and especially to [@cgruver](https://
 
 ## License
 
-OKD-LAB is released under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) license. See the [LICENSE](https://github.com/disposab1e/okd-lab/blob/master/LICENSE) file for details.
+OKD-LAB is released under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) license. See the [LICENSE](https://github.com/disposab1e/okd-lab/blob/master/LICENSE) file for details. Some components may be licensed differently - consult individual repositories for more.
