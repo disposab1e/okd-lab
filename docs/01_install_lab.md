@@ -334,7 +334,7 @@ sudo yum -y install ansible git
 
 sudo lsof -n -i TCP| fgrep LISTEN
 nmap -sT YO.UR.I.P
-sudo nmap -sU 95.217.196.226
+sudo nmap -sU YO.UR.I.P
 
 ```
 
