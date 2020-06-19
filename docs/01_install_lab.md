@@ -20,18 +20,7 @@ git clone https://github.com/disposab1e/okd-lab.git
 
 ## Prepare guide (optional)
 
-To follow the __copy&paste__ style of this guide it might be useful to set the IP address of your host to some commands.
-
-```bash
-[home@home]
-
-# Replace 100.100.100.100 with your public IP address
-
-sed -i 's/YO.UR.I.P/100.100.100.100/g' ~/okd-lab/docs/01_install_lab.md
-
-```
-
-Or just use your favorite tool and replace `YO.UR.I.P` with your public IP address.
+To follow the __copy&paste__ style of this guide it might be useful to set the IP address of your host to some commands. Just use your favorite tool and replace `YO.UR.I.P` with your public IP address.
 
 ## SSH and user configuration
 
@@ -347,7 +336,7 @@ sudo reboot -h now
 
 ```
 
-## Open your VNC tunnel and connect with your VNC lcient
+## Open your VNC tunnel and connect with your VNC client
 
 ```bash
 [home@home]
