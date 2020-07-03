@@ -38,7 +38,7 @@
 | Portainer  	| 1.24.0  	|
 | Project Quay  	| qui-gon  	|
 | Keycloak  	| 10.0.2  	|
-| Artifacory  	| 7.6.1  	|
+| Artifactory  	| 7.6.1  	|
 | GitLab  	| 13.0.7-ce.0  	|
 
 ## Network
