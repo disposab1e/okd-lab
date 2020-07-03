@@ -8,7 +8,7 @@
     ssh_key_file: "/home/lab/okd-lab/.ssh/id_rsa"
   become_user: lab
 
-- name: Set authorized key
+- name: Prepare authorized key
   authorized_key:
     user: lab
     state: present
@@ -16,7 +16,7 @@
     key: "{{ lookup('file', '/home/lab/okd-lab/.ssh/id_rsa.pub') }}"
   become_user: lab
 
-- name: Set confi
+- name: Prepare ssh config
   template:
     src: config.j2
     dest: /home/lab/.ssh/config

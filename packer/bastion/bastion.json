@@ -13,7 +13,6 @@
       "vm_name": "bastion.qcow2",
       "iso_urls": "{{user `okd_lab_centos_iso_url`}}",
       "iso_checksum": "{{user `okd_lab_centos_iso_checksum`}}",
-      "iso_checksum_type": "sha256",
       "cpus": 4,
       "memory": 16384,
       "headless": "true",

@@ -13,14 +13,14 @@ You're free to decide which version to install (including [nightlies](https://or
 ---
 - hosts: bastion
   vars:
-    # Unique name of this installation
-    okd_lab_install_name: '4-4-0-okd-2020-05-23-beta-5'
+    # Unique name of installation
+    okd_lab_install_name: '4-5-0-0-okd-2020-07-02-203357'
 
     # OKD installation version
-    okd_lab_install_okd_version: 4.4.0-0.okd-2020-05-23-055148-beta5
+    okd_lab_install_okd_version: 4.5.0-0.okd-2020-07-02-203357
 
     # Fedora CoreOS installation version and stream
-    okd_lab_install_fcos_version: '31.20200517.3.0'
+    okd_lab_install_fcos_version: '32.20200615.3.0'
     okd_lab_install_fcos_stream: 'stable'
 
     # Download URL for stable oc 4 client

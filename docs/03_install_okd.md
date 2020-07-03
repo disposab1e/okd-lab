@@ -41,18 +41,26 @@ It's time to decide which version to install. The default settings should be kep
 ```yaml
 
     # Unique name of installation
-    okd_lab_install_name: '4-4-0-okd-2020-05-23-beta-5'
+    okd_lab_install_name: '4-5-0-0-okd-2020-07-02-203357'
 
     # OKD installation version
-    okd_lab_install_okd_version: 4.4.0-0.okd-2020-05-23-055148-beta5
+    okd_lab_install_okd_version: 4.5.0-0.okd-2020-07-02-203357
 
     # Fedora CoreOS installation version and stream
-    okd_lab_install_fcos_version: '31.20200517.3.0'
+    okd_lab_install_fcos_version: '32.20200615.3.0'
     okd_lab_install_fcos_stream: 'stable'
 
 ```
 
 Of course there is a possibility to [install other versions](03_installation_version.md).
+
+## Tested versions
+
+| OKD  | Fedora CoreOS |
+|---|---|
+| 4.4.0-0.okd-2020-05-23-055148-beta5  | stable/31.20200517.3.0  |
+|   |   |   |   |   |
+|   |   |   |   |   |
 
 ## Installation environment
 
@@ -179,6 +187,50 @@ watch -n2 oc get clusteroperators
 
 ssh core@master-0 "cat /etc/chrony.conf"
 ssh core@master-0 "chronyc sources"
+
+```
+
+### Degraded Operators
+
+From time to time either `kube-apiserver`, `kube-controller-manager`, `kube-scheduler` or `etcd` clusteroperators are degraded and show `NodeInstallerDegraded` at status. A detailed solution can be found at [Red Hat's solution database](https://access.redhat.com/solutions/4849711) or in short:
+
+Redeploy kube-apiserver static pods:
+
+```bash
+
+[root@bastion]
+
+oc patch kubeapiserver/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
+
+```
+
+Redeploy kube-controller-manager static pods:
+
+```bash
+
+[root@bastion]
+
+oc patch kubecontrollermanager/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
+
+```
+
+Redeploy kube-scheduler static pods:
+
+```bash
+
+[root@bastion]
+
+oc patch kubescheduler/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
+
+```
+
+Redeploy etcd static pods:
+
+```bash
+
+[root@bastion]
+
+oc patch etcd/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
 
 ```
 

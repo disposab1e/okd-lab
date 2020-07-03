@@ -1,5 +1,5 @@
 ---
 okd_lab_docker_compose_url: 'https://github.com/docker/compose/releases/download/1.26.0/docker-compose-Linux-x86_64'
-okd_lab_docker_ce: 'docker-ce-19.03.11-3.el7.x86_64'
-okd_lab_docker_ce_cli: 'docker-ce-cli-19.03.11-3.el7.x86_64'
+okd_lab_docker_ce: 'docker-ce-19.03.12-3.el7.x86_64'
+okd_lab_docker_ce_cli: 'docker-ce-cli-19.03.12-3.el7.x86_64'
 okd_lab_containerd: 'containerd.io-1.2.13-3.2.el7.x86_64'
