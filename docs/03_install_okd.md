@@ -59,8 +59,7 @@ Of course there is a possibility to [install other versions](03_installation_ver
 | OKD  | Fedora CoreOS |
 |---|---|
 | 4.4.0-0.okd-2020-05-23-055148-beta5  | stable/31.20200517.3.0  |
-|   |   |   |   |   |
-|   |   |   |   |   |
+| 4.5.0-0.okd-2020-07-02-203357  | stable/32.20200615.3.0  |
 
 ## Installation environment
 
