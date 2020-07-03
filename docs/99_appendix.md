@@ -31,15 +31,15 @@
 |---	|---	|
 | CentOS  	| 7.8.2003  	|
 | KVM/QEMU  	| 2.12.0  	|   	|
-| Terraform  	| 0.12.26  	|
+| Terraform  	| 0.12.28  	|
 | Terraform KVM Plugin  	| v0.6.2  	|
-| Packer  	| 1.5.6  	|
-| Ansible  	| 2.9.9  	|
+| Packer  	| 1.6.0  	|
+| Ansible  	| 2.9.10  	|
 | Portainer  	| 1.24.0  	|
 | Project Quay  	| qui-gon  	|
 | Keycloak  	| 10.0.2  	|
-| Artifacory  	| 7.5.8  	|
-| GitLab  	| 13.0.5-ce.0  	|
+| Artifacory  	| 7.6.1  	|
+| GitLab  	| 13.0.7-ce.0  	|
 
 ## Network
 

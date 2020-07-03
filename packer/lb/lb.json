@@ -1,43 +1,42 @@
 {
-    "variables": {
-      "okd_lab_centos_iso_url": "http://mirror.netcologne.de/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso",
-      "okd_lab_centos_iso_checksum": "659691c28a0e672558b003d223f83938f254b39875ee7559d1a4a14c79173193"
-    },
-    "builders": [
-      {
-        "name": "lb",
-        "vm_name": "lb.qcow2",
-        "iso_urls": "{{user `okd_lab_centos_iso_url`}}",
-        "iso_checksum": "{{user `okd_lab_centos_iso_checksum`}}",
-        "iso_checksum_type": "sha256",
-        "cpus": 4,
-        "memory": 16384,
-        "headless": "true",
-        "disk_compression": true,
-        "type": "qemu",
-        "format": "qcow2",
-        "accelerator": "kvm",
-        "qemu_binary": "/usr/libexec/qemu-kvm",
-        "net_device": "virtio-net",
-        "disk_interface": "virtio",
-        "disk_cache": "none",
-        "boot_wait": "40s",
-        "ssh_wait_timeout": "30m",
-        "ssh_username": "root",
-        "ssh_password": "root",
-        "boot_command": [
-          "<tab> net.ifnames=0 biosdevname=0 text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.cfg<enter><wait>"
-        ],
-        "disk_size": "250G",
-        "http_directory": "kickstart",
-        "shutdown_command": "sudo /usr/sbin/shutdown -h now"
-      }
-    ],
-    "provisioners": [
-      {
-        "type": "ansible-local",
-        "playbook_file": "/home/lab/okd-lab/ansible/lb/packer.yml",
-        "playbook_dir": "/home/lab/okd-lab/ansible/lb"
-      }
-    ]
-  }
+  "variables": {
+    "okd_lab_centos_iso_url": "http://mirror.netcologne.de/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso",
+    "okd_lab_centos_iso_checksum": "659691c28a0e672558b003d223f83938f254b39875ee7559d1a4a14c79173193"
+  },
+  "builders": [
+    {
+      "name": "lb",
+      "vm_name": "lb.qcow2",
+      "iso_urls": "{{user `okd_lab_centos_iso_url`}}",
+      "iso_checksum": "{{user `okd_lab_centos_iso_checksum`}}",
+      "cpus": 4,
+      "memory": 16384,
+      "headless": "true",
+      "disk_compression": true,
+      "type": "qemu",
+      "format": "qcow2",
+      "accelerator": "kvm",
+      "qemu_binary": "/usr/libexec/qemu-kvm",
+      "net_device": "virtio-net",
+      "disk_interface": "virtio",
+      "disk_cache": "none",
+      "boot_wait": "40s",
+      "ssh_wait_timeout": "30m",
+      "ssh_username": "root",
+      "ssh_password": "root",
+      "boot_command": [
+        "<tab> net.ifnames=0 biosdevname=0 text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.cfg<enter><wait>"
+      ],
+      "disk_size": "250G",
+      "http_directory": "kickstart",
+      "shutdown_command": "sudo /usr/sbin/shutdown -h now"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible-local",
+      "playbook_file": "/home/lab/okd-lab/ansible/lb/packer.yml",
+      "playbook_dir": "/home/lab/okd-lab/ansible/lb"
+    }
+  ]
+}
