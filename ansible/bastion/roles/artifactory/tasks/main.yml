@@ -21,7 +21,7 @@
     src:  docker-compose.yaml.j2
     dest: ~/docker/artifactory/docker-compose.yaml
 
-- name: Start Artifacory
+- name: Start Artifactory
   command: docker-compose up -d
   args:
     chdir: ~/docker/artifactory

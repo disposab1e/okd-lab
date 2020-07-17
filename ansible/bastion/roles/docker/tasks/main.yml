@@ -23,17 +23,17 @@
     
   - name: Install docker-ce
     yum:
-      name: '{{ okd_lab_docker_ce }}'
+      name: '{{ _okd_lab_docker_ce }}'
       state: installed
   
   - name: Install docker-ce-cli
     yum:
-      name: '{{ okd_lab_docker_ce_cli }}'
+      name: '{{ _okd_lab_docker_ce_cli }}'
       state: installed
   
   - name: Install containerd.io
     yum:
-      name: '{{ okd_lab_containerd }}'
+      name: '{{ _okd_lab_containerd }}'
       state: installed
   
   - name: Publish docker-external.conf
@@ -58,6 +58,6 @@
   
   - name: Download and install docker-compose
     get_url:
-      url: '{{ okd_lab_docker_compose_url }}'
+      url: '{{ _okd_lab_docker_compose_url }}'
       dest: /usr/local/bin/docker-compose
       mode: '0755'

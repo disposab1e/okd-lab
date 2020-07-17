@@ -3,13 +3,13 @@ version: '3'
 services:
 
   gitlab:
-    image: 'gitlab/gitlab-ce:{{ okd_lab_gitlab_version }}'
+    image: 'gitlab/gitlab-ce:{{ _okd_lab_gitlab_version }}'
     restart: always
     environment:
       GITLAB_ROOT_PASSWORD: passpass
       GITLAB_ROOT_EMAIL: lab@okd.example.com
       GITLAB_OMNIBUS_CONFIG: |
-        external_url '{{ okd_lab_gitlab_base }}'
+        external_url '{{ _okd_lab_gitlab_base }}'
         gitlab_rails['gitlab_shell_ssh_port'] = 2222
         gitlab_rails['ldap_enabled'] = true
         gitlab_rails['prevent_ldap_sign_in'] = false

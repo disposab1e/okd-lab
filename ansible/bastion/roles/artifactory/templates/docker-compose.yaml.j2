@@ -3,7 +3,7 @@ version: '3'
 services:
 
   artifactory:
-    image: docker.bintray.io/jfrog/artifactory-oss:{{ okd_lab_artifactory_version }}
+    image: docker.bintray.io/jfrog/artifactory-oss:{{ _okd_lab_artifactory_version }}
     restart: always
     logging:
       driver: json-file

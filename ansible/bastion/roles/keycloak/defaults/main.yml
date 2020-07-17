@@ -1,2 +1,2 @@
 ---
-okd_lab_keycloak_version: '10.0.2'
+_okd_lab_keycloak_version: '{{ okd_lab_keycloak_version }}'

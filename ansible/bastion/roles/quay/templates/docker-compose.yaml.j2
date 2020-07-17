@@ -33,7 +33,7 @@ services:
       - quay
 
   quay:
-    image: quay.io/projectquay/quay:{{ okd_lab_quay_version }}
+    image: quay.io/projectquay/quay:{{ _okd_lab_quay_version }}
     container_name: quay
     privileged: true
     restart: always
