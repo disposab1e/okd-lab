@@ -341,7 +341,7 @@ sudo reboot -h now
 ```bash
 [home@home]
 
-ssh -C -L 0.0.0.0:5901:localhost:5901 -N lab@YO.UR.I.P
+ssh -C -L 0.0.0.0:5901:localhost:5999 -N lab@YO.UR.I.P
 
 ```
 
