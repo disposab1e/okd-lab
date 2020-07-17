@@ -3,7 +3,7 @@ version: '3'
 services:
 
   keycloak:
-    image: jboss/keycloak:{{ okd_lab_keycloak_version }}
+    image: jboss/keycloak:{{ _okd_lab_keycloak_version }}
 #    command: /opt/jboss/keycloak/bin/standalone.sh -Dkeycloak.import=/tmp/lab-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING 
     environment:
     - KEYCLOAK_USER=admin

@@ -1,5 +1,12 @@
 # Appendix
 
+## Unix Users
+
+| Username  	| Password  	| Host  	|
+|---	|---	|---	|
+| root  	| root  	| bastion.okd.example.com  	|
+| root  	| root  	| lb.okd.example.com  	|
+
 ## URL's and superuser logins
 
 | Service  	| URL  	| Admin  	| Password  	|
@@ -36,7 +43,7 @@
 | Packer  	| 1.6.0  	|
 | Ansible  	| 2.9.10  	|
 | Portainer  	| 1.24.0  	|
-| Project Quay  	| qui-gon  	|
+| Project Quay  	| qui-gon (newer versions with ldap problems!) 	|
 | Keycloak  	| 10.0.2  	|
 | Artifactory  	| 7.6.1  	|
 | GitLab  	| 13.0.7-ce.0  	|

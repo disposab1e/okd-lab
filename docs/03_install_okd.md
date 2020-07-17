@@ -6,7 +6,7 @@
 
 Let's start with the fun part!
 
-- Secrets
+- Quay Token
 - Installation version
 - Installation environment
 - Installation
@@ -17,20 +17,7 @@ Let's start with the fun part!
 - Registry Storage
 - Destroy Cluster
 
-## Secrets
-
-### Red Hat pull secret
-
-A [pull secret](03_pull_secret.md) is required to gain access to the Red Hat Container Registry. After you have saved your Red Hat pull secret, merge it with the existing Quay pull secret.
-
-```bash
-[lab@lab]
-
-ansible-playbook ~/okd-lab/ansible/okd/00_secrets.yml
-
-```
-
-### Quay token
+## Quay Token
 
 A Bearer Token is required to gain access to Quay's API. Let's [create one](03_quay_token.md)!
 
@@ -41,13 +28,13 @@ It's time to decide which version to install. The default settings should be kep
 ```yaml
 
     # Unique name of installation
-    okd_lab_install_name: '4-5-0-0-okd-2020-07-02-203357'
+    okd_lab_install_name: '4-5-0-0-okd-2020-07-14-153706-ga'
 
     # OKD installation version
-    okd_lab_install_okd_version: 4.5.0-0.okd-2020-07-02-203357
+    okd_lab_install_okd_version: 4.5.0-0.okd-2020-07-14-153706-ga
 
     # Fedora CoreOS installation version and stream
-    okd_lab_install_fcos_version: '32.20200615.3.0'
+    okd_lab_install_fcos_version: '32.20200629.3.0'
     okd_lab_install_fcos_stream: 'stable'
 
 ```
@@ -60,6 +47,7 @@ Of course there is a possibility to [install other versions](03_installation_ver
 |---|---|
 | 4.4.0-0.okd-2020-05-23-055148-beta5  | stable/31.20200517.3.0  |
 | 4.5.0-0.okd-2020-07-02-203357  | stable/32.20200615.3.0  |
+| 4.5.0-0.okd-2020-07-14-153706-ga  | stable/32.20200615.3.0  |
 
 ## Installation environment
 

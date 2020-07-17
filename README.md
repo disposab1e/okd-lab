@@ -1,4 +1,4 @@
-[![OKD](https://img.shields.io/badge/okd-4.5.0--0.okd--2020--07--02--203357-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-32.20200615.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![CentOS](https://img.shields.io/badge/centos-7.8.2003-orange.svg)](https://www.centos.org/) [![KVM/QEMU](https://img.shields.io/badge/kvm%2Fqemu-0.12.0-red.svg)](https://www.linux-kvm.org/) [![Terraform](https://img.shields.io/badge/terraform-0.12.28-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.6.0-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.10-red.svg)](https://www.ansible.com/)
+[![OKD](https://img.shields.io/badge/okd-4.5.0--ga-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-32.20200629.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![CentOS](https://img.shields.io/badge/centos-7.8.2003-orange.svg)](https://www.centos.org/) [![KVM/QEMU](https://img.shields.io/badge/kvm%2Fqemu-0.12.0-red.svg)](https://www.linux-kvm.org/) [![Terraform](https://img.shields.io/badge/terraform-0.12.28-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.6.0-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.10-red.svg)](https://www.ansible.com/)
 
 # OKD-LAB: Controlled Environment for OKD4 experiments
 
@@ -21,7 +21,6 @@ Additionally you get mostly all you need for a development environment including
 - Git client (optional)
 - SSH / VNC client
 - [Visual Studio Code Insiders](https://code.visualstudio.com/insiders/) (optional but highly recommended!)
-- [Red Hat Account](https://www.redhat.com/en) (to obtain a free of charge pull secret)
 
 This project is being developed on a [Hetzner](https://www.hetzner.com) machine with the following specs:
 
@@ -44,7 +43,7 @@ __95% of the installation process is copy&paste. No deep Linux or OKD4/Kubernete
 - [Provision infrastructure](docs/02_provision_infrastructure.md)
 - [Install OKD4](docs/03_install_okd.md)
 
-*The missing 5% are a guided [CentOS 7.8](docs/00_install_centos.md) Linux installation and using a Browser to obtain and store some secrets. And of course, using a Linux Terminal and SSH :-)
+*The missing 5% are a guided [CentOS 7.8](docs/00_install_centos.md) Linux installation and using a Browser to create a token. And of course, using a Linux Terminal and SSH :-)
 
 * * *
 

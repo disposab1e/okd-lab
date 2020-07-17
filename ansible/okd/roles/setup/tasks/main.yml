@@ -1,10 +1,4 @@
 ---
-# remove later when bastion is new build
-- name: Install jq
-  yum:
-    pkg: jq
-    state: installed
-
 - name: Copy okd-lab/.secrets to bastion
   copy:
     src: ~/okd-lab/.secrets/

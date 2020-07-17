@@ -1,2 +1,2 @@
 ---
-okd_lab_quay_version: 'qui-gon'
+_okd_lab_quay_version: '{{ okd_lab_quay_version }}'
