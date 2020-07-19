@@ -10,9 +10,14 @@
 - name: "######## virsh via command line ##########"
   become: no
   shell:
-    cmd: virsh -c qemu:///session pool-define --file /tmp/okd-lab-artefacts/storage-default-description.xml
+    cmd: virsh -c qemu:///system pool-define --file /tmp/okd-lab-artefacts/storage-default-description.xml
 
 - name: "#### autostart pool ###"
   become: no
   shell:
-    cmd: virsh pool-autostart --pool default
+    cmd: virsh -c qemu:///system pool-autostart --pool default
+
+- name: "#### virsh pool-start ###"
+   become: no
+   shell:
+     cmd: virsh -c qemu:///system pool-start --pool default 
