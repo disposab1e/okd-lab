@@ -1,0 +1,6 @@
+---
+# Default directory for the default pool
+_okd_lab_storage_dir: '/okd_lab'
+_okd_lab_storage_name: 'default'
+# Default pool size 1.5TB
+# _okd_lab_storage_size: '1099511627776'

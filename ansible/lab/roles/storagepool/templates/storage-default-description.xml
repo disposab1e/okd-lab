@@ -1,0 +1,14 @@
+<!-- virsh create default storage pool -->
+<!-- size 1024GB -->
+<!-- allocation 1024GB + 512GB -->
+<pool type='dir'>
+  <name>default</name>
+  <capacity unit='bytes'>1099511627776</capacity>
+  <allocation unit='bytes'>1649267441664</allocation>
+  <available unit='bytes'>1099511627776</available>
+  <source>
+  </source>
+  <target>
+    <path>/okd_lab</path>
+  </target>
+</pool>

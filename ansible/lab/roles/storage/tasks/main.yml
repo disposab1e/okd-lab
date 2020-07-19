@@ -1,0 +1,15 @@
+- name: "### Create virsh storage pool directory ##########"
+  file:
+    path: '{{ _okd_lab_storage_dir }}'
+    state: directory
+    owner: lab
+    group: lab
+    mode: 0775
+
+- name: "#### Create artefact directory in /tmp ####"
+  file:
+    path: /tmp/okd-lab-artefacts
+    state: directory
+    owner: lab
+    group: lab
+    mode: 0775

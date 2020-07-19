@@ -1,0 +1,13 @@
+# The Directory for the pool is created in advance
+# separated because it need root rights
+# the virt-pool midules needs user limits only to act
+# i the right user space qemu;///sessions
+- name: "#####  Copy file with owner and permissions ####"
+  copy:
+    src: templates/storage-default-description.xml
+    dest: /tmp/okd-lab-artefacts/storage-default-description.xml
+
+- name: "######## virsh via command line ##########"
+  become: no
+  shell:
+    cmd: virsh -c qemu:///session pool-define --file /tmp/okd-lab-artefacts/storage-default-description.xml

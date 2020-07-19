@@ -1,0 +1,3 @@
+---
+# Default directory for the default pool
+_okd_lab_storage_dir: '/okd_lab'

@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  vars:
+    okd_lab_packer: '1.6.0'
+
+  gather_facts: no
+  become: yes
+  connection: local
+  roles:
+    - storage
+    - storagepool
