@@ -31,6 +31,23 @@ ansible-playbook -K ~/okd-lab/ansible/lab/automation.yml
 
 __It's time to think about sizing! Please [check the defaults and change them as needed](02_sizing.md).__
 
+## Create the storage pools
+
+
+```
+[lab@lab]
+
+ansible-playbook -K ~/okd-lab/ansible/lab/storage.yml
+
+```
+
+All activities happen in the system context. So when checking results, you need to respect this
+
+```
+virsh -c qemu:///system pool-list --pool default
+virsh -c qemu:///system vol-list --pool default
+```
+
 
 ## Build `bastion` VM
 
