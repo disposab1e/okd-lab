@@ -11,3 +11,8 @@
   become: no
   shell:
     cmd: virsh -c qemu:///session pool-define --file /tmp/okd-lab-artefacts/storage-default-description.xml
+
+- name: "#### autostart pool ###"
+  become: no
+  shell:
+    cmd: virsh pool-autostart --pool default
