@@ -62,7 +62,7 @@ resource "libvirt_domain" "lb" {
       host     = "10.0.0.99"
       timeout  = "8m"
     }
-    inline = ["mkdir /root/.ssh"]
+    inline = ["mkdir -p /root/.ssh"]
   }
 
   provisioner "file" {

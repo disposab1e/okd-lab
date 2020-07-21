@@ -63,7 +63,7 @@ resource "libvirt_domain" "bastion" {
       timeout  = "8m"
     }
     inline = [
-      "mkdir /root/.ssh",
+      "mkdir -p /root/.ssh",
     ]
   }
 
