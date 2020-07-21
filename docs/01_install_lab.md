@@ -338,10 +338,24 @@ sudo reboot -h now
 
 ## Open your VNC tunnel and connect with your VNC client
 
-```bash
-[home@home]
+Start a vncserver listening on display port 1 on the lab machine
+```
+[lab@lab ~]$ vncserver :1
 
-ssh -C -L 0.0.0.0:5901:localhost:5999 -N lab@YO.UR.I.P
+New 'lab.okd.example.com:1 (lab)' desktop is lab.okd.example.com:1
+
+Starting applications specified in /home/lab/.vnc/xstartup
+Log file is /home/lab/.vnc/lab.okd.example.com:1.log
+
+[lab@lab ~]$
+```
+
+There are two ways to open your vnc connection. And you should have the vncpassword read which was created earlier. And your vnc client will be able to open a connection to : localhost:1
+
+```
+[home@home] ssh -C -L 0.0.0.0:5901:localhost:5999 -N lab@YO.UR.I.P
+
+[home@home] ssh -C -L 5901:localhost:5901 -N lab@YO.UR.I.P
 
 ```
 
