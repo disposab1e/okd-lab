@@ -29,7 +29,7 @@ ansible-playbook -K ~/okd-lab/ansible/lab/automation.yml
 
 ## Sizing the `lab`
 
-__It's time to think about sizing! Please [check the defaults and change them as needed](02_sizing.md).__
+__It is time to think about sizing!__ Please [check the defaults and change them as needed](02_sizing.md).
 
 ## Create the storage pools
 
@@ -46,6 +46,19 @@ All activities happen in the system context. So when checking results, you need 
 ```
 virsh -c qemu:///system pool-list --pool default
 virsh -c qemu:///system vol-list --pool default
+```
+
+And it creates the pool only. All volumes for the hosts are created with the hosts.
+```
+[lab@lab okd-lab]$ virsh -c qemu:///system pool-list 
+ Name                 State      Autostart 
+-------------------------------------------
+ default              active     yes       
+
+[lab@lab okd-lab]$ virsh -c qemu:///system vol-list --pool default 
+ Name                 Path                                    
+------------------------------------------------------------------------------
+
 ```
 
 
