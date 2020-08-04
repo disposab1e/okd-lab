@@ -39,7 +39,7 @@
 
 - name: "Wait for Artifactory to be ready"
   uri:
-    url: "{{ okd_lab_artifactory_base }}/artifactory/api/system/ping"
+    url: "{{ _okd_lab_artifactory_base }}/artifactory/api/system/ping"
     follow_redirects: none
     method: GET
   register: _result
@@ -49,7 +49,7 @@
 
 - name: Create and get admin API Key
   uri: 
-    url: '{{ okd_lab_artifactory_base }}/artifactory/api/security/apiKey'
+    url: '{{ _okd_lab_artifactory_base }}/artifactory/api/security/apiKey'
     method: POST
     user: admin
     password: password
@@ -63,7 +63,7 @@
 
 - name: Apply Custom Configuration
   uri: 
-    url: '{{ okd_lab_artifactory_base }}/artifactory/api/system/configuration'
+    url: '{{ _okd_lab_artifactory_base }}/artifactory/api/system/configuration'
     method: PATCH
     user: admin
     password: '{{ apikey }}'
@@ -75,5 +75,5 @@
     status_code: '200'
 
 - name: Create Access Token
-  command: curl -uadmin:{{ apikey }} -XPOST {{ okd_lab_artifactory_base }}/artifactory/api/security/token -d "expires_in=0" -d "refreshable=true" -d "username=admin" -d "scope=member-of-groups:admin"
+  command: curl -uadmin:{{ apikey }} -XPOST {{ _okd_lab_artifactory_base }}/artifactory/api/security/token -d "expires_in=0" -d "refreshable=true" -d "username=admin" -d "scope=member-of-groups:admin"
   register: token_response
