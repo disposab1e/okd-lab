@@ -8,10 +8,10 @@
     okd_lab_quay_version: 'qui-gon'
 
 # optional
-    okd_lab_artifactory_version: '7.6.1'
-    okd_lab_gitlab_version: '13.0.7-ce.0'
-    okd_lab_portainer_version: '1.24.0'
-    okd_lab_keycloak_version: '10.0.2'
+    okd_lab_artifactory_version: '7.6.3'
+    okd_lab_gitlab_version: '13.2.2-ce.0'
+    okd_lab_portainer_version: '1.24.1'
+    okd_lab_keycloak_version: '11.0.0'
 
   gather_facts: no
   remote_user: root

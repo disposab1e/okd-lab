@@ -38,15 +38,16 @@
 |---	|---	|
 | CentOS  	| 7.8.2003  	|
 | KVM/QEMU  	| 2.12.0  	|   	|
-| Terraform  	| 0.12.28  	|
+| Terraform  	| 0.12.29  	|
 | Terraform KVM Plugin  	| v0.6.2  	|
-| Packer  	| 1.6.0  	|
+| Packer  	| 1.6.1  	|
 | Ansible  	| 2.9.10  	|
-| Portainer  	| 1.24.0  	|
+| Portainer  	| 1.24.1  	|
 | Project Quay  	| qui-gon (newer versions with ldap problems!) 	|
-| Keycloak  	| 10.0.2  	|
-| Artifactory  	| 7.6.1  	|
-| GitLab  	| 13.0.7-ce.0  	|
+| Keycloak  	| 11.0.0  	|
+| Artifactory  	| 7.6.3  	|
+| GitLab  	| 13.2.2-ce.0  	|
+| Rook  	| 1.3.7 	|
 
 ## Network
 
