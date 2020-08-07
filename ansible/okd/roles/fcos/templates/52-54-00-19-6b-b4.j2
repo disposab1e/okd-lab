@@ -1,6 +1,6 @@
 #!ipxe
 
-kernel http://10.0.0.2/fcos/{{ _okd_lab_install_name }}/vmlinuz ip=10.0.0.112::10.0.0.1:255.255.255.0:worker-2.okd.example.com:eth0:none nameserver=10.0.0.1 rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda console=tty0 console=ttyS0 coreos.inst.image_url=http://10.0.0.2/fcos/{{ _okd_lab_install_name }}/install.xz coreos.inst.ignition_url=http://10.0.0.2/ignition/{{ _okd_lab_install_name }}/worker.ign 
+kernel http://10.0.0.2/fcos/{{ _okd_lab_install_name }}/vmlinuz net.ifnames=1 ip=10.0.0.112::10.0.0.1:255.255.255.0:worker-2.okd.example.com:ens3:none nameserver=10.0.0.1 rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda console=tty0 console=ttyS0 coreos.inst.image_url=http://10.0.0.2/fcos/{{ _okd_lab_install_name }}/install.xz coreos.inst.ignition_url=http://10.0.0.2/ignition/{{ _okd_lab_install_name }}/worker.ign 
 initrd http://10.0.0.2/fcos/{{ _okd_lab_install_name }}/initrd
 
 boot

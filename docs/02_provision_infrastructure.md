@@ -14,7 +14,19 @@ git clone https://github.com/disposab1e/okd-lab.git
 
 ```
 
-Or connect with [Visual Studio Code Insiders](https://code.visualstudio.com/insiders/) and the [Remote - SSH extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) and clone from there. Guide coming soon...
+Or connect with [Visual Studio Code Insiders](https://code.visualstudio.com/insiders/) and the [Remote - SSH extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) and clone from there.
+
+## Initialize and view default virtualization environment
+
+Switch to VNC and GNOME Desktop and start the "Virtual Machine Manager" graphical user interface.
+
+- Applications - System Tools: Virtual Machine Manager
+
+This small application is a great viewer for the next steps __and__ additionally a convenient way to  initialize the default virtualization environment.
+
+![Virtual Machine Manager - Start](images/vmm/00.png)
+
+![Virtual Machine Manager - GUI](images/vmm/01.png)
 
 ## Install automation software
 
@@ -27,9 +39,11 @@ ansible-playbook -K ~/okd-lab/ansible/lab/automation.yml
 
 ```
 
+Install Packer, Terraform and generate some SSH keys.
+
 ## Sizing the `lab`
 
-__It's time to think about sizing! Please [check the defaults and change them as needed](02_sizing.md).__
+__It is time to think about sizing! Please [check the defaults and change them as needed](02_sizing.md).__
 
 
 ## Build `bastion` VM

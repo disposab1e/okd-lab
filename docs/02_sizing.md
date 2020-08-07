@@ -33,7 +33,7 @@ If you need to modify the disk space of your bastion host, than it's best to def
   }
 ```
 
-`[ lab@lab ~/okd-lab/terraform/bastion/bastion.yml ]`
+`[ lab@lab ~/okd-lab/terraform/bastion/bastion.tf ]`
 
 ```YAML
 
@@ -51,7 +51,7 @@ locals {
 
 ### Load Balancer: `lb`
 
-`[ lab@lab ~/okd-lab/terraform/lb/lb.yml ]`
+`[ lab@lab ~/okd-lab/terraform/lb/lb.tf ]`
 
 ```YAML
 
@@ -69,7 +69,7 @@ locals {
 
 ### Bootstrap: `bootstrap`
 
-`[ lab@lab ~/okd-lab/terraform/bootstrap/bootstrap.yml ]`
+`[ lab@lab ~/okd-lab/terraform/bootstrap/bootstrap.tf ]`
 
 ```YAML
 
@@ -92,7 +92,7 @@ locals {
 
 ### Master: `master-(0-2)`
 
-`[ lab@lab ~/okd-lab/terraform/master/master.yml ]`
+`[ lab@lab ~/okd-lab/terraform/master/master.tf ]`
 
 Please note! These settings apply to all masters!
 
@@ -120,7 +120,7 @@ locals {
 
 ### Worker: `worker-(0-2)`
 
-`[ lab@lab ~/okd-lab/terraform/worker/worker.yml ]`
+`[ lab@lab ~/okd-lab/terraform/worker/worker.tf ]`
 
 Please note! These settings apply to all workers!
 

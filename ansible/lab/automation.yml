@@ -1,8 +1,8 @@
 ---
 - hosts: localhost
   vars:
-    okd_lab_packer: '1.6.0'
-    okd_lab_terraform: '0.12.28'
+    okd_lab_packer: '1.6.1'
+    okd_lab_terraform: '0.12.29'
     okd_lab_terraform_kvm_url: 'https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.2/terraform-provider-libvirt-0.6.2+git.1585292411.8cbe9ad0.Fedora_28.x86_64.tar.gz'
 
   gather_facts: no
