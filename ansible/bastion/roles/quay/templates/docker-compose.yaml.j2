@@ -12,7 +12,7 @@ services:
     ports:
       - 5001:5432
     volumes:
-      - ~/docker/mounts/postgres:/var/lib/postgresql/data
+      - ~/docker/mounts/quay/postgres:/var/lib/postgresql/data
     networks:
       app_net:
         ipv4_address: 172.30.0.3
@@ -46,8 +46,20 @@ services:
       - ~/docker/mounts/quay/conf:/conf/stack
       - ~/docker/mounts/quay/datastorage:/datastorage
 
+  mirror:
+    image: quay.io/projectquay/quay:{{ _okd_lab_quay_version }}
+    container_name: mirroring-worker
+    privileged: true
+    restart: always
+    entrypoint: /quay-registry/quay-entrypoint.sh repomirror
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.6
+    volumes:
+      - ~/docker/mounts/quay/conf:/conf/stack
+
 #  quay:
-#    image: quay.io/projectquay/quay:latest
+#    image: quay.io/projectquay/quay:{{ _okd_lab_quay_version }}
 #    container_name: quay_config
 #    restart: always
 #    entrypoint: /quay-registry/quay-entrypoint.sh config secret
@@ -57,6 +69,38 @@ services:
 #      app_net:
 #        ipv4_address: 172.30.0.5
 
+  clairdb:
+    image: postgres:10.12
+    container_name: clairdb
+    restart: always
+    environment:
+    - POSTGRES_HOST_AUTH_METHOD=trust
+    - POSTGRES_USER=user
+    - POSTGRES_PASSWORD=pass
+    - POSTGRES_DB=clair
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/docker/mounts/clair/postgres:/var/lib/postgresql/data
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.7
+
+  clair:
+    image: quay.io/projectquay/clair-jwt:{{ _okd_lab_quay_version }}
+    container_name: clair
+    ports:
+      - "6060:6060"
+      - "6061:6061"
+    depends_on:
+      - clairdb
+    restart: always
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.8
+    volumes:
+      - ~/docker/mounts/clair/conf:/clair/config
+      - ~/docker/mounts/clair/conf/ca.crt:/etc/pki/ca-trust/source/anchors/ca.crt
 
 networks:
   app_net:

@@ -2,6 +2,12 @@
 - name: Allow 5000/tcp in firewalld
   command: firewall-cmd --zone=public --permanent --add-port="5000/tcp"
 
+- name: Allow 6060/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="6060/tcp"
+
+- name: Allow 6061/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-port="6061/tcp"
+
 - name: Reload firewall
   command: firewall-cmd --reload
 
@@ -11,28 +17,51 @@
     state: directory
   with_items:
     - { dir: '~/docker/quay' }
-    - { dir: '~/docker/mounts/postgres' }
     - { dir: '~/docker/mounts/quay' }
     - { dir: '~/docker/mounts/quay/conf' }
     - { dir: '~/docker/mounts/quay/datastorage' }
+    - { dir: '~/docker/mounts/quay/postgres' }
+    - { dir: '~/docker/mounts/clair' }
+    - { dir: '~/docker/mounts/clair/conf' }
+    - { dir: '~/docker/mounts/clair/postgres' }
 
 - name: ACL for datastorage 
   command: setfacl -m u:1001:-wx ~/docker/mounts/quay/datastorage
 
-- name: Publish config.yaml
+- name: Publish config.yaml for Quay
   template: 
-    src:  config.yaml.j2
+    src:  quay.config.yaml.j2
     dest: ~/docker/mounts/quay/conf/config.yaml
 
-- name: Publish ssl.cert
+- name: Publish ssl.cert for Quay
   template: 
     src:  ssl.cert.j2
     dest: ~/docker/mounts/quay/conf/ssl.cert
 
-- name: Publish ssl.key
+- name: Publish ssl.key for Quay
   template: 
     src:  ssl.key.j2
     dest: ~/docker/mounts/quay/conf/ssl.key
+
+- name: Publish config.yaml for Clair
+  template: 
+    src:  clair.config.yaml.j2
+    dest: ~/docker/mounts/clair/conf/config.yaml
+
+- name: Publish ca.crt for Clair
+  template: 
+    src:  ca.crt.j2
+    dest: ~/docker/mounts/clair/conf/ca.crt
+
+- name: Publish security_scanner.pem for Quay
+  template: 
+    src:  security_scanner.pem.j2
+    dest: ~/docker/mounts/quay/conf/security_scanner.pem
+
+- name: Publish security_scanner.pem for Clair
+  template: 
+    src:  security_scanner.pem.j2
+    dest: ~/docker/mounts/clair/conf/security_scanner.pem
 
 - name: Publish docker-compose-postgres.yaml
   template: 
