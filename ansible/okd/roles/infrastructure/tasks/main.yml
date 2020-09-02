@@ -21,3 +21,6 @@
 - name: Enable imagepruners
   command: oc patch imagepruners.imageregistry.operator.openshift.io/cluster --type merge -p '{"spec":{"schedule":"0 0 * * *","suspend":false,"keepTagRevisions":3,"keepYoungerThan":60,"resources":{},"affinity":{},"nodeSelector":{},"tolerations":[],"startingDeadlineSeconds":60,"successfulJobsHistoryLimit":3,"failedJobsHistoryLimit":3}}'
 
+- name: Disable samples operator
+  command: oc patch configs.samples cluster --type=merge --patch '{"spec":{"managementState":"Removed"}}'
+
