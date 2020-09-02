@@ -21,6 +21,7 @@
     - jq
     - git
     - docker
+    - skopeo
     - quay
 # optional
     - gitlab
