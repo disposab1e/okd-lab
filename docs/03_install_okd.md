@@ -28,10 +28,10 @@ It's time to decide which version to install. The default settings should be kep
 ```yaml
 
     # Unique name of installation
-    okd_lab_install_name: '4-5-0-0-okd-2020-07-29-070316'
+    okd_lab_install_name: '4-5-0-0-okd-2020-08-12-020541'
 
     # OKD installation version
-    okd_lab_install_okd_version: 4.5.0-0.okd-2020-07-29-070316
+    okd_lab_install_okd_version: 4.5.0-0.okd-2020-08-12-020541
 
     # Fedora CoreOS installation version and stream
     okd_lab_install_fcos_version: '32.20200629.3.0'
@@ -45,10 +45,9 @@ Of course there is a possibility to [install other versions](03_installation_ver
 
 | OKD  | Fedora CoreOS |
 |---|---|
-| 4.4.0-0.okd-2020-05-23-055148-beta5  | stable/31.20200517.3.0  |
-| 4.5.0-0.okd-2020-07-02-203357  | stable/32.20200615.3.0  |
 | 4.5.0-0.okd-2020-07-14-153706-ga  | stable/32.20200615.3.0  |
-| 4.5.0-0.okd-2020-07-29-070316  | stable/32.20200615.3.0  |
+| 4.5.0-0.okd-2020-07-29-070316  | stable/32.20200629.3.0  |
+| 4.5.0-0.okd-2020-08-12-020541  | stable/32.20200629.3.0  |
 
 ## Installation environment
 
