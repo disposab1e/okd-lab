@@ -22,6 +22,7 @@
     - docker
     - git
     - skopeo
+    - wget
     - quay
 # optional
     - gitlab
