@@ -26,7 +26,7 @@ If you need to modify the disk space of your bastion host, than it's best to def
 
   "variables": {
 
-    "okd_lab_disk_size": "500G",
+    "okd_lab_disk_size": "1000G",
 
     .....
 
@@ -162,7 +162,9 @@ To save some disk space or memory on the `bastion` host you can disable optional
 # required
     - ipxe
     - jq
+    - git
     - docker
+    - skopeo
     - quay
 # optional
     - gitlab
