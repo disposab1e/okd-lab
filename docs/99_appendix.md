@@ -40,13 +40,13 @@
 | KVM/QEMU  	| 2.12.0  	|   	|
 | Terraform  	| 0.12.29  	|
 | Terraform KVM Plugin  	| v0.6.2  	|
-| Packer  	| 1.6.1  	|
+| Packer  	| 1.6.4  	|
 | Ansible  	| 2.9.10  	|
 | Portainer  	| 1.24.1  	|
-| Project Quay  	| qui-gon (newer versions with ldap problems!) 	|
-| Keycloak  	| 11.0.0  	|
+| Project Quay / Clair 	| qui-gon (newer versions with ldap problems!) 	|
+| Keycloak  	| 11.0.1  	|
 | Artifactory  	| 7.6.3  	|
-| GitLab  	| 13.2.2-ce.0  	|
+| GitLab  	| 13.4.4-ce.0   	|
 | Rook  	| 1.3.7 	|
 
 ## Network
