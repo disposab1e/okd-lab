@@ -16,8 +16,11 @@
   command: oc patch scheduler cluster --patch '{"spec":{"mastersSchedulable":false}}' --type=merge
 
 - name: Stick router to masters
-  command: oc patch -n openshift-ingress-operator ingresscontroller default --patch '{"spec":{"nodePlacement":{"nodeSelector":{"matchLabels":{"node-role.kubernetes.io/infra":""}},"tolerations":[{"key":"node.kubernetes.io/unschedulable","effect":"NoSchedule"},{"key":"node-role.kubernetes.io/master","effect":"NoSchedule"}]}}}' --type=merge
+  command: oc patch -n openshift-ingress-operator ingresscontroller default --patch '{"spec":{"replicas":3, "nodePlacement":{"nodeSelector":{"matchLabels":{"node-role.kubernetes.io/infra":""}},"tolerations":[{"key":"node.kubernetes.io/unschedulable","effect":"NoSchedule"},{"key":"node-role.kubernetes.io/master","effect":"NoSchedule"}]}}}' --type=merge
 
 - name: Enable imagepruners
   command: oc patch imagepruners.imageregistry.operator.openshift.io/cluster --type merge -p '{"spec":{"schedule":"0 0 * * *","suspend":false,"keepTagRevisions":3,"keepYoungerThan":60,"resources":{},"affinity":{},"nodeSelector":{},"tolerations":[],"startingDeadlineSeconds":60,"successfulJobsHistoryLimit":3,"failedJobsHistoryLimit":3}}'
+
+- name: Disable samples operator
+  command: oc patch configs.samples cluster --type=merge --patch '{"spec":{"managementState":"Removed"}}'
 

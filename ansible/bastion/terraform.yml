@@ -9,7 +9,7 @@
 
 # optional
     okd_lab_artifactory_version: '7.6.3'
-    okd_lab_gitlab_version: '13.2.2-ce.0'
+    okd_lab_gitlab_version: '13.4.4-ce.0'
     okd_lab_portainer_version: '1.24.1'
     okd_lab_keycloak_version: '11.0.0'
 
@@ -20,6 +20,9 @@
     - ipxe
     - jq
     - docker
+    - git
+    - skopeo
+    - wget
     - quay
 # optional
     - gitlab

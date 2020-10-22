@@ -2,10 +2,10 @@
 - hosts: bastion
   vars:
     # Unique name of this installation
-    okd_lab_install_name: '4-5-0-0-okd-2020-07-29-070316'
+    okd_lab_install_name: '4-5-0-0-okd-2020-10-15-235428'
 
     # OKD installation version
-    okd_lab_install_okd_version: 4.5.0-0.okd-2020-07-29-070316
+    okd_lab_install_okd_version: 4.5.0-0.okd-2020-10-15-235428
     
     # Fedora CoreOS installation version and stream
     okd_lab_install_fcos_version: '32.20200629.3.0'

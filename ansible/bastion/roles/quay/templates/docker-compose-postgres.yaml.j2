@@ -12,7 +12,7 @@ services:
     ports:
       - 5001:5432
     volumes:
-      - ~/docker/mounts/postgres:/var/lib/postgresql/data
+      - ~/docker/mounts/quay/postgres:/var/lib/postgresql/data
     networks:
       app_net:
         ipv4_address: 172.30.0.3
