@@ -162,9 +162,10 @@ To save some disk space or memory on the `bastion` host you can disable optional
 # required
     - ipxe
     - jq
-    - git
     - docker
+    - git
     - skopeo
+    - wget
     - quay
 # optional
     - gitlab
