@@ -1,4 +1,4 @@
-[![OKD](https://img.shields.io/badge/okd-4.5.0--0.okd--2020--08--12--020541-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-32.20200629.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![Rook](https://img.shields.io/badge/rook-1.3.7-blue.svg)](https://rook.io/) [![CentOS](https://img.shields.io/badge/centos-7.8.2003-orange.svg)](https://www.centos.org/) [![KVM/QEMU](https://img.shields.io/badge/kvm%2Fqemu-0.12.0-red.svg)](https://www.linux-kvm.org/) [![Terraform](https://img.shields.io/badge/terraform-0.12.29-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.6.1-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.10-red.svg)](https://www.ansible.com/)
+[![OKD](https://img.shields.io/badge/okd-4.5.0--0.okd--2020--10--15--235428-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-32.20200629.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![Rook](https://img.shields.io/badge/rook-1.3.7-blue.svg)](https://rook.io/) [![CentOS](https://img.shields.io/badge/centos-7.8.2003-orange.svg)](https://www.centos.org/) [![KVM/QEMU](https://img.shields.io/badge/kvm%2Fqemu-0.12.0-red.svg)](https://www.linux-kvm.org/) [![Terraform](https://img.shields.io/badge/terraform-0.12.29-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.6.4-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.10-red.svg)](https://www.ansible.com/)
 
 # OKD-LAB: Controlled Environment for OKD4 experiments
 
@@ -71,6 +71,7 @@ Bastion (KVM):
 - [Keycloak](https://www.keycloak.org/)
 - [OpenLDAP](https://www.openldap.org/)
 - [Project Quay](https://www.projectquay.io/)
+- [Clair](https://github.com/quay/clair)
 - [OKD4](https://www.okd.io) UPI installation environment:
   - Mirrored OKD4 Container Registry
   - Mirrored Fedora CoreOS
