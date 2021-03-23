@@ -1,0 +1,5 @@
+metadata:
+  labels:
+    node-role.kubernetes.io/infra: ""
+
+

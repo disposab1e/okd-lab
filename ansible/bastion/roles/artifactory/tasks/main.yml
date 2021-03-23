@@ -1,47 +1,86 @@
 ---
-- name: Allow 7777/tcp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="7777/tcp"
-
-- name: Reload firewall
-  command: firewall-cmd --reload
-
 - name: Create Directories
   file:
     path: '{{ item.dir }}'
     state: directory
+    owner: '1030'
+    group: '1030'
   with_items:
-    - { dir: '~/docker/artifactory' }
-    - { dir: '~/docker/mounts/artifactory' }
+    - { dir: '/var/opt/artifactory/postgres' }
+    - { dir: '/var/opt/artifactory/var' }
+    - { dir: '/var/opt/artifactory/var/etc/security/keys/trusted' }
 
-- name: ACL for datastorage 
-  command: setfacl -m u:1030:-wx ~/docker/mounts/artifactory
-
-- name: Publish docker-compose.yaml
-  template: 
-    src:  docker-compose.yaml.j2
-    dest: ~/docker/artifactory/docker-compose.yaml
-
-- name: Start Artifactory
-  command: docker-compose up -d
-  args:
-    chdir: ~/docker/artifactory
-
-- name: Sleep for 30 seconds
-  wait_for:
-    timeout: 30
-
-- name: Publish artifactory.config.import.yml
-  template: 
-    src:  artifactory.config.import.yml.j2
-    dest: ~/docker/mounts/artifactory/etc/artifactory.config.import.yml
+- name: Publish System Files
+  copy:
+    src: "var/"
+    dest: /var/opt/artifactory/var
     owner: '1030'
     group: '1030'
 
+- name: ACL for datastorage 
+  command: setfacl -m u:1030:-wx /var/opt/artifactory/var
+
+- name: Copy ca.crt for ldaps
+  copy:
+    src: /etc/ca.crt
+    dest: /var/opt/artifactory/var/etc/security/keys/trusted/server.crt
+    remote_src: yes
+    owner: '1030'
+    group: '1030'
+
+- name: Copy services
+  template:
+    src: '{{ item }}.j2'
+    dest: /etc/systemd/system/{{ item }}
+  with_items:
+    - container-artifactory-artifactory.service
+    - container-artifactory-postgres.service
+
+
+- name: Just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: Start container-artifactory-postgres.service
+  systemd:
+    name: container-artifactory-postgres.service
+    state: started
+    enabled: yes
+
+- name: Pause 30 seconds
+  pause:
+    seconds: '30'
+
+- name: Copy artifactory.config.import.yml
+  template:
+    src:  artifactory.config.import.yml.j2
+    dest: /var/opt/artifactory/var/etc/artifactory.config.import.yml
+    owner: '1030'
+    group: '1030'
+
+- name: Copy system.yaml
+  template:
+    src:  system.yaml.j2
+    dest: /var/opt/artifactory/var/etc/system.yaml
+    owner: '1030'
+    group: '1030'
+
+- name: Start container-artifactory-artifactory.service
+  systemd:
+    name: container-artifactory-artifactory.service
+    state: started
+    enabled: yes
+
+- name: Pause 60 seconds
+  pause:
+    seconds: '60'
+
 - name: "Wait for Artifactory to be ready"
   uri:
-    url: "{{ _okd_lab_artifactory_base }}/artifactory/api/system/ping"
+    url: "{{ okd_lab_artifactory_api_url }}/system/ping"
     follow_redirects: none
     method: GET
+    validate_certs: false
   register: _result
   until: _result.status == 200
   retries: 720 
@@ -49,21 +88,33 @@
 
 - name: Create and get admin API Key
   uri: 
-    url: '{{ _okd_lab_artifactory_base }}/artifactory/api/security/apiKey'
+    url: '{{ okd_lab_artifactory_api_url }}/security/apiKey'
     method: POST
-    user: admin
-    password: password
+    user: '{{ okd_lab_artifactory_local_admin_username }}'
+    password: '{{ okd_lab_artifactory_local_admin_password }}'
     return_content: yes
     force_basic_auth: yes
     status_code: '201'
+    validate_certs: false
   register: apikey_response
  
 - set_fact: 
     apikey: '{{ apikey_response.json.apiKey }}'
 
+- name: Write admin-api token to file
+  copy:
+    content: "{{ apikey }}"
+    dest: "/tmp/artifactory-admin-api"
+
+- name: Fetch admin-api token
+  fetch:
+    src: "/tmp/artifactory-admin-api"
+    dest: "~/okd-lab/.secrets/artifactory-admin-api"
+    flat: yes
+
 - name: Apply Custom Configuration
   uri: 
-    url: '{{ _okd_lab_artifactory_base }}/artifactory/api/system/configuration'
+    url: '{{ okd_lab_artifactory_api_url }}/system/configuration'
     method: PATCH
     user: admin
     password: '{{ apikey }}'
@@ -73,7 +124,30 @@
       Content-Type: "application/yaml"
     body: "{{ lookup('template','configuration.yml.j2') }}"
     status_code: '200'
+    validate_certs: false
 
 - name: Create Access Token
-  command: curl -uadmin:{{ apikey }} -XPOST {{ _okd_lab_artifactory_base }}/artifactory/api/security/token -d "expires_in=0" -d "refreshable=true" -d "username=admin" -d "scope=member-of-groups:admin"
+  command: 
+    curl --insecure -u admin:{{ apikey }} \
+      -XPOST '{{ okd_lab_artifactory_api_url }}/security/token' \
+      -d "expires_in=0" \
+      -d "refreshable=false" \
+      -d "username=admin" \
+      -d "scope=member-of-groups:admin"
   register: token_response
+
+- name: Write admin token to file
+  copy:
+    content: "{{ token_response.stdout | from_json | json_query('access_token') }}"
+    dest: "/tmp/artifactory-admin"
+
+- name: Fetch token
+  fetch:
+    src: "/tmp/artifactory-admin"
+    dest: "~/okd-lab/.secrets/artifactory-admin"
+    flat: yes
+
+- name: Pause 20 seconds
+  pause:
+    seconds: '20'
+

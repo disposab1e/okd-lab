@@ -1,0 +1,47 @@
+server{
+
+        #https://www.jfrog.com/confluence/display/JFROG/Configuring+NGINX
+
+        listen 443 ssl;
+        server_name artifactory.okd.example.com;
+        server_tokens off;
+        allow all;
+
+        if ($http_x_forwarded_proto = '') {
+                set $http_x_forwarded_proto  $scheme;
+        }
+
+        rewrite ^/$ /ui/ redirect;
+        rewrite ^/ui$ /ui/ redirect;
+        proxy_buffer_size          128k;
+        proxy_buffers              4 256k;
+        proxy_busy_buffers_size    256k; 
+        chunked_transfer_encoding on;
+        client_max_body_size 0;
+
+        ssl_certificate "/etc/pki/tls/certs/bastion-server.crt";
+        ssl_certificate_key "/etc/pki/tls/private/bastion-server.key";
+        ssl_session_cache shared:SSL:1m;
+        ssl_session_timeout  10m;
+        ssl_ciphers PROFILE=SYSTEM;
+        ssl_prefer_server_ciphers on;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+
+        location / {
+
+                proxy_read_timeout  2400s;
+                proxy_pass_header   Server;
+                proxy_pass_header   X-Requested-With;
+                proxy_cookie_path   ~*^/.* /;
+                proxy_pass  http://{{ okd_lab_artifactory_ip }}:8082;
+                proxy_next_upstream error timeout non_idempotent;
+                proxy_next_upstream_tries    1;
+                proxy_set_header    X-JFrog-Override-Base-Url $http_x_forwarded_proto://$host:$server_port;
+                proxy_set_header    X-Forwarded-Port  $server_port;
+                proxy_set_header    X-Forwarded-Proto $http_x_forwarded_proto;
+                proxy_set_header    Host              $http_host;
+                proxy_set_header    X-Forwarded-For   $proxy_add_x_forwarded_for;
+
+        }
+
+}

@@ -1,0 +1,23 @@
+---
+######################################################################################
+#
+# Complete OKD installation
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/okd.yml --tags complete
+#
+# Day-1 OKD configurations
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/okd.yml --tags config
+#
+######################################################################################
+- hosts: bastion
+  gather_facts: no
+  collections:
+    - community.kubernetes
+  vars_files:
+    - vars/vars.yaml
+  tasks:
+    - import_role:
+        name: okd-complete
+      tags: complete  
+    - import_role:
+        name: okd-config
+      tags: config  

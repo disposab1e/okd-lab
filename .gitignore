@@ -7,3 +7,14 @@ output-lb
 tools
 .DS_Store
 TODO
+.ssh/id_rsa
+.ssh/id_rsa.pub
+.ssh/authorized_keys
+.ca/pki
+.ca/x509-types
+.ca/easyrsa
+.ca/openssl-easyrsa.cnf
+.secrets/artifactory-admin
+.secrets/artifactory-admin-api
+.secrets/kubeadmin
+.secrets/rook-dashboard

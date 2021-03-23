@@ -1,0 +1,136 @@
+---
+- name: Manage Registry and add some temporary storage
+  community.kubernetes.k8s:
+    api_version: imageregistry.operator.openshift.io/v1
+    kind: Config
+    name: cluster
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-registry-empty-dir.yaml') | from_yaml }}"
+
+- name: Label masters as infra nodes
+  community.kubernetes.k8s:
+    api_version: v1
+    kind: Node
+    name: master-{{ item }}.okd.example.com
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-master-as-infra.yaml') | from_yaml }}"
+  with_items:
+    - 0
+    - 1
+    - 2
+
+- name: Stick routers to infra nodes
+  community.kubernetes.k8s:
+    api_version: operator.openshift.io/v1
+    kind: IngressController
+    name: default
+    namespace: openshift-ingress-operator
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-stick-routers.yaml') | from_yaml }}"
+
+- name: Enable ImagePruner
+  community.kubernetes.k8s:
+    api_version: imageregistry.operator.openshift.io/v1
+    kind: ImagePruner
+    name: cluster
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-imagepruners.yaml') | from_yaml }}"
+
+- name: Disable Samples Operator
+  community.kubernetes.k8s:
+    api_version: samples.operator.openshift.io/v1
+    kind: Config
+    name: cluster
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-disable-samples-operator.yaml') | from_yaml }}"
+
+- name: Apply example.com CA
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'example-com-ca.yaml') | from_yaml }}"
+
+- name: Apply LDAP bind secret
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'ldap-bind-secret.yaml') | from_yaml }}"
+
+- name: Apply LDAP authentication
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'ldap-oauth.yaml') | from_yaml }}"
+
+- name: Wait 90s until LDAP authentication provider is ready to serve requests
+  wait_for:
+    timeout: '90'
+
+- name: Log in (obtain access token)
+  community.okd.openshift_auth:
+    username: admin
+    password: admin
+    validate_certs: false
+    host: https://api.okd.example.com:6443
+  register: openshift_auth_results
+
+- name: If login succeeded, try to log out (revoke access token)
+  when: openshift_auth_results.openshift_auth.api_key is defined
+  community.okd.openshift_auth:
+    validate_certs: false
+    host: https://api.okd.example.com:6443
+    state: absent
+    api_key: "{{ openshift_auth_results.openshift_auth.api_key }}"
+
+- name: Allow cluster-admin for amdin user
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'cluster-admin-user.yaml') | from_yaml }}"
+
+- name: Apps Certs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'example-com-apps-certs.yaml') | from_yaml }}"
+
+- name: Api Certs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'example-com-api-certs.yaml') | from_yaml }}"
+
+- name: Patch Proxy
+  community.kubernetes.k8s:
+    api_version: config.openshift.io/v1
+    kind: Proxy
+    name: cluster
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-proxy-cluster.yaml') | from_yaml }}"
+
+- name: Patch APIServer
+  community.kubernetes.k8s:
+    api_version: config.openshift.io/v1
+    kind: APIServer
+    name: cluster
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-apiserver.yaml') | from_yaml }}"
+
+- name: Patch IngressController
+  community.kubernetes.k8s:
+    api_version: operator.openshift.io/v1
+    kind: IngressController
+    name: default
+    namespace: openshift-ingress-operator
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-ingresscontroller.yaml') | from_yaml }}"
+
+#- name: Remove kubeadmin
+#  community.kubernetes.k8s:
+#    api_version: v1
+#    namespace: kube-system
+#    kind: Secret
+#    name: kubeadmin
+#    state: absent

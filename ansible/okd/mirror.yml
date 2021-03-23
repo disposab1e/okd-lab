@@ -1,0 +1,37 @@
+---
+######################################################################################
+#
+# Mirror Fedorea CoreOS, PXE's and Registry Mirror
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags mirror
+#
+# Cleanup Fedorea CoreOS, PXE's and Registry Mirrors
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags cleanup
+#
+#
+# Mirror PXE's
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags pxe-mirror
+#
+# Cleanup PXE's
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags pxe-cleanup
+#
+# Mirror Fedorea CoreOS
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags fcos-mirror
+#
+# Cleanup Fedorea CoreOS Mirror
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags fcos-cleanup
+#
+# Mirror Registry
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags registry-mirror
+#
+# Cleanup Registry Mirror
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags registry-cleanup
+#
+######################################################################################
+- hosts: bastion
+  vars_files:
+    - vars/vars.yaml
+  gather_facts: no
+  roles:
+    - mirror-fcos
+    - mirror-pxe
+    - mirror-registry

@@ -1,0 +1,88 @@
+---
+- name: Allow ldap in firewall
+  command: firewall-cmd --zone=public --permanent --add-service=ldap
+
+- name: Allow ldaps in firewall
+  command: firewall-cmd --zone=public --permanent --add-service=ldaps
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Install 389 Directoy Server
+  shell: dnf -y module install 389-directory-server:stable/default
+
+- name: Publish Directory Server install config
+  template: 
+    src:  '{{ item }}.j2' 
+    dest: /root/{{ item }}
+  with_items:
+    - directory.inf 
+
+- name: Install Directory Server
+  shell: dscreate from-file /root/directory.inf
+
+- name: Copy ldap-server.pem
+  copy:
+    src: ldap-server.crt
+    dest: /etc/pki/tls/certs/ldap-server.pem
+
+- name: Copy ldap-server.key
+  copy:
+    src: ldap-server.key
+    dest: /etc/pki/tls/private/ldap-server.key
+
+- name: Import ldap-server.pem
+  shell: 
+    dsctl directory tls import-server-key-cert /etc/pki/tls/certs/ldap-server.pem /etc/pki/tls/private/ldap-server.key
+
+- name: Import CA
+  shell: 
+    dsconf -w {{ okd_lab_directory_root_password }} -D "cn=Directory Manager" ldap://{{ okd_lab_directory_hostname }} security ca-certificate add --file /etc/ca.crt --name "EXAMPLE.COM"
+
+- name: Trust flags for CA
+  shell: 
+    dsconf -w {{ okd_lab_directory_root_password }} -D "cn=Directory Manager" ldap://{{ okd_lab_directory_hostname }} security ca-certificate set-trust-flags "EXAMPLE.COM" --flags "CT,,"
+
+- name: Import certificates
+  shell: 
+    dsconf -w {{ okd_lab_directory_root_password }} -D "cn=Directory Manager" ldap://{{ okd_lab_directory_hostname }} security rsa set --tls-allow-rsa-certificates on --nss-token "internal (software)" --nss-cert-name Server-Cert
+
+- name: Enable cipher list
+  shell: 
+    dsconf -w {{ okd_lab_directory_root_password }} -D "cn=Directory Manager" ldap://{{ okd_lab_directory_hostname }} security ciphers list --enabled
+
+- name: Delete initial certificate
+  shell: 
+    dsconf -w {{ okd_lab_directory_root_password }} -D "cn=Directory Manager" ldap://{{ okd_lab_directory_hostname }} security ca-certificate del Self-Signed-CA
+
+- name: Restart Directory Server
+  shell: 
+    systemctl restart dirsrv@directory.service
+
+- name: Copy ldifs to remote
+  copy: 
+    src:  '{{ item }}' 
+    dest: /root/{{ item }}
+  with_items:
+    - people.ldif
+    - groups.ldif
+    - admin.ldif
+    - lab.ldif
+
+- name: Add ldifs
+  shell: ldapadd -w {{ okd_lab_directory_root_password }} -D "cn=Directory Manager" -H ldaps://{{ okd_lab_directory_hostname }} -x -f /root/{{ item }}
+  with_items:
+    - people.ldif
+    - groups.ldif
+    - admin.ldif
+    - lab.ldif
+
+- name: Cleanup common resources
+  file:
+    path: /tmp/{{ item }}
+    state: absent
+  with_items:
+    - people.ldif
+    - groups.ldif
+    - admin.ldif
+    - lab.ldif

@@ -7,18 +7,47 @@
 - name: Allow 80/tcp in firewalld
   command: firewall-cmd --zone=public --permanent --add-service=http
 
+- name: Allow 443/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-service=https
+
 - name: Restart service firewalld
   service:
     name: firewalld
     state: restarted
 
+- name: Allow httpd_can_network_connect for nginx
+  command: setsebool -P httpd_can_network_connect 1
+
 - name: Publish nginx.conf
-  template:
-    src: nginx.conf.j2
+  copy:
+    src: nginx.conf
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
     mode: '0660'
+
+- name: Copy server.crt
+  copy:
+    src: bastion-server.crt
+    dest: /etc/pki/tls/certs/bastion-server.crt
+
+- name: Copy server.key
+  copy:
+    src: bastion-server.key
+    dest: /etc/pki/tls/private/bastion-server.key
+
+- name: Copy config files
+  template:
+    src: '{{ item }}.conf.j2'
+    dest: /etc/nginx/conf.d/{{ item }}.conf
+    owner: root
+    group: root
+    mode: '0660'
+  with_items:
+  - gitlab
+  - registry
+  - quay
+  - artifactory
 
 - name: Start service nginx
   service:

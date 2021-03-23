@@ -1,11 +1,15 @@
 ---
 - name: Kickstart Bastion Host with packer.io
   hosts: localhost
+  vars_files:
+    - vars/vars.yaml
   gather_facts: no
   roles:
     - bind
     - chrony
-    - ldap
     - tftp
+    - ca
     - nginx
+    - cockpit
+    - libvirt
     - mirror-centos

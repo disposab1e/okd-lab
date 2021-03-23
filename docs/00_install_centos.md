@@ -1,10 +1,10 @@
-# Install CentOS 7.8
+# Install CentOS 8.3
 
-These Screenshots will guide you through a typical CentOS 7.8 installation. If you follow the Hetzner path you can easily start a [CentOS 7.8 installation with Hetzner](00_hetzner.md).
+These Screenshots will guide you through a typical CentOS 8.3 installation. If you follow the Hetzner path, you can easily start a [CentOS 8.3 installation with Hetzner](00_hetzner.md).
 
 ## Welcome to Centos
 
-Choose your preferred installation process language.
+Choose your preferred installation language.
 
 ![Welcome to Centos](images/centos/01.png)
 
@@ -46,21 +46,19 @@ Attention! __DO NOT__ use a different hostname!
 
 ![Network & Hostname](images/centos/08.png)
 
-Diable (ignore) IPv6 so you don't have to care about IPv6 network security.
+Set IPv6 to `Link-Lokal Only`.
 
 ![Network & Hostname](images/centos/09.png)
 
 ## Software Selection
 
-- Virtualization Host
-  - Virtualization Platform
-  - System Administration Tools
+- Minimal Install
 
 ![Software Selection](images/centos/10.png)
 
 ## Installation Destination
 
-This example assumes you have two hard drives available and you want to build a software raid system with LVM. Apply it to your needs. We recommend only boot, swap and root partitions typically based on LVM.
+This example assumes two hard drives to build a software raid system with LVM. Apply it to your needs.
 
 ![Installation Destination](images/centos/11.png)
 
@@ -86,31 +84,30 @@ Remove everything instead of the `boot` partition. Change the boot partition to 
 
 Don't forget to also choose `RAID0` here.
 
-![Configure Volume Group](images/centos/16.png)
+![Configure Volume Group - swap](images/centos/16.png)
 
-![Configure Volume Group](images/centos/17.png)
+![Configure Volume Group - root](images/centos/17.png)
 
-### Root partition
+### Installation Summary
 
-![Root partition](images/centos/18.png)
+![Installation Summary](images/centos/18.png)
 
-## Begin Installation
+## Root Password
 
-![Begin Installation](images/centos/19.png)
-
-## User Settings
-
-![User Settings](images/centos/20.png)
-
-### Root Password
-
-![Root Password](images/centos/21.png)
+![ Root Password](images/centos/19.png)
 
 ### Create User
 
 Attention! __DO NOT__ use a different User name!
 
-![Create User](images/centos/22.png)
+![User Settings](images/centos/20.png)
+
+### Begin Installation
+
+![Create User](images/centos/21.png)
+
+
+![Installation progress](images/centos/22.png)
 
 ## Reboot
 
@@ -118,4 +115,4 @@ Attention! __DO NOT__ use a different User name!
 
 * * *
 
-Next > [Install - lab.okd.example.com](01_install_lab.md)
+Next > [Install - lab.okd.example.com](01_setup_lab.md)

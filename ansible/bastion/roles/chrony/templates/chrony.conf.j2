@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-server {{ okd_lab_ntp_external }} iburst
+server {{ okd_lab_ntp_forwarder }} iburst
 
 # Record the rate at which the system clock gains/losses time.
 driftfile /var/lib/chrony/drift

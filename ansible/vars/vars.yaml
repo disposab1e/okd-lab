@@ -1,0 +1,134 @@
+---
+#######################################################################
+#
+# Change this IP to the DNS/NTP server you want to use as forwarder
+#
+#######################################################################
+
+# Hetzner DNS Server
+okd_lab_bind_forwarder: '213.133.98.98'
+
+# Hetzner NTP Server
+okd_lab_ntp_forwarder: 'ntp1.hetzner.de'
+
+
+#######################################################################
+#
+# Change these settings if you intend to install a different version
+#
+#######################################################################
+
+# Unique name of this installation
+okd_lab_install_okd_name: '4-7-0-0-okd-2021-03-07-090821'
+
+# OKD installation version
+okd_lab_install_okd_version: 4.7.0-0.okd-2021-03-07-090821
+
+# Fedora CoreOS installation version and stream
+okd_lab_install_fcos_stream: 'stable' 
+okd_lab_install_fcos_version: '33.20210201.3.0'
+
+
+
+# OKD Client
+okd_lab_okd_oc_client_archive: 'openshift-client-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
+okd_lab_okd_oc_client: 'https://github.com/openshift/okd/releases/download/4.7.0-0.okd-2021-03-07-090821/openshift-client-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
+
+# OKD Installer
+okd_lab_okd_installer_archive: 'openshift-install-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
+okd_lab_okd_installer: 'https://github.com/openshift/okd/releases/download/4.7.0-0.okd-2021-03-07-090821/openshift-install-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
+
+# Opm
+okd_lab_okd_opm_archive: 'opm.tar.gz'  
+okd_lab_okd_opm: 'https://github.com/operator-framework/operator-registry/releases/download/v1.16.1/linux-amd64-opm'  
+
+# Grpcurl
+okd_lab_okd_grpcurl_archive: 'grpcurl_1.8.0_linux_x86_64.tar.gz'  
+okd_lab_okd_grpcurl: 'https://github.com/fullstorydev/grpcurl/releases/download/v1.8.0/grpcurl_1.8.0_linux_x86_64.tar.gz'  
+
+# CentOS Mirror
+okd_lab_centos_mirror: 'http://mirror.netcologne.de/centos/8.3.2011/isos/x86_64'
+okd_lab_centos_iso: 'CentOS-8.3.2011-x86_64-dvd1.iso'
+
+
+#######################################################################
+#
+# Do not change from here until you know what you do :-)
+#
+#######################################################################
+
+# Automation
+okd_lab_packer: '1.7.0'
+okd_lab_packer_url: 'https://releases.hashicorp.com/packer/{{ okd_lab_packer }}/packer_{{ okd_lab_packer }}_linux_amd64.zip'
+okd_lab_terraform: '0.13.6'
+okd_lab_terraform_url: 'https://releases.hashicorp.com/terraform/{{ okd_lab_terraform }}/terraform_{{ okd_lab_terraform }}_linux_amd64.zip'
+okd_lab_terraform_kvm_version: '0.6.3'
+okd_lab_terraform_kvm_url: 'https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v{{ okd_lab_terraform_kvm_version }}/terraform-provider-libvirt-0.6.3+git.1604843676.67f4f2aa.Fedora_32.x86_64.tar.gz'
+
+# Base URL for Fedora CoreOS downloads
+okd_lab_fedora_coreos_base_url: 'https://builds.coreos.fedoraproject.org/prod/streams/{{ okd_lab_install_fcos_stream }}/builds/{{ okd_lab_install_fcos_version }}/x86_64/fedora-coreos-{{ okd_lab_install_fcos_version }}-'
+
+# Network
+okd_lab_network_dns_ip: 10.0.0.1
+okd_lab_network_subnet_mask: 255.255.255.0
+okd_lab_network_gateway: 10.0.0.1
+
+# Bastion
+okd_lab_host_bastion_ip: 10.0.0.2
+
+# Mirror URL's
+okd_lab_mirror_fcos_url: http://{{ okd_lab_host_bastion_ip }}/fcos/{{ okd_lab_install_okd_name }}
+okd_lab_installer_ignition_url: http://{{ okd_lab_host_bastion_ip }}/ignition/{{ okd_lab_install_okd_name }}
+
+# 389 Directory Server
+okd_lab_directory_root_password: 'directory'
+okd_lab_directory_hostname: 'ldap.okd.example.com'
+
+# GitLab
+okd_lab_gitlab_hostname: gitlab.okd.example.com
+okd_lab_gitlab_url: https://{{ okd_lab_gitlab_hostname }}
+okd_lab_gitlab_ip: 10.88.0.40
+okd_lab_gitlab_root_user: 'root'
+okd_lab_gitlab_root_password: 'rootroot'
+okd_lab_gitlab_root_email: 'root@example.com'
+okd_lab_gitlab_container_image: 'docker.io/gitlab/gitlab-ce:13.9.3-ce.0'
+okd_lab_gitlab_registry_hostname: registry.okd.example.com
+okd_lab_gitlap_ldap_hostname: 'ldap.okd.example.com'
+okd_lab_gitlab_registry_url: https://{{ okd_lab_gitlab_registry_hostname }}
+okd_lab_gitlab_grafana_admin_password: admin
+
+# Artifactory
+okd_lab_artifactory_hostname: "artifactory.okd.example.com"
+okd_lab_artifactory_url: "https://{{ okd_lab_artifactory_hostname }}"
+okd_lab_artifactory_ip: 10.88.0.36
+okd_lab_artifactory_postgres_ip: 10.88.0.37
+okd_lab_artifactory_api_url: "http://{{ okd_lab_artifactory_ip }}:8082/artifactory/api"
+okd_lab_artifactory_image: "releases-docker.jfrog.io/jfrog/artifactory-oss:7.16.3"
+okd_lab_artifactory_postgres_image: "postgres:10.12"
+okd_lab_artifactory_local_admin_username: "admin"
+okd_lab_artifactory_local_admin_password: "password"
+okd_lab_artifactory_java_opts: "-Xms512m -Xmx2g"
+
+# Quay/Clair
+
+okd_lab_quay_hostname: quay.okd.example.com
+okd_lab_quay_url: https://{{ okd_lab_quay_hostname }}
+okd_lab_quay_api_url: '{{ okd_lab_quay_url }}/api/v1'
+okd_lab_quay_ip: 10.88.0.32
+okd_lab_quay_redis_ip: 10.88.0.31
+okd_lab_quay_mirror_ip: 10.88.0.33
+okd_lab_quay_postgres_ip: 10.88.0.30
+okd_lab_quay_config_ip: 10.88.0.34
+okd_lab_quay_swaggger_ip: 10.88.0.35
+okd_lab_quay_container_image: '{{ okd_lab_quay_url }}/api/v1'
+okd_lab_quay_swagger_image: docker.io/swaggerapi/swagger-ui:v3.44.1
+okd_lab_quay_scanner_endpoint: https://{{ okd_lab_clair_hostname }}:6060
+okd_lab_quay_mail_default_sender: quay-admin@example.com
+okd_lab_quay_image: quay.io/projectquay/quay:qui-gon
+okd_lab_quay_redis_image: docker.io/redis:5.0.7
+okd_lab_quay_postgres_image: docker.io/postgres:10.12
+okd_lab_quay_clair_image: quay.io/projectquay/clair-jwt:qui-gon
+okd_lab_quay_ldap_url: "ldaps://{{ okd_lab_directory_hostname }}" 
+okd_lab_clair_hostname: clair.okd.example.com
+okd_lab_clair_ip: 10.88.0.21
+okd_lab_clair_postgres_ip: 10.88.0.20

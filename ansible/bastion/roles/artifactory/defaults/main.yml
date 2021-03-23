@@ -1,3 +1,0 @@
----
-_okd_lab_artifactory_base: 'http://artifactory.okd.example.com:7777'
-_okd_lab_artifactory_version: '{{ okd_lab_artifactory_version }}'

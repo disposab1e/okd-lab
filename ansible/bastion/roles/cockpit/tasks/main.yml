@@ -1,0 +1,35 @@
+---
+- name: Make sure cockpit is installed
+  yum:
+    name: ['cockpit','cockpit-storaged','cockpit-podman']
+    state: present
+
+- name: Publish 99-webui.json
+  copy:
+    src: 99-webui.json.j2
+    dest: /etc/cockpit/machines.d/99-webui.json
+    mode: '0644'
+
+- name: Copy crt
+  copy:
+    src: /etc/pki/tls/certs/bastion-server.crt
+    dest: /etc/cockpit/ws-certs.d/55-cockpit.pem
+    remote_src: true
+
+- name: Copy key
+  copy:
+    src: /etc/pki/tls/private/bastion-server.key
+    dest: /etc/cockpit/ws-certs.d/55-cockpit.key
+    remote_src: true
+
+- name: Assemble pem format 
+  shell: 'cat /etc/cockpit/ws-certs.d/55-cockpit.pem /etc/cockpit/ws-certs.d/55-cockpit.key > /etc/cockpit/ws-certs.d/55-cockpit.cert'
+
+- name: Reload daemon
+  command: systemctl daemon-reload
+
+- name: Ensure cockpit.socket is enabled and started
+  service:
+    name: cockpit.socket
+    state: started
+    enabled: yes

@@ -1,0 +1,10 @@
+spec:
+  schedule: 0 0 * * *
+  suspend: false
+  keepTagRevisions: 3
+  keepYoungerThan: 60
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3

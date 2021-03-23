@@ -1,0 +1,26 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: LDAP 
+    mappingMethod: claim 
+    type: LDAP
+    ldap:
+      attributes:
+        id: 
+        - dn
+        email: 
+        - mail
+        name: 
+        - cn
+        preferredUsername: 
+        - uid
+      bindDN: "cn=Directory Manager" 
+      bindPassword: 
+        name: ldap-bind-secret
+      ca: 
+        name: example-com-ca
+      insecure: false 
+      url: "ldaps://{{ okd_lab_directory_hostname }}/ou=People,dc=example,dc=com?uid?sub"

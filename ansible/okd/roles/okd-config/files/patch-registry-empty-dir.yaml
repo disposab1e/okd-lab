@@ -1,0 +1,4 @@
+spec:
+  managementState: Managed
+  storage:
+    emptyDir: {}

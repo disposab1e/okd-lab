@@ -1,0 +1,18 @@
+---
+- name: Remove dhcpv6-client from public zone
+  command: firewall-cmd --permanent --zone=public --remove-service=dhcpv6-client
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Stop and disable kdump
+  service:
+    name: kdump
+    state: stopped
+    enabled: no
+
+- name: Stop and disable mcelog
+  service:
+    name: mcelog
+    state: stopped
+    enabled: no

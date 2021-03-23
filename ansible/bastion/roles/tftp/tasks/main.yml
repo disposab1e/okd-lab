@@ -24,11 +24,8 @@
     name: xinetd
     enabled: yes
 
-- name: Allow 69/tcp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="69/tcp"
-
 - name: Allow 69/udp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="69/udp"
+  command: firewall-cmd --zone=public --permanent --add-service=tftp
 
 - name: Restart service firewalld
   service:
@@ -36,8 +33,8 @@
     state: restarted
 
 - name: Publish tftp
-  template: 
-    src:  tftp.j2 
+  copy: 
+    src:  tftp 
     dest: /etc/xinetd.d/tftp
 
 - name: Retart service xinetd

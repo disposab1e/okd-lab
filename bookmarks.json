@@ -33,116 +33,102 @@
             "children": [
                 {
                     "guid": "kiTo3ySY62ki",
-                    "title": "lab.okd.example.com",
+                    "title": "Cockpit (lab)",
                     "index": 0,
                     "dateAdded": 1591901972850000,
                     "lastModified": 1591901983872000,
-                    "id": 7,
+                    "id": 1,
                     "typeCode": 1,
                     "type": "text/x-moz-place",
-                    "uri": "http://localhost:9090/system"
+                    "uri": "https://localhost:9090"
+                },
+                {
+                    "guid": "kiTo3ySY68ki",
+                    "title": "Cockpit (bastion)",
+                    "index": 1,
+                    "dateAdded": 1591901972850000,
+                    "lastModified": 1591901983872000,
+                    "id": 2,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://bastion.okd.example.com:9090"
                 },
                 {
                     "guid": "fIdrFSPTni1d",
                     "title": "HAProxy",
-                    "index": 1,
+                    "index": 2,
                     "dateAdded": 1591902393579000,
                     "lastModified": 1591902403002000,
-                    "id": 8,
+                    "id": 3,
                     "typeCode": 1,
                     "type": "text/x-moz-place",
-                    "uri": "http://lb.okd.example.com:9000/"
-                },
-                {
-                    "guid": "jvnb06Jyhtqq",
-                    "title": "Keycloak",
-                    "index": 2,
-                    "dateAdded": 1591902537860000,
-                    "lastModified": 1591902601697000,
-                    "id": 9,
-                    "typeCode": 1,
-                    "type": "text/x-moz-place",
-                    "uri": "http://keycloak.okd.example.com:4444/"
-                },
-                {
-                    "guid": "gHw0jPJGpMu_",
-                    "title": "Portainer",
-                    "index": 3,
-                    "dateAdded": 1591902598798000,
-                    "lastModified": 1591902609345000,
-                    "id": 10,
-                    "typeCode": 1,
-                    "type": "text/x-moz-place",
-                    "uri": "http://portainer.okd.example.com:9999/"
+                    "uri": "https://lb.okd.example.com:9000/"
                 },
                 {
                     "guid": "CqJRncNX-RtD",
                     "title": "GitLab",
-                    "index": 4,
+                    "index": 3,
                     "dateAdded": 1591902455540000,
                     "lastModified": 1591902466009000,
-                    "id": 11,
+                    "id": 4,
                     "typeCode": 1,
                     "type": "text/x-moz-place",
-                    "uri": "http://gitlab.okd.example.com:8888/"
+                    "uri": "https://gitlab.okd.example.com"
                 },
                 {
                     "guid": "Kc1dktUIouYD",
                     "title": "Artifactory",
-                    "index": 5,
+                    "index": 4,
                     "dateAdded": 1591902504328000,
                     "lastModified": 1591902514079000,
-                    "id": 12,
+                    "id": 5,
                     "typeCode": 1,
                     "type": "text/x-moz-place",
-                    "uri": "http://artifactory.okd.example.com:7777/ui/login/"
+                    "uri": "https://artifactory.okd.example.com"
                 },
                 {
                     "guid": "ISsKw5lCF0gr",
                     "title": "Quay",
-                    "index": 6,
+                    "index": 5,
                     "dateAdded": 1591902565994000,
                     "lastModified": 1592101827691000,
-                    "id": 13,
+                    "id": 6,
                     "typeCode": 1,
-                    "iconuri": "https://quay.okd.example.com:5000/static/img/quay_favicon.png",
                     "type": "text/x-moz-place",
-                    "uri": "https://quay.okd.example.com:5000/"
+                    "uri": "https://quay.okd.example.com"
                 },
                 {
                     "guid": "pH8KUlYjrBpY",
                     "title": "OKD",
-                    "index": 7,
+                    "index": 6,
                     "dateAdded": 1591904837839000,
                     "lastModified": 1591904845398000,
-                    "id": 14,
+                    "id": 7,
                     "typeCode": 1,
-                    "iconuri": "https://console-openshift-console.apps.okd.example.com/static/assets/okd-apple-touch-icon-precomposed.png",
                     "type": "text/x-moz-place",
                     "uri": "https://console-openshift-console.apps.okd.example.com/dashboards"
                 },
                 {
                     "guid": "RsrwNH4n3Ijv",
                     "title": "Ceph",
-                    "index": 8,
+                    "index": 7,
                     "dateAdded": 1591936392586000,
                     "lastModified": 1591936392586000,
-                    "id": 15,
+                    "id": 8,
                     "typeCode": 1,
                     "type": "text/x-moz-place",
                     "uri": "https://rook-dashboard.apps.okd.example.com/#/dashboard"
                 },
                 {
-                    "guid": "msAb4JQX5iQB",
-                    "title": "Grafana",
-                    "index": 9,
-                    "dateAdded": 1592108740098000,
-                    "lastModified": 1592108747973000,
-                    "id": 16,
+                    "guid": "RsrwNH4n8Ijv",
+                    "title": "Mirror",
+                    "index": 8,
+                    "dateAdded": 1591936392586000,
+                    "lastModified": 1591936392586000,
+                    "id": 9,
                     "typeCode": 1,
-                    "iconuri": "https://grafana-openshift-monitoring.apps.okd.example.com/public/img/apple-touch-icon.png",
                     "type": "text/x-moz-place",
-                    "uri": "https://grafana-openshift-monitoring.apps.okd.example.com/?orgId=1"
+                    "uri": "http://mirror.okd.example.com/"
                 }
             ]
         },

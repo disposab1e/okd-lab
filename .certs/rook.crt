@@ -1,0 +1,90 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            4c:cb:23:88:9e:9f:b1:5a:bd:8f:2f:c0:f4:8d:fd:81
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=Example-CA
+        Validity
+            Not Before: Mar 21 15:35:30 2021 GMT
+            Not After : Jun 24 15:35:30 2023 GMT
+        Subject: CN=rook-ceph-admission-controller.rook-ceph.svc
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:a1:c2:e9:e7:b1:f8:5e:af:26:aa:65:61:c9:c8:
+                    ac:b9:93:9b:fc:81:80:55:c6:04:b2:b4:27:ee:1c:
+                    76:b7:80:68:d2:40:61:76:66:a0:a1:b7:83:2a:2b:
+                    91:f0:60:20:78:df:20:b8:b8:55:7c:e4:7d:d8:af:
+                    9a:76:67:a4:37:24:98:a0:9b:af:8b:f4:35:bc:cb:
+                    30:35:e9:d2:ba:aa:e7:70:8a:43:89:f2:32:5f:db:
+                    ec:45:9f:ae:8e:e4:dc:82:fc:04:d8:72:20:2f:1a:
+                    7a:d0:0e:8d:48:dc:84:22:15:e5:a1:49:00:a0:57:
+                    a9:50:c1:cd:4c:3b:0b:d7:ed:99:5d:94:b6:45:20:
+                    35:20:8e:49:5b:45:7d:f3:4e:49:8b:6c:d8:8d:ae:
+                    4e:6a:a8:d4:fb:0e:46:91:5c:80:27:b0:38:d9:41:
+                    97:47:37:ec:b3:a7:ce:e4:a8:8c:6e:ac:2d:d6:52:
+                    3c:46:13:5e:a1:d5:3b:b7:5d:0f:44:4a:bd:88:6e:
+                    ea:80:37:92:e9:92:20:be:2b:85:8a:28:6e:09:7e:
+                    22:be:5f:a2:8d:9d:18:d6:3d:7e:58:5f:41:46:b5:
+                    cb:2c:9d:88:37:35:c0:97:eb:2b:20:3e:05:96:be:
+                    05:c7:a9:ab:bc:ed:9c:b1:df:f3:bd:82:1d:21:7c:
+                    7a:3d
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                A7:72:8F:E8:74:68:E0:7C:9F:BB:1E:F2:47:25:B8:CD:91:F2:39:FC
+            X509v3 Authority Key Identifier: 
+                keyid:6F:94:2B:09:31:CD:32:89:13:5D:C0:4B:65:90:B8:C5:98:1C:1C:C7
+                DirName:/CN=Example-CA
+                serial:2E:A2:D3:89:E8:3C:EB:86:BF:4A:09:9D:B3:CA:FB:C7:A8:97:42:9E
+
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+            X509v3 Subject Alternative Name: 
+                DNS:rook-ceph-admission-controller, DNS:rook-ceph-admission-controller.rook-ceph, DNS:rook-ceph-admission-controller.rook-ceph.svc
+    Signature Algorithm: sha256WithRSAEncryption
+         68:fb:86:c9:57:2e:39:13:f4:74:1e:ac:8d:1c:b6:53:f1:0a:
+         38:e0:86:3a:2d:69:aa:68:2c:85:b3:58:50:43:94:32:e5:fd:
+         03:53:88:7a:87:4c:ef:8b:d4:df:67:8c:48:8e:be:f4:3a:ee:
+         a2:3f:30:1d:04:15:01:29:99:22:b1:55:47:ba:78:c7:18:3f:
+         12:20:c7:bc:43:3c:a0:37:39:80:f1:79:4d:cf:d0:96:4e:8b:
+         62:7f:66:5e:e6:11:e2:79:5a:dc:bd:e4:48:2c:73:c9:97:1e:
+         8a:31:33:99:f1:70:13:56:2f:95:c6:55:fe:7d:08:aa:be:11:
+         d2:24:f6:6b:8d:ef:0d:b0:2e:0b:b0:00:6b:6e:d4:73:f7:bb:
+         70:29:22:b4:cc:fc:6e:d4:6d:92:0b:77:8e:2a:ae:9c:66:37:
+         5f:bf:6a:27:8d:d7:05:86:1a:d5:3f:a0:07:b0:7d:54:95:96:
+         cd:34:f5:95:30:bc:5f:7b:db:01:80:02:bd:8c:e5:7a:e9:73:
+         70:8f:94:e5:60:03:ca:49:6b:39:78:a7:15:bf:98:4f:d6:ac:
+         f5:a2:a0:56:14:3b:e3:4e:fe:2a:2a:85:75:04:21:a1:c5:9a:
+         f0:42:bb:1d:df:fe:3b:9a:e0:bb:9e:65:04:f4:5b:15:eb:a9:
+         73:95:04:32
+-----BEGIN CERTIFICATE-----
+MIID/jCCAuagAwIBAgIQTMsjiJ6fsVq9jy/A9I39gTANBgkqhkiG9w0BAQsFADAV
+MRMwEQYDVQQDDApFeGFtcGxlLUNBMB4XDTIxMDMyMTE1MzUzMFoXDTIzMDYyNDE1
+MzUzMFowNzE1MDMGA1UEAwwscm9vay1jZXBoLWFkbWlzc2lvbi1jb250cm9sbGVy
+LnJvb2stY2VwaC5zdmMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCh
+wunnsfheryaqZWHJyKy5k5v8gYBVxgSytCfuHHa3gGjSQGF2ZqCht4MqK5HwYCB4
+3yC4uFV85H3Yr5p2Z6Q3JJigm6+L9DW8yzA16dK6qudwikOJ8jJf2+xFn66O5NyC
+/ATYciAvGnrQDo1I3IQiFeWhSQCgV6lQwc1MOwvX7ZldlLZFIDUgjklbRX3zTkmL
+bNiNrk5qqNT7DkaRXIAnsDjZQZdHN+yzp87kqIxurC3WUjxGE16h1Tu3XQ9ESr2I
+buqAN5LpkiC+K4WKKG4JfiK+X6KNnRjWPX5YX0FGtcssnYg3NcCX6ysgPgWWvgXH
+qau87Zyx3/O9gh0hfHo9AgMBAAGjggEmMIIBIjAJBgNVHRMEAjAAMB0GA1UdDgQW
+BBSnco/odGjgfJ+7HvJHJbjNkfI5/DBQBgNVHSMESTBHgBRvlCsJMc0yiRNdwEtl
+kLjFmBwcx6EZpBcwFTETMBEGA1UEAwwKRXhhbXBsZS1DQYIULqLTieg864a/Sgmd
+s8r7x6iXQp4wEwYDVR0lBAwwCgYIKwYBBQUHAwEwCwYDVR0PBAQDAgWgMIGBBgNV
+HREEejB4gh5yb29rLWNlcGgtYWRtaXNzaW9uLWNvbnRyb2xsZXKCKHJvb2stY2Vw
+aC1hZG1pc3Npb24tY29udHJvbGxlci5yb29rLWNlcGiCLHJvb2stY2VwaC1hZG1p
+c3Npb24tY29udHJvbGxlci5yb29rLWNlcGguc3ZjMA0GCSqGSIb3DQEBCwUAA4IB
+AQBo+4bJVy45E/R0HqyNHLZT8Qo44IY6LWmqaCyFs1hQQ5Qy5f0DU4h6h0zvi9Tf
+Z4xIjr70Ou6iPzAdBBUBKZkisVVHunjHGD8SIMe8QzygNzmA8XlNz9CWTotif2Ze
+5hHieVrcveRILHPJlx6KMTOZ8XATVi+VxlX+fQiqvhHSJPZrje8NsC4LsABrbtRz
+97twKSK0zPxu1G2SC3eOKq6cZjdfv2onjdcFhhrVP6AHsH1UlZbNNPWVMLxfe9sB
+gAK9jOV66XNwj5TlYAPKSWs5eKcVv5hP1qz1oqBWFDvjTv4qKoV1BCGhxZrwQrsd
+3/47muC7nmUE9FsV66lzlQQy
+-----END CERTIFICATE-----

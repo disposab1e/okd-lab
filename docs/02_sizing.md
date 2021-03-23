@@ -14,7 +14,7 @@ Below are the default settings for this example machine:
 - 128 GB DDR4 ECC
 - 2 x 1,92 TB NVMe SSD
 
-Change it to your needs. Whenever possible, leave everything as it is.
+Change it to your needs. Whenever possible, leave everything as it is for your first installation.
 
 ### Bastion: `bastion`
 
@@ -153,30 +153,29 @@ To save some disk space or memory on the `bastion` host you can disable optional
 `[ lab@lab ~/okd-lab/ansible/bastion/terraform.yml ]`
 
 ```YAML
-
----
-- hosts: 10.0.0.2
+- name: Kickstart Bastion Host with terraform
+  hosts: 10.0.0.2
+  vars_files:
+    - vars/vars.yaml
   gather_facts: no
   remote_user: root
   roles:
 # required
+    - cleanup
+    - automation
+    - ca
+    - 389-directory
     - ipxe
-    - jq
-    - docker
     - git
-    - skopeo
-    - wget
+    - container-tools
+    - clair
     - quay
 # optional
     - gitlab
-    - portainer
-    - keycloak
     - artifactory
-
-}
 ```
 
-Please note! You have to provision your `bastion` host again. A typical workflow if you disbale/enable some of these services:
+Please note! When you tweak this settings, you have to provision your `bastion` host again. A typical workflow if you disbale/enable some of these services:
 
 ```bash
 [lab@lab]

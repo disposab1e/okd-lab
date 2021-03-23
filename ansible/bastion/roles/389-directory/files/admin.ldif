@@ -1,0 +1,12 @@
+dn: uid=admin,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+givenname: Admin
+sn: Admin
+cn: Admin
+uid: admin
+ou: people
+mail: admin@example.com
+userPassword: admin

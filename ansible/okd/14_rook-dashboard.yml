@@ -1,5 +1,0 @@
----
-- hosts: bastion
-  gather_facts: no
-  roles:
-    - rook-dashboard

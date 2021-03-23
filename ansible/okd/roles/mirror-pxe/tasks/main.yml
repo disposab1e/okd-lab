@@ -1,0 +1,32 @@
+---
+- name: Publish PXEs  
+  template:
+    src: '{{ item }}'
+    dest: /var/lib/tftpboot/{{ item }}
+  with_items:
+    - 52-54-00-7f-0e-c5
+    - 52-54-00-9f-f8-1c
+    - 52-54-00-19-6b-b4
+    - 52-54-00-94-21-a1
+    - 52-54-00-bb-dd-78
+    - 52-54-00-da-a9-27
+    - 52-54-00-f7-84-c9
+  tags: 
+    - pxe-mirror
+    - mirror
+
+- name: Cleanup PXEs  
+  file:
+    path: /var/lib/tftpboot/{{ item }}
+    state: absent
+  with_items:
+    - 52-54-00-7f-0e-c5
+    - 52-54-00-9f-f8-1c
+    - 52-54-00-19-6b-b4
+    - 52-54-00-94-21-a1
+    - 52-54-00-bb-dd-78
+    - 52-54-00-da-a9-27
+    - 52-54-00-f7-84-c9
+  tags: 
+    - pxe-cleanup
+    - cleanup

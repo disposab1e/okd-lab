@@ -1,0 +1,25 @@
+---
+######################################################################################
+#
+# Setup OKD installation environment
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/setup.yml --tags env-setup
+#
+# Cleanup OKD installation environment
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/setup.yml --tags env-cleanup
+#
+#
+# Setup OKD Installer to use Registry Mirror
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/setup.yml --tags installer-setup
+# Pleae Note! You have to mirror the registry first!
+#
+# Cleanup OKD Installer
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/setup.yml --tags installer-cleanup
+#
+######################################################################################
+- hosts: bastion
+  vars_files:
+    - vars/vars.yaml
+  gather_facts: no
+  roles:
+    - env
+    - installer

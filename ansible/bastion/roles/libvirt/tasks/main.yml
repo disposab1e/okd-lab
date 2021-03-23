@@ -1,0 +1,5 @@
+---
+- name: Install bind
+  yum:
+    name: libvirt
+    state: installed

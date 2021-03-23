@@ -1,0 +1,20 @@
+---
+- name: Make sure cockpit is installed
+  yum:
+    name: ['cockpit','cockpit-storaged']
+    state: present
+
+- name: Ensure cockpit is enabled and started
+  service:
+    name: cockpit
+    state: started
+    enabled: yes
+
+- name: Ensure cockpit.socket is stopped and disabled
+  service:
+    name: cockpit.socket
+    state: stopped
+    enabled: no
+
+- name: Mask cockpit.socket
+  command: systemctl mask cockpit.socket

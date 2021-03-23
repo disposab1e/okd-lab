@@ -3,8 +3,8 @@
 
     "okd_lab_bastion_disk_size": "1000G",
 
-    "okd_lab_centos_iso_url": "http://mirror.netcologne.de/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso",
-    "okd_lab_centos_iso_checksum": "659691c28a0e672558b003d223f83938f254b39875ee7559d1a4a14c79173193",
+    "okd_lab_centos_iso_url": "http://mirror.netcologne.de/centos/8.3.2011/isos/x86_64/CentOS-8.3.2011-x86_64-dvd1.iso",
+    "okd_lab_centos_iso_checksum": "aaf9d4b3071c16dbbda01dfe06085e5d0fdac76df323e3bbe87cce4318052247",
     "okd_lab_home": "/home/lab"
   },
   "builders": [

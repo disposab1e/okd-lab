@@ -1,4 +1,4 @@
-[![OKD](https://img.shields.io/badge/okd-4.5.0--0.okd--2020--10--15--235428-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-32.20200629.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![Rook](https://img.shields.io/badge/rook-1.3.7-blue.svg)](https://rook.io/) [![CentOS](https://img.shields.io/badge/centos-7.8.2003-orange.svg)](https://www.centos.org/) [![KVM/QEMU](https://img.shields.io/badge/kvm%2Fqemu-0.12.0-red.svg)](https://www.linux-kvm.org/) [![Terraform](https://img.shields.io/badge/terraform-0.12.29-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.6.4-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.10-red.svg)](https://www.ansible.com/)
+[![OKD](https://img.shields.io/badge/okd-4.7.0--0.okd--2021--03--07--090821-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-33.20210201.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![Rook](https://img.shields.io/badge/rook-1.5.9-blue.svg)](https://rook.io/) [![CentOS](https://img.shields.io/badge/centos-8.3.2011-orange.svg)](https://www.centos.org/) [![Terraform](https://img.shields.io/badge/terraform-0.13.6-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.7.0-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.18-red.svg)](https://www.ansible.com/)
 
 # OKD-LAB: Controlled Environment for OKD4 experiments
 
@@ -8,10 +8,15 @@ It is probably worth the time to read a little further....
 
 Naturally when we do some experiments we can destroy our cluster and bring it in a state we can't fix or recover. From this point of view we should try to keep complex things __simple and repeatable__. This is what this lab wants to address to.
 
-You can expect a fully virtualized small IT center with everything you need to install a `User Provisioned Infrastructure (UPI)` of OKD4 based on KVM. You get some great [Rook Cloud-native Storage](https://rook.io/) for your cluster and many more.
+You can expect a fully virtualized small IT center with everything you need to install a `User Provisioned Infrastructure (UPI)` of [OKD4](https://www.okd.io/) based on [KVM](https://www.linux-kvm.org). You get some great [Rook Cloud-native Storage](https://rook.io/) for your cluster and many more.
 
-Additionally you get mostly all you need for a development environment including git, artifact management, private container registry, centralized user registries..... everything pre-configured and tightly integrated.
+Additionally you get mostly all you need for a development environment including git, artifact management, private container registry, centralized user registry..... everything pre-configured and tightly integrated.
 
+* * *
+
+## OKD-LAB: Overview
+
+![OKD-LAB Overview](docs/images/okd-lab.png)
 * * *
 
 ## Prerequisites
@@ -38,46 +43,43 @@ You can do it with less but than you have to [tweak some settings and/or strip o
 
 __95% of the installation process is copy&paste. No deep Linux or OKD4/Kubernetes skills needed!*__
 
-- [Install CentOS 7.8](docs/00_install_centos.md)
-- [Install - lab.okd.example.com](docs/01_install_lab.md)
+- [Install CentOS 8.3](docs/00_install_centos.md)
+- [Setup - lab.okd.example.com](docs/01_setup_lab.md)
 - [Provision infrastructure](docs/02_provision_infrastructure.md)
 - [Install OKD4](docs/03_install_okd.md)
 
-*The missing 5% are a guided [CentOS 7.8](docs/00_install_centos.md) Linux installation and using a Browser to create a token. And of course, using a Linux Terminal and SSH :-)
+*The missing 5% is a guided [CentOS 8.3](docs/00_install_centos.md) Linux installation and using a Firefox to create some tokens.
 
 * * *
 
 ## What's in the box?
 
-100% Open Source! Watch a [animated gif at dropbox](https://www.dropbox.com/s/8afoyovx6mtaiqf/OKD-LAB.gif?dl=0) and open pandorra's box.
+100% Open Source! Watch a [animated gif at dropbox](https://www.dropbox.com/s/ryehh25b5s9yfij/OKD-LAB.gif?dl=0) and open pandorra's box.
 
 Lab Machine:
 
-- [Centos 7.8](https://www.centos.org/)
+- [Centos 8.3](https://www.centos.org/)
 - [KVM](https://www.linux-kvm.org) / [QEMU](https://www.qemu.org)
 
 Provisioning and automation:
 
 - [Terraform](https://www.terraform.io)
-- [Ansible](https://www.ansible.com/)
 - [Packer](https://www.packer.io/)
+- [Ansible](https://www.ansible.com/)
 
 Bastion (KVM):
 
-- [Docker](https://www.docker.com/)
-- [GitLab](https://about.gitlab.com/)
-- [Artifactory](https://jfrog.com/open-source/)
-- [Portainer](https://www.portainer.io)
-- [Keycloak](https://www.keycloak.org/)
-- [OpenLDAP](https://www.openldap.org/)
-- [Project Quay](https://www.projectquay.io/)
-- [Clair](https://github.com/quay/clair)
-- [OKD4](https://www.okd.io) UPI installation environment:
-  - Mirrored OKD4 Container Registry
-  - Mirrored Fedora CoreOS
+- [OKD4](https://www.okd.io) - UPI installation environment:
+  - OKD4 Registry Mirror
+  - Fedora CoreOS Mirror
   - DNS
   - DHCP
   - TFTP
+- [Project Quay](https://www.projectquay.io/) with [Clair](https://github.com/quay/clair)
+- [Podman](https://podman.io/), [Skopeo](https://github.com/containers/skopeo), [Buildah](https://github.com/containers/buildah/) (no Docker!)
+- [389 Directory](https://directory.fedoraproject.org/)
+- [GitLab](https://about.gitlab.com/) (optional)
+- [Artifactory](https://jfrog.com/open-source/) (optional)
 
 Load Balancer (KVM):
 
@@ -95,11 +97,29 @@ OKD4 Storage:
 
 * * *
 
+## Security
+
+Especially with servers available in the wild wild world some kind of security makes sense!
+
+For this reason:
+  
+  * A Firewall is running on this lab and only SSH (port 53) is allowed on the external interface.
+  * Only SSH PubkeyAuthentication is allowed.
+  * Only necessary services are enabled.
+  * Except SSH all network services are bound to `localhost`.
+  * Virtual network is not directly reachable from the wild world.
+  * VS Code and VNC is only available via SSH tunnel.
+
+If you go the Hetzner path [additional security](docs/00_hetzner.md) is possible and recommended.
+
+* * *
+
 ## A few words
 
-This guide is not about installing and maintaining Linux at the highest possible levels. It's not about being the best of class automation expert. And it's a controlled environment with intentionally 95% static settings. But if you know what you do, you can change and expand  everything with ease and apply it to your needs. Have fun!
+This guide is not about installing and maintaining Linux at the highest possible levels. It's not about being the best of class automation expert and it's a controlled environment with intentionally 99% static settings. But if you know what you do, you can change and expand  everything with ease and apply it to your needs. Have fun!
 
 Thanks to all in the Open Source Community and especially to [@cgruver](https://github.com/cgruver) for [inspiration](https://github.com/cgruver/okd4-upi-lab-setup) and help!
+
 
 * * *
 

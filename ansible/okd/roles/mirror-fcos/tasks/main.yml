@@ -1,0 +1,28 @@
+---
+- name: Create Fefora CoreOS mirror directory
+  file:
+    path: /usr/share/nginx/html/fcos/{{ okd_lab_install_okd_name }}
+    state: directory
+  tags: 
+    - fcos-mirror
+    - mirror
+
+- name: Mirror Fedora CoreOS
+  get_url:
+    url: '{{ okd_lab_fedora_coreos_base_url }}{{ item.file }}'
+    dest: /usr/share/nginx/html/fcos/{{ okd_lab_install_okd_name }}/{{ item.dest }}
+  with_items:
+    - { file: 'live-rootfs.x86_64.img', dest: 'rootfs' }
+    - { file: 'live-kernel-x86_64', dest: 'vmlinuz' }
+    - { file: 'live-initramfs.x86_64.img', dest: 'initrd' }
+  tags: 
+    - fcos-mirror
+    - mirror
+
+- name: Cleanup Fefora CoreOS mirror directory
+  file:
+    path: /usr/share/nginx/html/fcos
+    state: absent
+  tags: 
+    - fcos-cleanup
+    - cleanup
