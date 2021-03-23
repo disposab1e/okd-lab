@@ -1,0 +1,12 @@
+dn: uid=lab,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+givenname: Lab
+sn: Lab
+cn: Lab
+uid: lab
+ou: people
+mail: lab@example.com
+userPassword: lab

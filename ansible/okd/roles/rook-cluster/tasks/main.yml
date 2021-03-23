@@ -1,19 +1,76 @@
 ---
-- name: Publish temporary manifest
-  template:
-    src: '{{ item.file }}.j2'
-    dest: /tmp/{{ item.file }}
+- name: Label worker as storage nodes
+  community.kubernetes.k8s:
+    api_version: v1
+    kind: Node
+    name: worker-{{ item }}.okd.example.com
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-worker-as-storage.yaml') | from_yaml }}"
   with_items:
-    - { file: 'cluster.yml' }
+    - 0
+    - 1
+    - 2
 
-- name: Apply manifest
-  command: oc apply -f /tmp/{{ item.file }}
+- name: Copy common resources to remote
+  copy:
+    src: '{{ item }}'
+    dest: /tmp/{{ item }}
   with_items:
-    - { file: 'cluster.yml' }
+    - common.yaml
+    - crds.yaml
 
-- name: Cleanup
+- name: Apply common resources
+  command: oc apply -f /tmp/{{ item }}
+  with_items:
+    - common.yaml
+    - crds.yaml
+
+- name: Cleanup common resources
   file:
-    path: /tmp/{{ item.file }}
+    path: /tmp/{{ item }}
     state: absent
   with_items:
-    - { file: 'cluster.yml' }
+    - common.yaml
+    - crds.yaml
+
+- name: Get ca bundle for validating webhook
+  shell: |
+    oc get configmap -n kube-system extension-apiserver-authentication -o=jsonpath='{.data.client-ca-file}' | base64 | tr -d '\n'
+  register: ca_bundle  
+
+- name: Apply ValidatingWebhookConfiguration
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'webhook-config.yaml') | from_yaml }}"
+
+- name: Copy common resources to remote
+  copy:
+    src: '{{ item }}'
+    dest: /tmp/{{ item }}
+  with_items:
+    - operator-openshift.yaml
+    - rbac.yaml
+    - cluster.yaml
+
+- name: Apply Operator
+  command: oc apply -f /tmp/operator-openshift.yaml
+
+- name: Wait for Operator to complete
+  command: oc rollout status -w deployment/rook-ceph-operator -n rook-ceph
+
+- name: Apply Operator
+  command: oc apply -f /tmp/rbac.yaml
+  tags: cluster
+
+- name: Apply Cluster
+  command: oc apply -f /tmp/cluster.yaml
+
+- name: Cleanup common resources
+  file:
+    path: /tmp/{{ item }}
+    state: absent
+  with_items:
+    - operator-openshift.yaml
+    - rbac.yaml
+    - cluster.yaml

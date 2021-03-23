@@ -1,27 +1,51 @@
 ---
-- name: Allow 8888/tcp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="8888/tcp"
-
-- name: Reload firewall
-  command: firewall-cmd --reload
+- name: Allow 2222/tcp
+  command: firewall-cmd --zone=public --permanent --add-port=2222/tcp
 
 - name: Create Directories
   file:
     path: '{{ item.dir }}'
     state: directory
   with_items:
-    - { dir: '~/docker/gitlab' }
-    - { dir: '~/docker/mounts/gitlab' }
-    - { dir: '~/docker/mounts/gitlab/config' }
-    - { dir: '~/docker/mounts/gitlab/logs' }
-    - { dir: '~/docker/mounts/gitlab/data' }
+    - { dir: '/var/opt/gitlab/config' }
+    - { dir: '/var/opt/gitlab/config/trusted-certs' }
+    - { dir: '/var/opt/gitlab/logs' }
+    - { dir: '/var/opt/gitlab/data' }
+    - { dir: '/var/opt/gitlab/registry' }
 
-- name: Publish docker-compose.yaml
+- name: Prepare directoy
+  command: chmod -R go+w /var/opt/gitlab/registry
+
+- name: Copy ca.crt for Grafana
+  copy:
+    src: /etc/ca.crt
+    dest: /var/opt/gitlab/config/trusted-certs/ca.pem
+    remote_src: yes
+    mode: '0644'
+
+- name: Copy ca.crt for LDAP
+  copy:
+    src: /etc/ca.crt
+    dest: /var/opt/gitlab/config/ca.pem
+    remote_src: yes
+    mode: '0644'
+
+- name: Copy gitlab config
+  template:
+    src: gitlab.rb.j2
+    dest: /var/opt/gitlab/config/gitlab.rb
+
+- name: Copy gitlab service
   template: 
-    src:  docker-compose.yaml.j2
-    dest: ~/docker/gitlab/docker-compose.yaml
+    src:  container-gitlab.service.j2 
+    dest: /etc/systemd/system/container-gitlab.service
 
-- name: Start GitLab
-  command: docker-compose up -d
-  args:
-    chdir: ~/docker/gitlab
+- name: Just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: Start container-gitlab.service
+  systemd:
+    name: container-gitlab.service
+    state: started
+    enabled: yes

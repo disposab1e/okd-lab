@@ -9,8 +9,8 @@
     name: bind-utils
     state: installed
 
-- name: Allow 53/udp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="53/udp"
+- name: Allow 53/udp/tcp in firewalld
+  command: firewall-cmd --zone=public --permanent --add-service=dns
 
 - name: Reload firewall
   command: firewall-cmd --reload
@@ -24,16 +24,16 @@
     mode: '0660'
 
 - name: Publish named.conf.local
-  template:
-    src: named.conf.local.j2
+  copy:
+    src: named.conf.local
     dest: /etc/named/named.conf.local
     owner: root
     group: named
     mode: '0660'
 
 - name: Publish named.rfc1912.zones
-  template:
-    src: named.rfc1912.zones.j2
+  copy:
+    src: named.rfc1912.zones
     dest: /etc/named.rfc1912.zones
     owner: root
     group: named
@@ -44,21 +44,16 @@
     path: /etc/named/zones
     state: directory
 
-- name: Publish db.10.0.0
-  template:
-    src: db.10.0.0.j2
-    dest: /etc/named/zones/db.10.0.0
+- name: Publish zones
+  copy:
+    src: '{{ item }}'
+    dest: /etc/named/zones/{{ item }}
     owner: root
     group: named
     mode: '0660'
-
-- name: Publish db.example.com
-  template:
-    src: db.example.com.j2
-    dest: /etc/named/zones/db.example.com
-    owner: root
-    group: named
-    mode: '0660'
+  with_items:
+  - db.10.0.0
+  - db.example.com
 
 - name: Start service named
   service:
@@ -69,11 +64,6 @@
   service:
     name: named
     enabled: yes
-
-- name: Install NetworkManager-glib
-  yum:
-    name: NetworkManager-glib.x86_64
-    state: installed
 
 - name: Change DNS IP with NetworkManager
   nmcli:

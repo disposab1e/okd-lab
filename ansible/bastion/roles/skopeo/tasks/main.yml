@@ -1,5 +1,0 @@
----
-- name: Install skopeo
-  yum:
-    name: skopeo
-    state: installed

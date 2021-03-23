@@ -1,12 +1,12 @@
-# Start CentOS 7.8 installation with Hetzner
+# Start CentOS 8.3 installation with Hetzner
 
-< [Install Centos 7.8](00_install_centos.md)
+< [Install Centos 8.3](00_install_centos.md)
 
 * * *
 
 ## Prepare Firewall
 
-Only SSH and ICMP will be allowed at the end. However, during VNC installation we additionally need an open VNC Port `5901`. This port will be removed after the VNC installation.
+Only SSH and ICMP will be allowed at the end. However, during VNC installation we additionally need an open VNC Port `5901`. This port should be removed after the VNC installation.
 
 ![Prepare Firewall](images/hetzner/01.png)
 
@@ -33,10 +33,13 @@ vncviewer YO.U.R.IP:5901
 
 ## Remove VNC port from Firewall
 
-After successful CentOS 7.8 installation you can remove the VNC port from the firewall.
+After successful CentOS installation you should remove the VNC port from the firewall. VNC will be available later via SSH tunnel.
+
+Plase Note! Define a `Source IP` (e.g. the IP range of your internet provider) for `ssh` to expand security.
 
 ![Finish Firewall](images/hetzner/04.png)
 
 * * *
 
-Next> [Install CentOS 7.8](00_install_centos.md)
+Next> [Install CentOS 8.3](00_install_centos.md)
+

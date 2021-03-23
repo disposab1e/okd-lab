@@ -1,0 +1,64 @@
+---
+- name: Create Directories
+  file:
+    path: '{{ item.dir }}'
+    state: directory
+  with_items:
+    - { dir: '/var/opt/clair/postgres' }
+    - { dir: '/var/opt/clair/config' }
+
+- name: Copy ca.crt
+  copy:
+    src: /etc/ca.crt
+    dest: /var/opt/clair/config/ca.crt
+    remote_src: yes
+
+- name: Copy services
+  template:
+    src: '{{ item }}.j2'
+    dest: /etc/systemd/system/{{ item }}
+  with_items:
+    - container-clair-postgres.service
+    - container-clair-clair.service
+
+- name: Just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: Copy certs
+  copy:
+    src: 'security_scanner.pem'
+    dest: /var/opt/clair/config/security_scanner.pem
+
+- name: Copy clair config
+  template:
+    src: 'config.yaml.j2'
+    dest: /var/opt/clair/config/config.yaml
+
+- name: Copy crt
+  copy:
+    src: /etc/pki/tls/certs/bastion-server.crt
+    dest: '/var/opt/clair/config/clair.crt'
+    remote_src: true
+
+- name: Copy key
+  copy:
+    src: /etc/pki/tls/private/bastion-server.key
+    dest: '/var/opt/clair/config/clair.key'
+    remote_src: true
+
+- name: Start container-clair-postgres.service
+  systemd:
+    name: container-clair-postgres.service
+    state: started
+    enabled: yes
+
+- name: Pause 30 seconds
+  pause:
+    seconds: '30'
+
+- name: Start container-clair-clair.service
+  systemd:
+    name: container-clair-clair.service
+    state: started
+    enabled: yes

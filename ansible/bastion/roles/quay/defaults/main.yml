@@ -1,2 +1,0 @@
----
-_okd_lab_quay_version: '{{ okd_lab_quay_version }}'

@@ -1,0 +1,7 @@
+spec:
+  servingCerts:
+    namedCertificates:
+    - names:
+      - api.okd.example.com
+      servingCertificate:
+        name: example-com-api-certs

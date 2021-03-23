@@ -1,9 +1,0 @@
----
-- hosts: bastion
-  gather_facts: no
-  roles:
-    - complete
-    - chrony-master
-    - chrony-worker
-    - infrastructure
-    - ldap-auth

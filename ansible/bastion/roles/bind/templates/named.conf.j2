@@ -13,7 +13,7 @@ options {
         recursion yes;
 
         forward only;
-        forwarders { 213.133.98.98; };
+        forwarders { {{ okd_lab_bind_forwarder }}; };
 
         dnssec-enable yes;
         dnssec-validation no;

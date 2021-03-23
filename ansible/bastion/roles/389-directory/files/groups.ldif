@@ -1,0 +1,4 @@
+dn: ou=Groups,dc=example,dc=com
+objectclass: top
+objectclass: organizationalUnit
+description: "The OKD Lab Groups"

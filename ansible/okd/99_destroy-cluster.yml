@@ -1,8 +1,0 @@
----
-- hosts: localhost
-  gather_facts: no
-  become: yes
-  become_user: lab
-  connection: local
-  roles:
-    - destroy-cluster

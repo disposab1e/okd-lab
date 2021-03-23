@@ -1,96 +1,95 @@
 ---
-- name: Allow 5000/tcp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="5000/tcp"
-
-- name: Allow 6060/tcp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="6060/tcp"
-
-- name: Allow 6061/tcp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="6061/tcp"
-
-- name: Reload firewall
-  command: firewall-cmd --reload
-
 - name: Create Directories
   file:
     path: '{{ item.dir }}'
     state: directory
   with_items:
-    - { dir: '~/docker/quay' }
-    - { dir: '~/docker/mounts/quay' }
-    - { dir: '~/docker/mounts/quay/conf' }
-    - { dir: '~/docker/mounts/quay/datastorage' }
-    - { dir: '~/docker/mounts/quay/postgres' }
-    - { dir: '~/docker/mounts/clair' }
-    - { dir: '~/docker/mounts/clair/conf' }
-    - { dir: '~/docker/mounts/clair/postgres' }
+    - { dir: '/var/opt/quay/postgres' }
+    - { dir: '/var/opt/quay/config' }
+    - { dir: '/var/opt/quay/storage' }
 
-- name: ACL for datastorage 
-  command: setfacl -m u:1001:-wx ~/docker/mounts/quay/datastorage
+- name: Setfacl for postgres storage
+  command: setfacl -m u:26:-wx /var/opt/quay/postgres/
 
-- name: Publish config.yaml for Quay
-  template: 
-    src:  quay.config.yaml.j2
-    dest: ~/docker/mounts/quay/conf/config.yaml
+- name: Setfacl for quay storage
+  command: setfacl -m u:1001:-wx /var/opt/quay/storage/
 
-- name: Publish ssl.cert for Quay
-  template: 
-    src:  ssl.cert.j2
-    dest: ~/docker/mounts/quay/conf/ssl.cert
+- name: Copy ca.crt
+  copy:
+    src: /etc/ca.crt
+    dest: /var/opt/quay/config/ldap.crt
+    remote_src: yes
 
-- name: Publish ssl.key for Quay
-  template: 
-    src:  ssl.key.j2
-    dest: ~/docker/mounts/quay/conf/ssl.key
+- name: Copy services
+  template:
+    src: '{{ item }}.j2'
+    dest: /etc/systemd/system/{{ item }}
+  with_items:
+    - container-quay-postgres.service
+    - container-quay-redis.service
+    - container-quay-config.service 
+    - container-quay-quay.service
+    - container-quay-mirror.service
+    - container-quay-swagger.service
 
-- name: Publish config.yaml for Clair
-  template: 
-    src:  clair.config.yaml.j2
-    dest: ~/docker/mounts/clair/conf/config.yaml
+- name: Just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
 
-- name: Publish ca.crt for Clair
-  template: 
-    src:  ca.crt.j2
-    dest: ~/docker/mounts/clair/conf/ca.crt
+- name: Start container-quay-postgres.service
+  systemd:
+    name: container-quay-postgres.service
+    state: started
+    enabled: yes
 
-- name: Publish security_scanner.pem for Quay
-  template: 
-    src:  security_scanner.pem.j2
-    dest: ~/docker/mounts/quay/conf/security_scanner.pem
+- name: Pause 60 seconds
+  pause:
+    seconds: '60'
 
-- name: Publish security_scanner.pem for Clair
-  template: 
-    src:  security_scanner.pem.j2
-    dest: ~/docker/mounts/clair/conf/security_scanner.pem
+- name: Install postgres extension
+  shell: podman exec -it quay-postgres /bin/bash -c 'echo "CREATE EXTENSION IF NOT EXISTS pg_trgm" | psql -d quay -U user'
 
-- name: Publish docker-compose-postgres.yaml
-  template: 
-    src:  docker-compose-postgres.yaml.j2
-    dest: ~/docker/quay/docker-compose.yaml
+- name: Start container-quay-redis.service
+  systemd:
+    name: container-quay-redis.service
+    state: started
+    enabled: yes
 
-- name: Start postgres
-  command: docker-compose up -d
-  args:
-    chdir: ~/docker/quay
+- name: Pause 60 seconds
+  pause:
+    seconds: '60'
 
-- name: Sleep for 30 seconds
-  wait_for:
-    timeout: 30
+- name: Copy quay config
+  template:
+    src: config.yaml.j2
+    dest: /var/opt/quay/config/config.yaml
 
-- name: Prepare postgres
-  command: docker exec -it postgres /bin/bash -c 'echo "CREATE EXTENSION IF NOT EXISTS pg_trgm" | psql -d quay -U user' CREATE EXTENSION
+- name: Start container-quay-quay.service
+  systemd:
+    name: container-quay-quay.service
+    state: started
+    enabled: yes
 
-- name: Stop postgres
-  command: docker-compose down
-  args:
-    chdir: ~/docker/quay
+- name: Pause 30 seconds
+  pause:
+    seconds: '30'
 
-- name: Publish docker-compose.yaml
-  template: 
-    src:  docker-compose.yaml.j2
-    dest: ~/docker/quay/docker-compose.yaml
+- name: Add administrator
+  shell: |
+    podman exec -it quay-postgres /bin/bash -c "psql -d quay -U user -c \"INSERT INTO public.user VALUES (0,'965d4ed1-f6c9-4078-acd3-108399fbcdb2','administrator','$2a$12$2NfONl3aVhM3XJqGhIWfWuESg32jKKjepRkz3RUsEbcdaVaGY46pe','administrator-quay@example.com',true,null,false,false,false,0,'2021-02-02 15:25:07.262604',1209600,true,null,null,null,null,null,null,'2021-02-02 15:25:07.2626',null)\""
 
-- name: Start quay
-  command: docker-compose up -d
-  args:
-    chdir: ~/docker/quay
+- name: Pause 60 seconds
+  pause:
+    seconds: '60'
+
+- name: Start container-quay-mirror.service
+  systemd:
+    name: container-quay-mirror.service
+    state: started
+    enabled: yes
+
+- name: Start container-quay-swagger.service
+  systemd:
+    name: container-quay-swagger.service
+    state: started
+    enabled: yes

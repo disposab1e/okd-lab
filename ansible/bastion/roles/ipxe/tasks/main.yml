@@ -32,16 +32,18 @@
     - { file: 'mboot.c32' }
     - { file: 'menu.c32' }
     - { file: 'memdisk' }
+    - { file: 'ldlinux.c32' }
+    - { file: 'libutil.c32' }
 
 
 - name: Publish pxelinux.cfg/default
-  template:
-    src: default.j2
+  copy:
+    src: default
     dest: /var/lib/tftpboot/pxelinux.cfg/default
 
 - name: Publish boot.ipxe
-  template:
-    src: boot.ipxe.j2
+  copy:
+    src: boot.ipxe
     dest: /var/lib/tftpboot/boot.ipxe
 
 - name: Create Directories in /usr/share/nginx/html
@@ -52,6 +54,6 @@
     - { dir: 'kickstart' }
 
 - name: Publish ks.cfg
-  template:
-    src: ks.cfg.j2
+  copy:
+    src: ks.cfg
     dest: /usr/share/nginx/html/kickstart/ks.cfg

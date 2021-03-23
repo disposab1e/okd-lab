@@ -1,0 +1,4 @@
+installer:
+  ha: n
+  install_postgresql: y
+  postgresql_version: 10-13v

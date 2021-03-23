@@ -1,0 +1,9 @@
+---
+- name: Kickstart Load Balancer Host with terraform
+  hosts: 10.0.0.99
+  gather_facts: no
+  remote_user: root
+  roles:
+    - cockpit
+    - haproxy
+    - cleanup

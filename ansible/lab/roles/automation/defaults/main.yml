@@ -1,4 +1,0 @@
----
-_okd_lab_packer_url: 'https://releases.hashicorp.com/packer/{{ okd_lab_packer }}/packer_{{ okd_lab_packer }}_linux_amd64.zip'
-_okd_lab_terraform_url: 'https://releases.hashicorp.com/terraform/{{ okd_lab_terraform }}/terraform_{{ okd_lab_terraform }}_linux_amd64.zip'
-_okd_lab_terraform_kvm_url: '{{ okd_lab_terraform_kvm_url }}'

@@ -1,0 +1,49 @@
+---
+- name: Waiting bootstrap to complete
+  command: "openshift-install wait-for bootstrap-complete --dir ~/installer --log-level debug"
+  register: bootstrap_status
+  retries: 60
+  delay: 60
+  until: bootstrap_status.rc == 0
+
+- name: Waiting installation to complete
+  command: "openshift-install wait-for install-complete --dir ~/installer --log-level debug"
+  register: install_status
+  retries: 60
+  delay: 60
+  until: install_status.rc == 0
+
+- name: Approve crs's and join workers
+  shell:
+    cmd: oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve
+
+- name: Sleep for 15 seconds
+  wait_for:
+    timeout: '15'
+
+- name: Approve csr's and join workers
+  shell:
+    cmd: oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve
+  ignore_errors: yes
+
+- name: Sleep for 15 seconds
+  wait_for:
+    timeout: '15'
+
+- name: Approve csr's and join workers (intentionally an error but ignored)
+  shell:
+    cmd: oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve
+  ignore_errors: yes
+
+- name: Wait 90s until all workers are in Ready state
+  wait_for:
+    timeout: '90'
+
+- name: Apply MachineConfigs for chrony
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', '{{ item }}.yaml') | from_yaml }}"
+  with_items:
+    - 00-master-chrony-config
+    - 00-worker-chrony-config
+

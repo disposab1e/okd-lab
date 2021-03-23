@@ -6,20 +6,20 @@
 
 Let's start with the fun part!
 
-- Quay Token
+- Quay Tokens
 - Installation version
 - Installation environment
+- Verify installation environment
 - Installation
-- Complete
+- Complete installation
 - Verify installation
-- OKD Web Console
-- Cluster Storage
-- Registry Storage
+- Day-1 Configurations
+- Storage Cluster
 - Destroy Cluster
 
-## Quay Token
+## Quay Tokens
 
-A Bearer Token is required to gain access to Quay's API. Let's [create one](03_quay_token.md)!
+A Bearer and Application Token is required to gain access to Quay. Let's [create one](03_quay_token.md)!
 
 ## Installation version
 
@@ -27,15 +27,15 @@ It's time to decide which version to install. The default settings should be kep
 
 ```yaml
 
-    # Unique name of installation
-    okd_lab_install_name: '4-5-0-0-okd-2020-08-12-020541'
+    # Unique name of this installation
+    okd_lab_install_okd_name: '4-7-0-0-okd-2021-03-07-090821'
 
     # OKD installation version
-    okd_lab_install_okd_version: 4.5.0-0.okd-2020-08-12-020541
+    okd_lab_install_okd_version: 4.7.0-0.okd-2021-03-07-090821
 
     # Fedora CoreOS installation version and stream
-    okd_lab_install_fcos_version: '32.20200629.3.0'
-    okd_lab_install_fcos_stream: 'stable'
+    okd_lab_install_fcos_stream: 'stable' 
+    okd_lab_install_fcos_version: '33.20210201.3.0'
 
 ```
 
@@ -45,94 +45,108 @@ Of course there is a possibility to [install other versions](03_installation_ver
 
 | OKD  | Fedora CoreOS |
 |---|---|
-| 4.5.0-0.okd-2020-07-14-153706-ga  | stable/32.20200615.3.0  |
-| 4.5.0-0.okd-2020-07-29-070316  | stable/32.20200629.3.0  |
-| 4.5.0-0.okd-2020-08-12-020541  | stable/32.20200629.3.0  |
+| 4.7.0-0.okd-2021-03-07-090821  | stable/33.20210201.3.0  |
+
 
 ## Installation environment
 
-Typically, the environment in which a cluster is installed will not have access to the Internet. All artifacts that are needed during the installation must therefore be mirrored on the `bastion` host. This includes all Container Images and Fedora CoreOS.
+Setting up an installation environment is the first step during OKD installations. 
 
-The simplified workflow to prepare an air-gap installation environment is as follows:
+The simplified workflow to prepare an installation environment is as follows:
 
-- Mirror Fedora CoreOS
-- Mirror Container Registry
-- Prepare installer for air-gap installation
-- Prepare and publish ignition and PXE files
-
-```bash
-[lab@lab]
-
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/01_setup.yml
-
-```
-
-Let's grab the kubeadmin password for later :-)
+- Setup installation environment
+- Mirror Fedora CoreOS and OKD Registry Mirror
+- Prepare installer to use Registry Mirror
 
 ```bash
 [lab@lab]
 
-ssh root@bastion "cat ~/openshift-install/auth/kubeadmin-password" > ~/okd-lab/.secrets/kubeadmin
+# Setup OKD installation environment
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/setup.yml --tags env-setup
+
+# Mirror Fedorea CoreOS, PXE's and Registry Mirror
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags mirror
+
+# Setup OKD Installer to use Registry Mirror
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/setup.yml --tags installer-setup
+
+
+# Let's grab the kubeadmin password for later :-)
+ssh root@bastion "cat ~/installer/auth/kubeadmin-password" > ~/okd-lab/.secrets/kubeadmin
 
 ```
+
+## Verify installation environment
+
+ * Point your Firefox to [https://quay.okd.example.com/repository](https://quay.okd.example.com/repository). Login as user `admin` with password `admin` and check that you have a repository starting with `admin_okd_registry`.
+
+* Point your Firefox to [http://mirror.okd.example.com](http://mirror.okd.example.com) and check you find a `ignition` and `fcos` directory.
 
 ## Installation
 
-You can provision bootstrap, master and worker nodes all at the same time and than wait for cluster to complete. The strenght is to be found in serenity :-)
+You can provision `bootstrap`, `master` and `worker` nodes all at the same time and than wait for cluster to complete. The strength is to be found in serenity :-)
 
 ```bash
 [lab@lab]
-
-ansible-playbook ~/okd-lab/ansible/okd/02_installation.yml
+#
+# Apply (provision) Cluster with Terraform
+ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags apply
 
 ```
 
-Please note! Under rare circumstances the `bootstrap` node may not boot immediately. If this happens, remove the `bootstrap` and start the installlation again. Help welcome to find a fix!
+Please note! Under rare circumstances some `bootstrap`, `master` and `worker` nodes may not boot immediately. If this happens, remove the `cluster` and start the installlation again. Help welcome to find a fix!
 
 ```bash
 [lab@lab]
 
-ansible-playbook ~/okd-lab/ansible/okd/88_bootstrap-destroy.yml
-ansible-playbook ~/okd-lab/ansible/okd/88_bootstrap-apply.yml
+# Destroy (unprovision) Cluster with Terraform
+ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags destroy
+
+# Apply (provision) Cluster with Terraform
+ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags apply
 
 ```
 
-When you experience the same with `master` and/or `worker` nodes fix it with:
+## Complete installation
+
+ - Waiting bootstrap to complete
+ - Waiting installation to complete
+ - Approve certificate signing requests (csr) and join workers
+ - Apply NTP (chrony) configuration
 
 ```bash
 [lab@lab]
 
-cd ~/okd-lab/terraform/master
-terraform destroy -auto-approve
-terraform apply -auto-approve
-
-cd ~/okd-lab/terraform/worker
-terraform destroy -auto-approve
-terraform apply -auto-approve
-
-```
-
-## Complete
-
-```bash
-[lab@lab]
-
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/03_complete.yml
+# Complete OKD installation
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/okd.yml --tags complete
 
 ```
 
 ### Follow HAProxy stats (optional)
 
-Point your Firefox to [http://lb.okd.example.com:9000](http://lb.okd.example.com:9000) and watch the stats.
+ * Point your Firefox to [https://lb.okd.example.com:9000](https://lb.okd.example.com:9000) and watch the stats.
 
-### Remove `bootstrap` node
+### Follow cluster operators and nodes (optional)
+
+```bash
+
+[root@bastion]
+
+watch -n2 oc get clusteroperators
+
+oc get nodes --watch=true
+
+```
+
+### Remove `bootstrap` node (optional)
 
 After the `Waiting bootstrap to complete` task has finished it's save to remove the `bootstrap` (e.g. in a second terminal).
 
 ```bash
 [lab@lab]
 
-ansible-playbook ~/okd-lab/ansible/okd/88_bootstrap-destroy.yml
+# Destroy Bootstrap with Terraform
+ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags bootstrap-destroy
 
 ```
 
@@ -140,24 +154,46 @@ ansible-playbook ~/okd-lab/ansible/okd/88_bootstrap-destroy.yml
 
 ### Verify nodes
 
-It will take some time to apply the infrastructure configuration and you will see all nodes restarting. The strenght again is to be found in serenity :-) But you can already interact with your new cluster, be prepared that during restart of nodes some temporary erros can occur. Be patient all will be fine after a while.
+It will take some time until all nodes are in `Ready` state but you can already interact with your new cluster. You will recognize that `master` and `worker` nodes will switch to `NotReady,SchedulingDisabled` state. This is intentional cause NTP time synchronization will be applied to all nodes after initial installation. The strength again is to be found in serenity.
 
 ```bash
 [lab@lab]
 
 ssh root@bastion "oc get nodes"
 
-NAME                       STATUS   ROLES           AGE     VERSION
-master-0.okd.example.com   Ready,SchedulingDisabled   infra,master   22m     v1.17.1
-master-1.okd.example.com   Ready                      infra,master   22m     v1.17.1
-master-2.okd.example.com   Ready                      infra,master   22m     v1.17.1
-worker-0.okd.example.com   Ready                      worker         2m37s   v1.17.1
-worker-1.okd.example.com   Ready                      worker         2m37s   v1.17.1
-worker-2.okd.example.com   Ready                      worker         2m35s   v1.17.1
+[root@bastion ~]# oc get nodes
+NAME                       STATUS      ROLES                 AGE     VERSION
+master-0.okd.example.com   Ready       master,worker         28m     v1.20.0+5fbfd19-1046
+master-1.okd.example.com   Ready       master,worker         28m     v1.20.0+5fbfd19-1046
+master-2.okd.example.com   Ready       master,worker         28m     v1.20.0+5fbfd19-1046
+worker-0.okd.example.com   Ready       worker                3m42s   v1.20.0+5fbfd19-1046
+worker-1.okd.example.com   Ready       worker                3m37s   v1.20.0+5fbfd19-1046
+worker-2.okd.example.com   Ready       worker                3m39s   v1.20.0+5fbfd19-1046
 
 ```
 
-### Verify cluster operators
+## Day-1 Configurations
+
+### Basic configuration
+
+ - Manage internal OKD Registry and add some temporary storage
+ - Label masters as infra nodes
+ - Stick routers to master/infra nodes
+ - Enable Image Pruner
+ - Disable Samples Operator
+ - Enable LDAP authorization provider
+ - Create admin user with cluster-admin role
+ - Apply custom SSL certs for OKD Web console, Router and API   
+
+```bash
+[lab@lab]
+
+# Day-1 OKD configurations
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/okd.yml --tags config
+
+```
+
+Now inspect your cluster operators. 
 
 ```bash
 
@@ -167,147 +203,106 @@ watch -n2 oc get clusteroperators
 
 ```
 
-### Verify time synchronisation
+The change of the SSL certificates for the API will bring up an error: `Unable to connect to the server: x509: certificate signed by unknown authority` after a few minutes. Wait until this error stays forever in your terminal! This will take some time!
 
-```bash
-[lab@lab]
+After that, point your Firefox to OKD Web Console at [https://console-openshift-console.apps.okd.example.com](https://console-openshift-console.apps.okd.example.com) and login with user `admin` and password `admin`.
 
-ssh core@master-0 "cat /etc/chrony.conf"
-ssh core@master-0 "chronyc sources"
-
-```
-
-### Degraded Operators
-
-From time to time either `kube-apiserver`, `kube-controller-manager`, `kube-scheduler` or `etcd` clusteroperators are degraded and show `NodeInstallerDegraded` at status. A detailed solution can be found at [Red Hat's solution database](https://access.redhat.com/solutions/4849711) or in short:
-
-Redeploy kube-apiserver static pods:
+Click on your `Admin` user and choose `Copy login command`, than choose `Display Token`. Copy `Your API token is` to `XXXXXXXXXX` in the following command and execute it. 
 
 ```bash
 
 [root@bastion]
 
-oc patch kubeapiserver/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
+oc login --token=XXXXXXXXXX --server=https://api.okd.example.com:6443 --certificate-authority=/etc/ca.crt
 
 ```
 
-Redeploy kube-controller-manager static pods:
+Now you can interact with the API again. Just wait a few more minutes until all cluster operators are in `Available` state and no longer `Processing` or `Degraded`.
 
 ```bash
 
 [root@bastion]
 
-oc patch kubecontrollermanager/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
+watch -n2 oc get clusteroperators
 
+NAME                                       VERSION                         AVAILABLE   PROGRESSING   DEGRADED   SINCE
+authentication                             4.7.0-0.okd-2021-03-07-090821   True        False         False      3m39s
+baremetal                                  4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
+cloud-credential                           4.7.0-0.okd-2021-03-07-090821   True        False         False      53m
+cluster-autoscaler                         4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
+config-operator                            4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
+console                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      4m3s
+csi-snapshot-controller                    4.7.0-0.okd-2021-03-07-090821   True        False         False      4m11s
+dns                                        4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
+etcd                                       4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
+image-registry                             4.7.0-0.okd-2021-03-07-090821   True        False         False      15m
+ingress                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      10m
+insights                                   4.7.0-0.okd-2021-03-07-090821   True        False         False      46m
+kube-apiserver                             4.7.0-0.okd-2021-03-07-090821   True        False         False      49m
+kube-controller-manager                    4.7.0-0.okd-2021-03-07-090821   True        False         False      50m
+kube-scheduler                             4.7.0-0.okd-2021-03-07-090821   True        False         False      50m
+kube-storage-version-migrator              4.7.0-0.okd-2021-03-07-090821   True        False         False      16m
+machine-api                                4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
+machine-approver                           4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
+machine-config                             4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
+marketplace                                4.7.0-0.okd-2021-03-07-090821   True        False         False      3m30s
+monitoring                                 4.7.0-0.okd-2021-03-07-090821   True        False         False      6m15s
+network                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
+node-tuning                                4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
+openshift-apiserver                        4.7.0-0.okd-2021-03-07-090821   True        False         False      46m
+openshift-controller-manager               4.7.0-0.okd-2021-03-07-090821   True        False         False      49m
+openshift-samples                          4.7.0-0.okd-2021-03-07-090821   True        False         False      19m
+operator-lifecycle-manager                 4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
+operator-lifecycle-manager-catalog         4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
+operator-lifecycle-manager-packageserver   4.7.0-0.okd-2021-03-07-090821   True        False         False      7m34s
+service-ca                                 4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
+storage                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
 ```
 
-Redeploy kube-scheduler static pods:
 
-```bash
-
-[root@bastion]
-
-oc patch kubescheduler/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
-
-```
-
-Redeploy etcd static pods:
-
-```bash
-
-[root@bastion]
-
-oc patch etcd/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
-
-```
-
-## OKD Web Console
-
-Point your Firefox to OKD Web Console at [https://console-openshift-console.apps.okd.example.com](https://console-openshift-console.apps.okd.example.com) and login with `kube:admin`.
-
-```bash
-User: kubeadmin
-
-Password: get it from ~/okd-lab/.secrets/kubeadmin
-```
-
-## Cluster Storage
+## Storage Cluster
 
 Especially the internal registry and of course your apps need some persistent storage. Let's do it.
 
-### Rook Operator
+### Install Rook Ceph Storage Cluster
 
 ```bash
 [lab@lab]
 
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/10_rook-operator.yml
+# Install Rook Ceph Storage Cluster
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/storage.yml --tags cluster
 
 ```
+
+Attention!
+These images come from docker.io and so it's possible that you reach Docker's rate limit for anonymous access. This [blog article](https://developers.redhat.com/blog/2021/02/18/how-to-work-around-dockers-new-download-rate-limit-on-red-hat-openshift/) describes how to fix it for OKD. 
+
 
 Wait for rollout complete:
 
 ```bash
 [lab@lab]
 
-ssh root@bastion "oc rollout status -w deployment/rook-ceph-operator -n rook-ceph"
-
-```
-
-### Rook Ceph Storage Cluster
-
-```bash
-[lab@lab]
-
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/11_rook-cluster.yml
-
-```
-
-Wait for rollout complete:
-
-```bash
-[lab@lab]
+ssh root@bastion "oc get pods -n rook-ceph"
 
 ssh root@bastion "oc get pods -n rook-ceph | grep Completed"
 
-rook-ceph-osd-prepare-worker-0.okd.example.com-5w456              0/1     Completed   0          2m35s
-rook-ceph-osd-prepare-worker-1.okd.example.com-v5l7z              0/1     Completed   0          2m35s
-rook-ceph-osd-prepare-worker-2.okd.example.com-nmd42              0/1     Completed   0          2m35s
+rook-ceph-osd-prepare-worker-0.okd.example.com-ctslv    0/1   Completed   0
+rook-ceph-osd-prepare-worker-1.okd.example.com-h52wv    0/1   Completed   0
+rook-ceph-osd-prepare-worker-2.okd.example.com-4rqnp    0/1   Completed   0
 ```
 
-### Ceph Block Storage
+### Setup Rook Ceph Storage Cluster
 
 ```bash
 [lab@lab]
 
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/12_rook-ceph-block.yml
-
-ssh root@bastion "oc get cephblockpool -n rook-ceph"
-ssh root@bastion "oc get sc -n rook-ceph"
+# Install Rook Ceph Storage Cluster
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/storage.yml --tags setup
 
 ```
 
-### Ceph File Storage
-
-```bash
-[lab@lab]
-
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/13_rook-ceph-file.yml
-
-ssh root@bastion "oc get cephfilesystem -n rook-ceph"
-ssh root@bastion "oc get sc -n rook-ceph"
-
-```
-
-### Ceph Dashboard
-
-```bash
-[lab@lab]
-
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/14_rook-dashboard.yml
-
-```
-
-Let's grab the admin password for later :-)
+Let's grab the Ceph Dashboard admin password for later :-)
 
 ```bash
 [lab@lab]
@@ -315,6 +310,8 @@ Let's grab the admin password for later :-)
 ssh root@bastion "oc get secret rook-ceph-dashboard-password -o jsonpath=\"{['data']['password']}\" -n rook-ceph | base64 --decode && echo" > ~/okd-lab/.secrets/rook-dashboard
 
 ```
+
+### Verify Rook Ceph Storage Cluster
 
 Point your Firefox to: [https://rook-dashboard.apps.okd.example.com](https://rook-dashboard.apps.okd.example.com)
 
@@ -324,16 +321,7 @@ User: admin
 Password: get it from ~/okd-lab/.secrets/rook-dashboard
 ```
 
-### Ceph Toolbox
-
-```bash
-[lab@lab]
-
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/15_rook-toolbox.yml
-
-```
-
-Interact with:
+Interact with Ceph Toolbox:
 
 ```bash
 [root@bastion]
@@ -349,17 +337,6 @@ ceph fs status
 
 ```
 
-## Registry Storage
-
-Add Ceph Block storage to internal registry.
-
-```bash
-[lab@lab]
-
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/20_registry.yml
-
-```
-
 ## Destroy Cluster
 
 After so much work it's always hard. But prepare to do so. You will see, a new installation does not take to long!
@@ -367,10 +344,10 @@ After so much work it's always hard. But prepare to do so. You will see, a new i
 ```bash
 [lab@lab]
 
-ansible-playbook ~/okd-lab/ansible/okd/99_destroy-cluster.yml
+ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags destroy
 
 ```
 
 * * *
 
-The end of the first installation and [the beginning of a new one](03_installation_version.md) :-)
+The beginning of your OKD journey starts now!

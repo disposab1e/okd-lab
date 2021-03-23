@@ -1,0 +1,26 @@
+---
+######################################################################################
+#
+# Install Rook Ceph Storage Cluster
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/storage.yml --tags cluster
+#
+# Setup Rook Ceph Storage
+# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/storage.yml --tags setup
+#
+######################################################################################
+- hosts: bastion
+  gather_facts: no
+  collections:
+    - community.kubernetes
+  vars_files:
+    - vars/vars.yaml
+  tasks:
+    - import_role:
+        name: rook-cluster
+      tags: cluster
+    - import_role:
+        name: rook-setup
+      tags: setup  
+    - import_role:
+        name: registry
+      tags: setup  

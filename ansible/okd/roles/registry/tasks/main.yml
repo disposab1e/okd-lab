@@ -1,0 +1,15 @@
+---
+- name: Create PVC
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'pvc.yaml') | from_yaml }}"
+    wait: true
+
+- name: Patch Registry to use PVC
+  community.kubernetes.k8s:
+    api_version: imageregistry.operator.openshift.io/v1
+    kind: Config
+    name: cluster
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-registry.yaml') | from_yaml }}"

@@ -1,6 +1,6 @@
 ---
 - name: Allow 123/udp in firewalld
-  command: firewall-cmd --zone=public --permanent --add-port="123/udp"
+  command: firewall-cmd --zone=public --permanent --add-service=ntp
 
 - name: Reload firewall
   command: firewall-cmd --reload

@@ -1,27 +1,23 @@
 ---
-- name: Create SSH key
-  user:
-    name: lab
-    generate_ssh_key: yes
-    ssh_key_comment: 'lab@lab.okd.example.com'
-    ssh_key_bits: 2048
-    ssh_key_file: "/home/lab/okd-lab/.ssh/id_rsa"
+- name: Generate an OpenSSH keypair with 2048 bits, rsa
+  openssh_keypair:
+    path: /home/lab/okd-lab/.ssh/id_rsa
+    size: 2048
   become_user: lab
 
 - name: Prepare authorized key
   authorized_key:
     user: lab
     state: present
-    path: ~/okd-lab/.ssh/authorized_keys
+    path: ~/.ssh/authorized_keys
     key: "{{ lookup('file', '/home/lab/okd-lab/.ssh/id_rsa.pub') }}"
   become_user: lab
 
 - name: Prepare ssh config
-  template:
-    src: config.j2
+  copy:
+    src: config
     dest: /home/lab/.ssh/config
     owner: lab
     group: lab
     mode: '0600'
   become_user: lab
-    

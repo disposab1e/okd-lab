@@ -1,13 +1,18 @@
 ---
+- name: Install packages
+  yum:
+    name: ['python3-lxml']
+    state: present
+
 - name: Enable dnsmasq
-  template:
-    src: 00-dnsmasq.conf.j2
+  copy:
+    src: 00-dnsmasq.conf
     dest: /etc/NetworkManager/conf.d/00-dnsmasq.conf
   become_user: root
 
 - name: Enable okd-lab dns
-  template:
-    src: 00-okd-lab.conf.j2
+  copy:
+    src: 00-okd-lab.conf
     dest: /etc/NetworkManager/dnsmasq.d/00-okd-lab.conf
   become_user: root
 
@@ -21,7 +26,7 @@
   virt_net:
     command: define
     name: "okd"
-    xml: "{{ lookup('template', 'templates/okd.xml.j2') }}"
+    xml: "{{ lookup('file', 'okd.xml') }}"
 
 - name: Active network okd
   virt_net:

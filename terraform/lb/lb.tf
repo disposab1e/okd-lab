@@ -71,9 +71,24 @@ resource "libvirt_domain" "lb" {
       user     = "root"
       password = "root"
       host     = "10.0.0.99"
-      timeout  = "8m"
     }
-    source      = "~/okd-lab/.ssh/authorized_keys"
-    destination = "/root/.ssh/authorized_keys"
+    source      = "~/okd-lab/.ssh"
+    destination = "/root/"
   }
+
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = "root"
+      host     = "10.0.0.99"
+    }
+    inline = [
+      "chmod u=rw,go= ~/.ssh/id_rsa ~/.ssh/id_rsa.pub"
+    ]
+  }
+  provisioner "local-exec" {
+    command = "ansible-playbook --ssh-extra-args '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' -i '10.0.0.99,' --private-key ~/okd-lab/.ssh/id_rsa -T 300 ~/okd-lab/ansible/lb/terraform.yml"
+  }
+
 }

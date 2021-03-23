@@ -4,7 +4,7 @@
 
 * * *
 
-Point your Firefox to [https://quay.okd.example.com:5000](https://quay.okd.example.com:5000) and login as user `kubeadmin` with password `kubeadmin`.
+Point your Firefox to [https://quay.okd.example.com](https://quay.okd.example.com) and login as user `admin` with password `admin`.
 
 ![Login](images/token/00.png)
 
@@ -36,10 +36,26 @@ Point your Firefox to [https://quay.okd.example.com:5000](https://quay.okd.examp
 
 ![Save Token](images/token/10.png)
 
-![Save Token](images/token/11.png)
-
 Tip: Press Ctl+H to show hidden files.
+
+![Save Token](images/token/11.png)
 
 ![Save Token](images/token/12.png)
 
-![Save Token](images/token/13.png)
+## Generate Application Token
+
+![Application Token](images/token/13.png)
+
+![Application Token](images/token/14.png)
+
+![Application Token](images/token/15.png)
+
+![Application Token](images/token/16.png)
+
+![Application Token](images/token/17.png)
+
+## Save Application Token
+
+![Save Application Token](images/token/18.png)
+
+![Save Application Token](images/token/19.png)

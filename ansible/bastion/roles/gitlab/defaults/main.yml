@@ -1,3 +1,0 @@
----
-_okd_lab_gitlab_base: 'http://gitlab.okd.example.com:8888'
-_okd_lab_gitlab_version: '{{ okd_lab_gitlab_version }}'

@@ -1,0 +1,22 @@
+---
+- name: Install skopeo
+  yum:
+    name: skopeo
+    state: installed
+
+- name: Install buildah
+  yum:
+    name: buildah
+    state: installed
+
+- name: Ensure io.podman.socket is enabled and started
+  service:
+    name: io.podman.socket
+    state: started
+    enabled: yes
+
+- name: Ensure podman.socket is enabled and started
+  service:
+    name: podman.socket
+    state: started
+    enabled: yes

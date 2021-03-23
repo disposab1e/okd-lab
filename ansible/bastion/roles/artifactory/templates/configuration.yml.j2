@@ -1,4 +1,4 @@
-urlBase : {{ _okd_lab_artifactory_base }}/
+urlBase : {{ okd_lab_artifactory_url }}/
 fileUploadMaxSizeMb: 999
 
 trashcanConfig:
@@ -10,35 +10,30 @@ quotaConfig:
   enabled: true
 
 security:   
+  anonAccessEnabled: true
   ldapSettings:
-    ldap:
+    LDAP:
       emailAttribute: mail
       ldapPoisoningProtection: true
-      ldapUrl: ldap://ldap.okd.example.com:389/dc=example,dc=com
+      ldapUrl: ldaps://{{ okd_lab_directory_hostname }}:636/dc=example,dc=com
       search:
-        #managerDn: cn=ldapadm,dc=example,dc=com
-        #managerPassword: root
-        #searchBase: searchbase1
-        searchFilter: uid
+        managerDn: cn=Directory Manager
+        managerPassword: {{ okd_lab_directory_root_password }}
+        searchBase: ou=People
+        searchFilter: uid={0} 
         searchSubTree: true
-      userDnPattern: uid={0},ou=users
+      userDnPattern: uid={0},ou=People
       allowUserToAccessProfile: true
       autoCreateUser: true
       enabled: true
 
+
 localRepositories:   
   example-repo-local: null
-  helm:
-    type: generic
-    description: "Helm Repository"
-    excludesPattern:
-    includesPattern:  "**/*"
-    repoLayout: simple-default
-    blackedOut: false
-  mvn-snapshots:   
+  lab.mvn.snapshots:   
     type: maven   
     checksumPolicyType: client-checksums   
-    description: "Maven Snapshot Repository"   
+    description: "LAB - Maven Snapshot Repository"   
     excludesPattern:  
     includesPattern:  "**/*"
     maxUniqueSnapshots: 10   
@@ -48,10 +43,10 @@ localRepositories:
     handleSnapshots: true   
     handleReleases: false
     suppressPomConsistencyChecks: false   
-  mvn-releases:   
+  lab.mvn.releases:   
     type: maven
     checksumPolicyType: client-checksums
-    description: "Maven Release Repository"
+    description: "LAB - Maven Release Repository"
     excludesPattern:  
     includesPattern:  "**/*"
     maxUniqueSnapshots: 0
@@ -148,39 +143,40 @@ remoteRepositories:
     listRemoteFolderItems: true
     blockMismatchingMimeTypes: true
 virtualRepositories:
-  mvn-dev:
+  lab.mvn.dev:
     type: maven
     repositories:
-      - mvn-releases
-      - mvn-snapshots
+      - lab.mvn.releases
+      - lab.mvn.snapshots
       - redhat-ga-remote
       - redhat-early-remote
       - maven-central-remote
-    description: "Development Maven Repository"
+    description: "LAB - Maven Repository - Development"
     includesPattern:  "**/*"
     excludesPattern:
     artifactoryRequestsCanRetrieveRemoteArtifacts: false
     pomRepositoryReferencesCleanupPolicy: discard_active_reference
     repoLayout: maven-2-default
-  mvn-prod:
+  lab.mvn.ga:
     type: maven
     repositories:
-      - mvn-releases
+      - lab.mvn.releases
       - redhat-ga-remote
       - maven-central-remote
-    description: "Production Maven Repository"
+    description: "LAB - Maven Repository - General Availability"
     includesPattern:  "**/*"
     excludesPattern:
     artifactoryRequestsCanRetrieveRemoteArtifacts: false
     pomRepositoryReferencesCleanupPolicy: discard_active_reference
     repoLayout: maven-2-default
+
 backups:   #Manage the automatic and periodic backups of the entire Artifactory instance
   backup-daily: null
   backup-weekly: null
   backup-weekly-saturday:
     cronExp: "0 0 2 ? * SAT"
     excludedRepositories:
-      - mvn-snapshots
+      - lab.mvn.snapshots
       - apache-remote
       - redhat-ga-remote
       - redhat-early-remote
@@ -190,4 +186,3 @@ backups:   #Manage the automatic and periodic backups of the entire Artifactory 
     enabled: true
     excludeNewRepositories: true
     sendMailOnError: false
-

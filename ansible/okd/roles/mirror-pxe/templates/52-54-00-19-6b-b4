@@ -1,0 +1,4 @@
+#!ipxe
+kernel {{ okd_lab_mirror_fcos_url }}/vmlinuz net.ifnames=1 ip=10.0.0.112::{{ okd_lab_network_gateway }}:{{ okd_lab_network_subnet_mask }}:worker-2.okd.example.com:ens3:none nameserver={{ okd_lab_network_dns_ip }} rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda console=tty0 console=ttyS0 coreos.live.rootfs_url={{ okd_lab_mirror_fcos_url }}/rootfs coreos.inst.ignition_url={{ okd_lab_installer_ignition_url }}/worker.ign 
+initrd {{ okd_lab_mirror_fcos_url }}/initrd
+boot

@@ -1,0 +1,7 @@
+shared:
+  database:
+    type: postgresql
+    driver: org.postgresql.Driver
+    password: password
+    username: artifactory
+    url: jdbc:postgresql://{{ okd_lab_artifactory_postgres_ip }}:5432/artifactory
