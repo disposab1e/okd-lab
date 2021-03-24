@@ -1,4 +1,12 @@
 ---
+- name: Init bootstrap
+  command: terraform init
+  args:
+    chdir: ~/okd-lab/terraform/bootstrap
+  tags: 
+    - bootstrap-apply
+    - apply
+
 - name: Apply bootstrap
   terraform:
     project_path: '~/okd-lab/terraform/bootstrap'
