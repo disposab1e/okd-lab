@@ -6,10 +6,22 @@
   become_user: lab
 
 - name: Prepare authorized key
+  command: chmod +x /home/lab/okd-lab/.ssh
+  become_user: lab
+
+- name: Prepare authorized key
   authorized_key:
     user: lab
     state: present
     path: ~/.ssh/authorized_keys
+    key: "{{ lookup('file', '/home/lab/okd-lab/.ssh/id_rsa.pub') }}"
+  become_user: lab
+
+- name: Prepare authorized key
+  authorized_key:
+    user: lab
+    state: present
+    path: ~/okd-lab/.ssh/authorized_keys
     key: "{{ lookup('file', '/home/lab/okd-lab/.ssh/id_rsa.pub') }}"
   become_user: lab
 

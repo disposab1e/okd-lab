@@ -86,8 +86,6 @@ resource "libvirt_domain" "bastion" {
       host     = "10.0.0.2"
     }
     inline = [
-      "rm ~/.ssh/config",
-      "rm ~/.ssh/key-prepare.sh",
       "chmod u=rw,go= ~/.ssh/id_rsa ~/.ssh/id_rsa.pub"
     ]
   }
