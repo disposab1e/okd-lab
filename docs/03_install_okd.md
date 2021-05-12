@@ -7,6 +7,7 @@
 Let's start with the fun part!
 
 - Quay Tokens
+- Red Hat OpenShift operators catalog (optional)
 - Installation version
 - Installation environment
 - Verify installation environment
@@ -14,12 +15,39 @@ Let's start with the fun part!
 - Complete installation
 - Verify installation
 - Day-1 Configurations
-- Storage Cluster
 - Destroy Cluster
 
 ## Quay Tokens
 
 A Bearer and Application Token is required to gain access to Quay. Let's [create one](03_quay_token.md)!
+
+## Red Hat OpenShift operators catalog (optional)
+
+This step is only required if you want to install operators from Red Hat's OpenShift Operators Catalog. Go to your [Red Hat OpenShift cluster manager portal](https://cloud.redhat.com/openshift/install/azure/aro-provisioned) and select `Copy pull secret`. 
+Add your secret to `[lab@lab ~/okd-lab/.secrets/pull-secret.json]` and remove the `cloud.openshift.com` entry if you don't want to send telemetry data about your server to Red Hat. Your secret will look like the follwing:
+
+```json
+{
+    "auths": {
+        "quay.okd.example.com": {
+        "auth": "JGFwcDpHUDU3OVVNTVVQTFpJT0M0R1o4RTJPRzlYTE1SQUQ1RUQ5TUVTWFdJQ1BZWU1QNkg3R0w4RklQQlJTNjFCVkMxWkQ0TkdGM1A0RVlGNEJBU1k0MkhSWUxaWktBUkdaT0taTTJHWEQ5QldRSlRNRE5FQzcxS0ZRSFc=",
+        "email": "admin@example.com"
+        },
+        "quay.io": {
+            "auth": "bbbbbb",
+            "email": "your@email"
+        },
+        "registry.connect.redhat.com": {
+            "auth": "cccccc",
+            "email": "your@email"
+        },
+        "registry.redhat.io": {
+            "auth": "dddddd",
+            "email": "your@email"
+        }
+    }
+}
+```
 
 ## Installation version
 
@@ -28,24 +56,25 @@ It's time to decide which version to install. The default settings should be kep
 ```yaml
 
     # Unique name of this installation
-    okd_lab_install_okd_name: '4-7-0-0-okd-2021-03-07-090821'
+    okd_lab_install_okd_name: '4-7-0-0-okd-2021-04-24-103438'
 
     # OKD installation version
-    okd_lab_install_okd_version: 4.7.0-0.okd-2021-03-07-090821
+    okd_lab_install_okd_version: 4.7.0-0.okd-2021-04-24-103438
 
     # Fedora CoreOS installation version and stream
     okd_lab_install_fcos_stream: 'stable' 
-    okd_lab_install_fcos_version: '33.20210201.3.0'
+    okd_lab_install_fcos_version: '33.20210328.3.0'
 
 ```
 
-Of course there is a possibility to [install other versions](03_installation_version.md).
+Of course there is also a possibility to [install other versions](03_installation_version.md).
 
 ## Tested versions
 
 | OKD  | Fedora CoreOS |
 |---|---|
 | 4.7.0-0.okd-2021-03-07-090821  | stable/33.20210201.3.0  |
+| 4.7.0-0.okd-2021-04-24-103438  | stable/33.20210328.3.0  |
 
 
 ## Installation environment
@@ -71,7 +100,7 @@ ansible-playbook -i bastion, ~/okd-lab/ansible/okd/mirror.yml --tags mirror
 ansible-playbook -i bastion, ~/okd-lab/ansible/okd/setup.yml --tags installer-setup
 
 
-# Let's grab the kubeadmin password for later :-)
+# Let's grab the kubeadmin password for later
 ssh root@bastion "cat ~/installer/auth/kubeadmin-password" > ~/okd-lab/.secrets/kubeadmin
 
 ```
@@ -182,8 +211,8 @@ worker-2.okd.example.com   Ready       worker                3m39s   v1.20.0+5fb
  - Enable Image Pruner
  - Disable Samples Operator
  - Enable LDAP authorization provider
- - Create admin user with cluster-admin role
- - Apply custom SSL certs for OKD Web console, Router and API   
+ - Create admin user within the cluster-admin role
+ - Trusted custom Certificate Authority and SSL certificates for Web console, Router and API
 
 ```bash
 [lab@lab]
@@ -226,116 +255,63 @@ Now you can interact with the API again. Just wait a few more minutes until all 
 watch -n2 oc get clusteroperators
 
 NAME                                       VERSION                         AVAILABLE   PROGRESSING   DEGRADED   SINCE
-authentication                             4.7.0-0.okd-2021-03-07-090821   True        False         False      3m39s
-baremetal                                  4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
-cloud-credential                           4.7.0-0.okd-2021-03-07-090821   True        False         False      53m
-cluster-autoscaler                         4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
-config-operator                            4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
-console                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      4m3s
-csi-snapshot-controller                    4.7.0-0.okd-2021-03-07-090821   True        False         False      4m11s
-dns                                        4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
-etcd                                       4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
-image-registry                             4.7.0-0.okd-2021-03-07-090821   True        False         False      15m
-ingress                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      10m
-insights                                   4.7.0-0.okd-2021-03-07-090821   True        False         False      46m
-kube-apiserver                             4.7.0-0.okd-2021-03-07-090821   True        False         False      49m
-kube-controller-manager                    4.7.0-0.okd-2021-03-07-090821   True        False         False      50m
-kube-scheduler                             4.7.0-0.okd-2021-03-07-090821   True        False         False      50m
-kube-storage-version-migrator              4.7.0-0.okd-2021-03-07-090821   True        False         False      16m
-machine-api                                4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
-machine-approver                           4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
-machine-config                             4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
-marketplace                                4.7.0-0.okd-2021-03-07-090821   True        False         False      3m30s
-monitoring                                 4.7.0-0.okd-2021-03-07-090821   True        False         False      6m15s
-network                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
-node-tuning                                4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
-openshift-apiserver                        4.7.0-0.okd-2021-03-07-090821   True        False         False      46m
-openshift-controller-manager               4.7.0-0.okd-2021-03-07-090821   True        False         False      49m
-openshift-samples                          4.7.0-0.okd-2021-03-07-090821   True        False         False      19m
-operator-lifecycle-manager                 4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
-operator-lifecycle-manager-catalog         4.7.0-0.okd-2021-03-07-090821   True        False         False      51m
-operator-lifecycle-manager-packageserver   4.7.0-0.okd-2021-03-07-090821   True        False         False      7m34s
-service-ca                                 4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
-storage                                    4.7.0-0.okd-2021-03-07-090821   True        False         False      52m
+authentication                             4.7.0-0.okd-2021-04-24-103438   True        False         False      15m
+baremetal                                  4.7.0-0.okd-2021-04-24-103438   True        False         False      57m
+cloud-credential                           4.7.0-0.okd-2021-04-24-103438   True        False         False      58m
+cluster-autoscaler                         4.7.0-0.okd-2021-04-24-103438   True        False         False      55m
+config-operator                            4.7.0-0.okd-2021-04-24-103438   True        False         False      57m
+console                                    4.7.0-0.okd-2021-04-24-103438   True        False         False      16m
+csi-snapshot-controller                    4.7.0-0.okd-2021-04-24-103438   True        False         False      8m56s
+dns                                        4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+etcd                                       4.7.0-0.okd-2021-04-24-103438   True        False         False      55m
+image-registry                             4.7.0-0.okd-2021-04-24-103438   True        False         False      18m
+ingress                                    4.7.0-0.okd-2021-04-24-103438   True        False         False      51m
+insights                                   4.7.0-0.okd-2021-04-24-103438   True        False         False      50m
+kube-apiserver                             4.7.0-0.okd-2021-04-24-103438   True        False         False      54m
+kube-controller-manager                    4.7.0-0.okd-2021-04-24-103438   True        False         False      54m
+kube-scheduler                             4.7.0-0.okd-2021-04-24-103438   True        False         False      54m
+kube-storage-version-migrator              4.7.0-0.okd-2021-04-24-103438   True        False         False      17m
+machine-api                                4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+machine-approver                           4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+machine-config                             4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+marketplace                                4.7.0-0.okd-2021-04-24-103438   True        False         False      9m22s
+monitoring                                 4.7.0-0.okd-2021-04-24-103438   True        False         False      29m
+network                                    4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+node-tuning                                4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+openshift-apiserver                        4.7.0-0.okd-2021-04-24-103438   True        False         False      17m
+openshift-controller-manager               4.7.0-0.okd-2021-04-24-103438   True        False         False      19m
+openshift-samples                          4.7.0-0.okd-2021-04-24-103438   True        False         False      21m
+operator-lifecycle-manager                 4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+operator-lifecycle-manager-catalog         4.7.0-0.okd-2021-04-24-103438   True        False         False      56m
+operator-lifecycle-manager-packageserver   4.7.0-0.okd-2021-04-24-103438   True        False         False      9m49s
+service-ca                                 4.7.0-0.okd-2021-04-24-103438   True        False         False      57m
+storage                                    4.7.0-0.okd-2021-04-24-103438   True        False         False      57m
 ```
 
+### DockerHub rate limit (optional)
 
-## Storage Cluster
+It's possible that you reach Docker's rate limit for anonymous access when you move forward. This [blog article](https://developers.redhat.com/blog/2021/02/18/how-to-work-around-dockers-new-download-rate-limit-on-red-hat-openshift/) describes how to fix it for OKD. 
 
-Especially the internal registry and of course your apps need some persistent storage. Let's do it.
+For your convenience:
 
-### Install Rook Ceph Storage Cluster
+```yaml
 
-```bash
+[lab@lab ~/okd-lab/.secrets/dockerhub.json]
+
+{
+    "username": "DockerHub Username",
+    "password": "DockerHub Password/Token",
+    "email": "DockerHub Email",
+    "server": "docker.io"
+}
+
 [lab@lab]
 
-# Install Rook Ceph Storage Cluster
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/storage.yml --tags cluster
+# Create docker.io pull secret to enahance your limits
+ansible-playbook -i bastion, ~/okd-lab/ansible/okd/dockerhub.yml
 
 ```
-
-Attention!
-These images come from docker.io and so it's possible that you reach Docker's rate limit for anonymous access. This [blog article](https://developers.redhat.com/blog/2021/02/18/how-to-work-around-dockers-new-download-rate-limit-on-red-hat-openshift/) describes how to fix it for OKD. 
-
-
-Wait for rollout complete:
-
-```bash
-[lab@lab]
-
-ssh root@bastion "oc get pods -n rook-ceph"
-
-ssh root@bastion "oc get pods -n rook-ceph | grep Completed"
-
-rook-ceph-osd-prepare-worker-0.okd.example.com-ctslv    0/1   Completed   0
-rook-ceph-osd-prepare-worker-1.okd.example.com-h52wv    0/1   Completed   0
-rook-ceph-osd-prepare-worker-2.okd.example.com-4rqnp    0/1   Completed   0
-```
-
-### Setup Rook Ceph Storage Cluster
-
-```bash
-[lab@lab]
-
-# Install Rook Ceph Storage Cluster
-ansible-playbook -i bastion, ~/okd-lab/ansible/okd/storage.yml --tags setup
-
-```
-
-Let's grab the Ceph Dashboard admin password for later :-)
-
-```bash
-[lab@lab]
-
-ssh root@bastion "oc get secret rook-ceph-dashboard-password -o jsonpath=\"{['data']['password']}\" -n rook-ceph | base64 --decode && echo" > ~/okd-lab/.secrets/rook-dashboard
-
-```
-
-### Verify Rook Ceph Storage Cluster
-
-Point your Firefox to: [https://rook-dashboard.apps.okd.example.com](https://rook-dashboard.apps.okd.example.com)
-
-```bash
-User: admin
-
-Password: get it from ~/okd-lab/.secrets/rook-dashboard
-```
-
-Interact with Ceph Toolbox:
-
-```bash
-[root@bastion]
-
-oc -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
-
-
-ceph status
-ceph osd status
-ceph df
-rados df
-ceph fs status
-
-```
+Plase Note: This will restart all `master` and `worker` nodes again! So please stay tuned.
 
 ## Destroy Cluster
 
@@ -350,4 +326,4 @@ ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags destroy
 
 * * *
 
-The beginning of your OKD journey starts now!
+Next > [Install Storage Cluster](04_install_storage.md)

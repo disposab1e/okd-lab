@@ -68,6 +68,8 @@
     - groups.ldif
     - admin.ldif
     - lab.ldif
+    - awesome-developer.ldif
+    - awesome-admin.ldif
 
 - name: Add ldifs
   shell: ldapadd -w {{ okd_lab_directory_root_password }} -D "cn=Directory Manager" -H ldaps://{{ okd_lab_directory_hostname }} -x -f /root/{{ item }}
@@ -76,6 +78,8 @@
     - groups.ldif
     - admin.ldif
     - lab.ldif
+    - awesome-developer.ldif
+    - awesome-admin.ldif
 
 - name: Cleanup common resources
   file:
@@ -86,3 +90,5 @@
     - groups.ldif
     - admin.ldif
     - lab.ldif
+    - awesome-developer.ldif
+    - awesome-admin.ldif

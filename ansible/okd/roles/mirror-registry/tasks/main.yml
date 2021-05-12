@@ -31,7 +31,7 @@
 
 - name: Mirror Registry
   shell: oc adm -a ${HOME}/installer/secret.json release mirror \
-    --from=registry.svc.ci.openshift.org/origin/release:{{ okd_lab_install_okd_version }} \
+    --from=quay.io/openshift/okd:{{ okd_lab_install_okd_version }} \
     --to={{ okd_lab_quay_hostname }}/admin_okd_registry/{{ okd_lab_install_okd_name }} \
     --to-release-image={{ okd_lab_quay_hostname }}/admin_okd_registry/{{ okd_lab_install_okd_name }}:{{ okd_lab_install_okd_version }}
   tags: 

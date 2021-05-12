@@ -11,14 +11,14 @@ You're free to decide which version to install (including [nightlies](https://or
 ```yaml
 
     # Unique name of this installation
-    okd_lab_install_okd_name: '4-7-0-0-okd-2021-03-07-090821'
+    okd_lab_install_okd_name: '4-7-0-0-okd-2021-04-24-103438'
 
     # OKD installation version
     okd_lab_install_okd_version: 4.7.0-0.okd-2021-03-07-090821
 
     # Fedora CoreOS installation version and stream
     okd_lab_install_fcos_stream: 'stable' 
-    okd_lab_install_fcos_version: '33.20210201.3.0'
+    okd_lab_install_fcos_version: '33.20210328.3.0'
 
 ```
 

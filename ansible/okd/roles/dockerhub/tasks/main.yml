@@ -1,0 +1,9 @@
+---
+- name: Get docker.json
+  set_fact: docker_json="{{ lookup('file','{{ playbook_dir }}/../../.secrets/dockerhub.json') | from_json }}"
+
+- name: Create secret
+  command: oc create secret docker-registry docker --docker-server={{ docker_json | json_query('server') }} --docker-username={{ docker_json | json_query('username') }} --docker-password={{ docker_json | json_query('password') }} --docker-email={{ docker_json | json_query('password') }}
+
+- name: Link secret
+  command: oc secrets link default docker --for=pull

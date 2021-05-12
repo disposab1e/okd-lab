@@ -24,10 +24,10 @@ sshKey:
 imageContentSources:
 - mirrors:
   - quay.okd.example.com/admin_okd_registry/{{ okd_lab_install_okd_name }}
-  source: quay.io/openshift/okd-content
+  source: quay.io/openshift/okd
 - mirrors:
   - quay.okd.example.com/admin_okd_registry/{{ okd_lab_install_okd_name }}
-  source: registry.svc.ci.openshift.org/origin/release
+  source: quay.io/openshift/okd-content
 additionalTrustBundle: |
     -----BEGIN CERTIFICATE-----
     MIIDSDCCAjCgAwIBAgIULqLTieg864a/Sgmds8r7x6iXQp4wDQYJKoZIhvcNAQEL

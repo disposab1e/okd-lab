@@ -1,0 +1,6 @@
+spec:
+  sources:
+    - disabled: false
+      name: redhat-operators
+    - disabled: false
+      name: community-operators

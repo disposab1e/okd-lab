@@ -9,7 +9,7 @@
 | root  	| root  	| bastion.okd.example.com  	|
 | root  	| root  	| lb.okd.example.com  	|
 
-*Please Note: If you have followed the installation documentation.
+*If you have followed the installation documentation.
 
 
 ## URL's and superuser logins
@@ -50,6 +50,8 @@
 |---	|---	|---	|---	|
 | admin  	| admin  	| admin@example.com  	| uid=admin,ou=People,dc=example,dc=com |
 | lab  	| lab  	| lab@example.com  	| uid=lab,ou=People,dc=example,dc=com |
+| awesome-admin  	| admin  	| awesome-admin@example.com  	| uid=awesome-admin,ou=People,dc=example,dc=com |
+| awesome-developer  	| developer  	| awesome-developer@example.com  	| uid=awesome-developer,ou=People,dc=example,dc=com |
 
 ## Software Versions
 

@@ -8,4 +8,4 @@ spec:
       key: node.kubernetes.io/unschedulable
     - effect: NoSchedule
       key: node-role.kubernetes.io/master
-  replicas: 3
+  replicas: 2

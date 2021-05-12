@@ -21,6 +21,19 @@
     - 1
     - 2
 
+- name: Label worker as storage nodes
+  community.kubernetes.k8s:
+    api_version: v1
+    kind: Node
+    name: worker-{{ item }}.okd.example.com
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-worker-as-storage.yaml') | from_yaml }}"
+  with_items:
+    - 0
+    - 1
+    - 2
+
 - name: Stick routers to infra nodes
   community.kubernetes.k8s:
     api_version: operator.openshift.io/v1
@@ -68,26 +81,71 @@
   wait_for:
     timeout: '90'
 
-- name: Log in (obtain access token)
+- name: Log in as admin (obtain access token)
   community.okd.openshift_auth:
     username: admin
     password: admin
     validate_certs: false
     host: https://api.okd.example.com:6443
-  register: openshift_auth_results
+  register: openshift_auth_admin_results
 
 - name: If login succeeded, try to log out (revoke access token)
-  when: openshift_auth_results.openshift_auth.api_key is defined
+  when: openshift_auth_admin_results.openshift_auth.api_key is defined
   community.okd.openshift_auth:
     validate_certs: false
     host: https://api.okd.example.com:6443
     state: absent
-    api_key: "{{ openshift_auth_results.openshift_auth.api_key }}"
+    api_key: "{{ openshift_auth_admin_results.openshift_auth.api_key }}"
+
+- name: Log in as lab (obtain access token)
+  community.okd.openshift_auth:
+    username: lab
+    password: lab
+    validate_certs: false
+    host: https://api.okd.example.com:6443
+  register: openshift_auth_lab_results
+
+- name: If login succeeded, try to log out (revoke access token)
+  when: openshift_auth_lab_results.openshift_auth.api_key is defined
+  community.okd.openshift_auth:
+    validate_certs: false
+    host: https://api.okd.example.com:6443
+    state: absent
+    api_key: "{{ openshift_auth_lab_results.openshift_auth.api_key }}"
 
 - name: Allow cluster-admin for amdin user
   community.kubernetes.k8s:
     state: present
-    definition: "{{ lookup('file', 'cluster-admin-user.yaml') | from_yaml }}"
+    definition: "{{ lookup('file', 'cluster-admin-for-admin.yaml') | from_yaml }}"
+
+- name: Allow cluster-admin for lab user
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'cluster-admin-for-lab.yaml') | from_yaml }}"
+
+- name: Create admins group
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'admins-group.yaml') | from_yaml }}"
+
+- name: Create awesome-admins group
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'awesome-admins-group.yaml') | from_yaml }}"
+
+- name: Create awesome-developers group
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'awesome-developers-group.yaml') | from_yaml }}"
+
+- name: Enable redhat-operators
+  community.kubernetes.k8s:
+    api_version: config.openshift.io/v1
+    kind: OperatorHub
+    name: cluster
+    merge_type: merge
+    state: present
+    definition: "{{ lookup('file', 'patch-operatorhub.yaml') | from_yaml }}"
 
 - name: Apps Certs
   community.kubernetes.k8s:
@@ -126,11 +184,3 @@
     merge_type: merge
     state: present
     definition: "{{ lookup('file', 'patch-ingresscontroller.yaml') | from_yaml }}"
-
-#- name: Remove kubeadmin
-#  community.kubernetes.k8s:
-#    api_version: v1
-#    namespace: kube-system
-#    kind: Secret
-#    name: kubeadmin
-#    state: absent

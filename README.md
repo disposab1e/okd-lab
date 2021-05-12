@@ -1,4 +1,5 @@
-[![OKD](https://img.shields.io/badge/okd-4.7.0--0.okd--2021--03--07--090821-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-33.20210201.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![Rook](https://img.shields.io/badge/rook-1.5.9-blue.svg)](https://rook.io/) [![CentOS](https://img.shields.io/badge/centos-8.3.2011-orange.svg)](https://www.centos.org/) [![Terraform](https://img.shields.io/badge/terraform-0.13.6-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.7.0-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.18-red.svg)](https://www.ansible.com/)
+[![OKD](https://img.shields.io/badge/okd-4.7.0--0.okd--2021--04--24--103438-red.svg)](https://www.okd.io) [![Fedore CoreOS](https://img.shields.io/badge/fcos-33.20210328.3.0-blue.svg)](https://getfedora.org/en/coreos?stream=stable) [![Rook](https://img.shields.io/badge/rook-1.5.9-blue.svg)](https://rook.io/) [![CentOS](https://img.shields.io/badge/centos-8.3.2011-orange.svg)](https://www.centos.org/) [![Terraform](https://img.shields.io/badge/terraform-0.13.6-blueviolet.svg)](https://www.terraform.io/) [![Packer](https://img.shields.io/badge/packer-1.7.0-blueviolet.svg)](https://www.packer.io/) [![Ansible](https://img.shields.io/badge/ansible-2.9.18-red.svg)](https://www.ansible.com/)
+
 
 # OKD-LAB: Controlled Environment for OKD4 experiments
 
@@ -8,7 +9,7 @@ It is probably worth the time to read a little further....
 
 Naturally when we do some experiments we can destroy our cluster and bring it in a state we can't fix or recover. From this point of view we should try to keep complex things __simple and repeatable__. This is what this lab wants to address to.
 
-You can expect a fully virtualized small IT center with everything you need to install a `User Provisioned Infrastructure (UPI)` of [OKD4](https://www.okd.io/) based on [KVM](https://www.linux-kvm.org). You get some great [Rook Cloud-native Storage](https://rook.io/) for your cluster and many more.
+You can expect a fully virtualized small IT center with everything you need to install a `User Provisioned Infrastructure (UPI)` of [OKD4](https://www.okd.io/) based on [KVM](https://www.linux-kvm.org). 
 
 Additionally you get mostly all you need for a development environment including git, artifact management, private container registry, centralized user registry..... everything pre-configured and tightly integrated.
 
@@ -17,6 +18,7 @@ Additionally you get mostly all you need for a development environment including
 ## OKD-LAB: Overview
 
 ![OKD-LAB Overview](docs/images/okd-lab.png)
+
 * * *
 
 ## Prerequisites
@@ -72,6 +74,7 @@ Bastion (KVM):
 - [OKD4](https://www.okd.io) - UPI installation environment:
   - OKD4 Registry Mirror
   - Fedora CoreOS Mirror
+  - NTP
   - DNS
   - DHCP
   - TFTP
@@ -91,9 +94,29 @@ Load Balancer (KVM):
 - 3x Master
 - 3x Worker
 
-OKD4 Storage:
+[OKD4](https://www.okd.io) Storage:
 
 - [Rook Cloud-native Storage](https://rook.io/)
+
+* * *
+
+## What do you get from the OKD world?
+
+- 3x Master and 3x Worker
+- Chrony time services configured on all Master and Worker nodes
+- Access to trusted private Project Quay container registry 
+- Trusted custom Certificate Authority and SSL certificates for Web console, Router, API, LDAP, Project Quay, Podman etc.
+- LDAP(s) authorization provider with:
+  * Administrators: `admin`, `lab` in the `cluster-admin` role
+  * Team Members: `awesome-admin`, `awesome-developer`
+- Labeled nodes:
+  * Master [`master`, `infra`, `worker`]
+  * Worker [`worker`, `storage-node`]
+- Routers sticked to `infra` nodes
+- Enabled `Image Pruner` and disabled `Samples Operator`
+- User kubeadmin is removed [optional]
+- Enhanced DockerHub rate limit [optional]
+- [Rook Cloud-native Storage](https://rook.io/) [optional]
 
 * * *
 

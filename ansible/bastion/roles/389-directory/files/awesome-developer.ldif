@@ -1,0 +1,12 @@
+dn: uid=awesome-developer,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+givenname: Awesome
+sn: Developer
+cn: Awesome Developer
+uid: awesome-developer
+ou: people
+mail: awesome-developer@example.com
+userPassword: developer

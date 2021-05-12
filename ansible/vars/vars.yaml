@@ -19,24 +19,27 @@ okd_lab_ntp_forwarder: 'ntp1.hetzner.de'
 #######################################################################
 
 # Unique name of this installation
-okd_lab_install_okd_name: '4-7-0-0-okd-2021-03-07-090821'
+#okd_lab_install_okd_name: '4-7-0-0-okd-2021-03-07-090821'
+okd_lab_install_okd_name: '4-7-0-0-okd-2021-04-24-103438'
 
 # OKD installation version
-okd_lab_install_okd_version: 4.7.0-0.okd-2021-03-07-090821
+# okd_lab_install_okd_version: 4.7.0-0.okd-2021-03-07-090821
+okd_lab_install_okd_version: 4.7.0-0.okd-2021-04-24-103438
+
 
 # Fedora CoreOS installation version and stream
 okd_lab_install_fcos_stream: 'stable' 
-okd_lab_install_fcos_version: '33.20210201.3.0'
+okd_lab_install_fcos_version: '33.20210328.3.0'
 
 
 
 # OKD Client
-okd_lab_okd_oc_client_archive: 'openshift-client-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
-okd_lab_okd_oc_client: 'https://github.com/openshift/okd/releases/download/4.7.0-0.okd-2021-03-07-090821/openshift-client-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
+okd_lab_okd_oc_client_archive: 'openshift-client-linux-{{ okd_lab_install_okd_version }}.tar.gz'  
+okd_lab_okd_oc_client: 'https://github.com/openshift/okd/releases/download/{{ okd_lab_install_okd_version }}/openshift-client-linux-{{ okd_lab_install_okd_version }}.tar.gz'  
 
 # OKD Installer
-okd_lab_okd_installer_archive: 'openshift-install-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
-okd_lab_okd_installer: 'https://github.com/openshift/okd/releases/download/4.7.0-0.okd-2021-03-07-090821/openshift-install-linux-4.7.0-0.okd-2021-03-07-090821.tar.gz'  
+okd_lab_okd_installer_archive: 'openshift-install-linux-{{ okd_lab_install_okd_version }}.tar.gz'  
+okd_lab_okd_installer: 'https://github.com/openshift/okd/releases/download/{{ okd_lab_install_okd_version }}/openshift-install-linux-{{ okd_lab_install_okd_version }}.tar.gz'  
 
 # Opm
 okd_lab_okd_opm_archive: 'opm.tar.gz'  

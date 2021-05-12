@@ -18,3 +18,4 @@ TODO
 .secrets/artifactory-admin-api
 .secrets/kubeadmin
 .secrets/rook-dashboard
+transfer
