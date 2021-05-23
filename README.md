@@ -56,7 +56,7 @@ __95% of the installation process is copy&paste. No deep Linux or OKD4/Kubernete
 
 ## What's in the box?
 
-100% Open Source! Watch a [animated gif at dropbox](https://www.dropbox.com/s/ryehh25b5s9yfij/OKD-LAB.gif?dl=0) and open pandorra's box.
+100% Open Source! Watch a [animated gif at dropbox](https://www.dropbox.com/s/p8alcwdx07jsevq/OKD-LAB.gif?dl=0) and open pandorra's box.
 
 Lab Machine:
 
