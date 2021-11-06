@@ -1,6 +1,6 @@
 ---
 - name: Make sure cockpit is installed
-  yum:
+  dnf:
     name: ['cockpit','cockpit-storaged']
     state: present
 

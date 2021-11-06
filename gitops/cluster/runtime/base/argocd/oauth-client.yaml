@@ -1,0 +1,9 @@
+---
+kind: OAuthClient
+apiVersion: oauth.openshift.io/v1
+metadata:
+ name: argocd-oauth-client
+secret: "argocd" 
+redirectURIs:
+ - "https://argocd.apps.okd.example.com/api/dex/callback" 
+grantMethod: prompt

@@ -5,7 +5,7 @@ locals {
   memory = "2048"
 
   # the amount of virtual cpus
-  vcpu = 12
+  vcpu = 4
 
 }
 
@@ -72,7 +72,7 @@ resource "libvirt_domain" "lb" {
       password = "root"
       host     = "10.0.0.99"
     }
-    source      = "~/okd-lab/.ssh"
+    source      = "~/.ssh"
     destination = "/root/"
   }
 
@@ -88,7 +88,7 @@ resource "libvirt_domain" "lb" {
     ]
   }
   provisioner "local-exec" {
-    command = "ansible-playbook --ssh-extra-args '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' -i '10.0.0.99,' --private-key ~/okd-lab/.ssh/id_rsa -T 300 ~/okd-lab/ansible/lb/terraform.yml"
+    command = "ansible-playbook --ssh-extra-args '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' -i '10.0.0.99,' --private-key ~/.ssh/id_rsa -T 300 ~/github/okd-lab/ansible/lb/terraform.yml"
   }
 
 }

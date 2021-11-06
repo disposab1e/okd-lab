@@ -1,0 +1,29 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: tekton-pipelines-controller-metrics
+  name: tekton-pipelines-controller-metrics
+spec:
+  endpoints:
+  - interval: 30s
+    port: http-metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: controller
+      app.kubernetes.io/instance: tekton-pipelines  
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: tekton-pipelines-webhook-metrics
+  name: tekton-pipelines-webhook-metrics
+spec:
+  endpoints:
+  - interval: 30s
+    port: http-metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: webhook

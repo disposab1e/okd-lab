@@ -1,0 +1,16 @@
+# GitHub Source Repositories
+
+- [Rook](https://github.com/rook/rook)
+- [ArgoCD](https://github.com/argoproj/argo-cd)
+- [Argo ApplicationSet ](https://github.com/argoproj-labs/applicationset)
+- [Argo Workflows](https://github.com/argoproj/argo-workflows)
+- [Argo Rollouts](https://github.com/argoproj/argo-rollouts)
+- [Argo Events](https://github.com/argoproj/argo-events)
+- [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)
+- [Tekton Pipelines](https://github.com/tektoncd/pipeline)
+- [Tekton Triggers](https://github.com/tektoncd/triggers)
+- [Tekton Dashboard](https://github.com/tektoncd/dashboard)
+- [OpenShift TektonCD Catalog](https://github.com/openshift/tektoncd-catalog)
+- [Kyverno](https://github.com/kyverno/kyverno/)
+- [Policy Reporter](https://github.com/kyverno/policy-reporter)
+- [Shipwright](https://github.com/shipwright-io/build)

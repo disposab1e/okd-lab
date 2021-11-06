@@ -1,41 +1,22 @@
 ---
-- name: Manage Registry and add some temporary storage
-  community.kubernetes.k8s:
-    api_version: imageregistry.operator.openshift.io/v1
-    kind: Config
-    name: cluster
-    merge_type: merge
-    state: present
-    definition: "{{ lookup('file', 'patch-registry-empty-dir.yaml') | from_yaml }}"
-
-- name: Label masters as infra nodes
-  community.kubernetes.k8s:
+- name: Label infra nodes
+  k8s:
     api_version: v1
     kind: Node
-    name: master-{{ item }}.okd.example.com
+    name: "{{ item }}.okd.example.com"
     merge_type: merge
     state: present
-    definition: "{{ lookup('file', 'patch-master-as-infra.yaml') | from_yaml }}"
+    definition: "{{ lookup('file', 'patch-node-as-infra.yaml') | from_yaml }}"
   with_items:
-    - 0
-    - 1
-    - 2
+    - master-0
+    - master-1
+    - master-2
+    - worker-0
+    - worker-1
+    - worker-2
 
-- name: Label worker as storage nodes
-  community.kubernetes.k8s:
-    api_version: v1
-    kind: Node
-    name: worker-{{ item }}.okd.example.com
-    merge_type: merge
-    state: present
-    definition: "{{ lookup('file', 'patch-worker-as-storage.yaml') | from_yaml }}"
-  with_items:
-    - 0
-    - 1
-    - 2
-
-- name: Stick routers to infra nodes
-  community.kubernetes.k8s:
+- name: Stick routers to master nodes
+  k8s:
     api_version: operator.openshift.io/v1
     kind: IngressController
     name: default
@@ -45,7 +26,7 @@
     definition: "{{ lookup('file', 'patch-stick-routers.yaml') | from_yaml }}"
 
 - name: Enable ImagePruner
-  community.kubernetes.k8s:
+  k8s:
     api_version: imageregistry.operator.openshift.io/v1
     kind: ImagePruner
     name: cluster
@@ -54,7 +35,7 @@
     definition: "{{ lookup('file', 'patch-imagepruners.yaml') | from_yaml }}"
 
 - name: Disable Samples Operator
-  community.kubernetes.k8s:
+  k8s:
     api_version: samples.operator.openshift.io/v1
     kind: Config
     name: cluster
@@ -63,23 +44,23 @@
     definition: "{{ lookup('file', 'patch-disable-samples-operator.yaml') | from_yaml }}"
 
 - name: Apply example.com CA
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'example-com-ca.yaml') | from_yaml }}"
 
 - name: Apply LDAP bind secret
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'ldap-bind-secret.yaml') | from_yaml }}"
 
 - name: Apply LDAP authentication
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('template', 'ldap-oauth.yaml') | from_yaml }}"
 
-- name: Wait 90s until LDAP authentication provider is ready to serve requests
+- name: Wait 180s until LDAP authentication provider is ready to serve requests
   wait_for:
-    timeout: '90'
+    timeout: '180'
 
 - name: Log in as admin (obtain access token)
   community.okd.openshift_auth:
@@ -114,32 +95,32 @@
     api_key: "{{ openshift_auth_lab_results.openshift_auth.api_key }}"
 
 - name: Allow cluster-admin for amdin user
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'cluster-admin-for-admin.yaml') | from_yaml }}"
 
 - name: Allow cluster-admin for lab user
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'cluster-admin-for-lab.yaml') | from_yaml }}"
 
 - name: Create admins group
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'admins-group.yaml') | from_yaml }}"
 
 - name: Create awesome-admins group
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'awesome-admins-group.yaml') | from_yaml }}"
 
 - name: Create awesome-developers group
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'awesome-developers-group.yaml') | from_yaml }}"
 
-- name: Enable redhat-operators
-  community.kubernetes.k8s:
+- name: Enable community-operators and redhat-operators
+  k8s:
     api_version: config.openshift.io/v1
     kind: OperatorHub
     name: cluster
@@ -148,17 +129,17 @@
     definition: "{{ lookup('file', 'patch-operatorhub.yaml') | from_yaml }}"
 
 - name: Apps Certs
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'example-com-apps-certs.yaml') | from_yaml }}"
 
 - name: Api Certs
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', 'example-com-api-certs.yaml') | from_yaml }}"
 
 - name: Patch Proxy
-  community.kubernetes.k8s:
+  k8s:
     api_version: config.openshift.io/v1
     kind: Proxy
     name: cluster
@@ -167,7 +148,7 @@
     definition: "{{ lookup('file', 'patch-proxy-cluster.yaml') | from_yaml }}"
 
 - name: Patch APIServer
-  community.kubernetes.k8s:
+  k8s:
     api_version: config.openshift.io/v1
     kind: APIServer
     name: cluster
@@ -176,7 +157,7 @@
     definition: "{{ lookup('file', 'patch-apiserver.yaml') | from_yaml }}"
 
 - name: Patch IngressController
-  community.kubernetes.k8s:
+  k8s:
     api_version: operator.openshift.io/v1
     kind: IngressController
     name: default
@@ -184,3 +165,8 @@
     merge_type: merge
     state: present
     definition: "{{ lookup('file', 'patch-ingresscontroller.yaml') | from_yaml }}"
+
+- name: Kubeletconfig for master
+  k8s:
+    state: present
+    definition: "{{ lookup('file', 'kubeletconfig-master.yaml') | from_yaml }}"

@@ -20,8 +20,8 @@ ExecStart=/usr/bin/podman run \
     -d \
     --name quay-postgres \
     --ip {{ okd_lab_quay_postgres_ip }} \
-    -e POSTGRES_USER=user \
-    -e POSTGRES_PASSWORD=pass \
+    -e POSTGRES_USER={{ okd_lab_quay_postgres_user }} \
+    -e POSTGRES_PASSWORD={{ okd_lab_quay_postgres_password }} \
     -e POSTGRES_DB=quay \
     -v /var/opt/quay/postgres:/var/lib/postgresql/data:Z \
     {{ okd_lab_quay_postgres_image }}

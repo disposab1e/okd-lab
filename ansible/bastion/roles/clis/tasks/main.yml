@@ -1,0 +1,158 @@
+---
+- name: User bin directory
+  file:
+    path: /home/lab/bin
+    state: directory
+    owner: lab
+    group: lab
+    mode: '0744'
+
+- name: Download and install Kustomize
+  unarchive:
+    src: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F{{ okd_lab_clis_kustomize }}/kustomize_{{ okd_lab_clis_kustomize }}_linux_amd64.tar.gz
+    dest: /home/lab/bin
+    remote_src: yes
+    owner: lab
+    group: lab
+    mode: "0744"
+
+- name: Download ArgoCD
+  get_url:
+    url: https://github.com/argoproj/argo-cd/releases/download/{{ okd_lab_clis_argocd }}/argocd-linux-amd64
+    dest: /home/lab/bin
+    owner: lab
+    group: lab
+    mode: '0744'
+
+- name: Install ArgoCD
+  shell: |
+    chmod +x argocd-linux-amd64
+    mv argocd-linux-amd64 argocd
+  args:
+    chdir: /home/lab/bin
+    warn: false
+
+
+- name: Download Argo Workflows
+  get_url:
+    url: https://github.com/argoproj/argo-workflows/releases/download/{{ okd_lab_clis_argo }}/argo-linux-amd64.gz
+    dest: /home/lab/bin
+    owner: lab
+    group: lab
+    mode: '0744'
+
+- name: Install Argo Workflows
+  shell: |
+    gunzip argo-linux-amd64.gz
+    chmod +x argo-linux-amd64
+    mv argo-linux-amd64 argo
+  args:
+    chdir: /home/lab/bin
+
+- name: Download Argo Events
+  get_url:
+    url: https://github.com/argoproj/argo-events/releases/download/{{ okd_lab_clis_argo_events }}/argo-events-linux-amd64.gz
+    dest: /home/lab/bin
+    owner: lab
+    group: lab
+    mode: '0744'
+
+- name: Install Argo Events
+  shell: |
+    gunzip argo-events-linux-amd64.gz
+    chmod +x argo-events-linux-amd64
+    mv argo-events-linux-amd64 argo-events
+  args:
+    chdir: /home/lab/bin
+
+- name: Download Argo Rollouts
+  get_url:
+    url: https://github.com/argoproj/argo-rollouts/releases/download/{{ okd_lab_clis_argo_rollouts }}/kubectl-argo-rollouts-linux-amd64
+    dest: /home/lab/bin
+    owner: lab
+    group: lab
+    mode: '0744'
+
+- name: Install Argo Rollouts
+  shell: |
+    chmod +x kubectl-argo-rollouts-linux-amd64
+    mv kubectl-argo-rollouts-linux-amd64 kubectl-argo-rollouts
+  args:
+    chdir: /home/lab/bin
+    warn: false
+
+- name: Download and install Tekton
+  unarchive:
+    src: https://github.com/tektoncd/cli/releases/download/v{{ okd_lab_clis_tekton }}/tkn_{{ okd_lab_clis_tekton }}_Linux_x86_64.tar.gz
+    dest: /home/lab/bin
+    remote_src: yes
+    owner: lab
+    group: lab
+    mode: "0744"
+
+- name: Download and install Helm
+  unarchive:
+    src: https://get.helm.sh/helm-{{ okd_lab_clis_helm }}-linux-amd64.tar.gz
+    dest: /home/lab/bin
+    remote_src: yes
+    owner: lab
+    group: lab
+    mode: "0744"
+
+- name: Install Helm
+  shell: |
+    mv linux-amd64/helm helm
+    rm -rf linux-amd64
+  args:
+    chdir: /home/lab/bin
+
+- name: Download Kubeseal
+  get_url:
+    url: https://github.com/bitnami-labs/sealed-secrets/releases/download/{{ okd_lab_clis_kubeseal }}/kubeseal-linux-amd64
+    dest: /home/lab/bin
+    owner: lab
+    group: lab
+    mode: '0744'
+
+- name: Install Kubeseal
+  shell: |
+    chmod +x kubeseal-linux-amd64
+    mv kubeseal-linux-amd64 kubeseal
+  args:
+    chdir: /home/lab/bin
+    warn: false
+
+
+- name: Download and install Kyverno
+  unarchive:
+    src: https://github.com/kyverno/kyverno/releases/download/{{ okd_lab_clis_kyverno }}/kyverno-cli_{{ okd_lab_clis_kyverno }}_linux_x86_64.tar.gz
+    dest: /home/lab/bin
+    remote_src: yes
+    owner: lab
+    group: lab
+    mode: "0744"
+
+- name: Download and install K9s
+  unarchive:
+    src: https://github.com/derailed/k9s/releases/download/{{ okd_lab_clis_k9s }}/k9s_Linux_x86_64.tar.gz
+    dest: /home/lab/bin
+    remote_src: yes
+    owner: lab
+    group: lab
+    mode: "0744"
+
+- name: Download GitHub CLI
+  unarchive:
+    src: https://github.com/cli/cli/releases/download/v{{ okd_lab_clis_github }}/gh_{{ okd_lab_clis_github }}_linux_amd64.tar.gz
+    dest: /home/lab/bin
+    remote_src: yes
+    owner: lab
+    group: lab
+    mode: "0744"
+
+- name: Install GitHub CLI
+  shell: |
+     mv gh_{{ okd_lab_clis_github }}_linux_amd64/bin/gh .
+     rm -rf gh_{{ okd_lab_clis_github }}_linux_amd64/
+  args:
+    chdir: /home/lab/bin

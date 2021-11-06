@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+- project-operator.yaml
+- appset-operator.yaml
+
+- project-storage.yaml
+- app-storage.yaml
+
+- project-monitoring.yaml
+- app-monitoring.yaml
+
+- project-logging.yaml
+- app-logging.yaml
+
+- project-security.yaml
+- app-security.yaml
+
+- project-tekton.yaml
+- appset-tekton.yaml
+
+- project-argo.yaml
+- appset-argo.yaml
+
+- project-registry.yaml
+- app-registry.yaml
+
+- project-build.yaml
+- app-build.yaml

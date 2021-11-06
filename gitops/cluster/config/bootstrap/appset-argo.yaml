@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-bootstrap
+  labels:
+    gitops.example.com/component: bootstrap
+  annotations:
+    argocd.argoproj.io/sync-wave: "60"
+spec:
+  generators:
+  - git:
+      repoURL: https://gitlab.okd.example.com/lab/okd-lab.git
+      revision: HEAD
+      directories:
+      - path: gitops/cluster/config/base/argo/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: argo
+      source:
+        repoURL: https://gitlab.okd.example.com/lab/okd-lab.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        retry:
+          limit: 10
+          backoff:
+            duration: 15s
+            factor: 2
+            maxDuration: 5m        
+           

@@ -30,6 +30,7 @@ ExecStart=/usr/bin/podman run \
     --name gitlab \
     --ip {{ okd_lab_gitlab_ip }} \
     --publish 2222:22 \
+    --privileged \
     --volume /var/opt/gitlab/config:/etc/gitlab:Z \
     --volume /var/opt/gitlab/logs:/var/log/gitlab:Z \
     --volume /var/opt/gitlab/data:/var/opt/gitlab:Z \

@@ -12,10 +12,8 @@
 
 bastion.okd.example.com.          IN      A      10.0.0.2
 quay.okd.example.com.             IN      A      10.0.0.2
-clair.okd.example.com.            IN      A      10.0.0.2
 gitlab.okd.example.com.           IN      A      10.0.0.2
 artifactory.okd.example.com.      IN      A      10.0.0.2
-sso.okd.example.com.              IN      A      10.0.0.2
 ldap.okd.example.com.             IN      A      10.0.0.2
 mirror.okd.example.com.           IN      A      10.0.0.2
 ntp.okd.example.com.              IN      A      10.0.0.2

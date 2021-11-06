@@ -1,5 +1,5 @@
 ---
-- name: Create Fefora CoreOS mirror directory
+- name: Create Fedora CoreOS mirror directory
   file:
     path: /usr/share/nginx/html/fcos/{{ okd_lab_install_okd_name }}
     state: directory
@@ -21,7 +21,7 @@
 
 - name: Cleanup Fefora CoreOS mirror directory
   file:
-    path: /usr/share/nginx/html/fcos
+    path: /usr/share/nginx/html/fcos/*
     state: absent
   tags: 
     - fcos-cleanup

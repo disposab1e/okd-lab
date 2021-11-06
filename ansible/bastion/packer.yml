@@ -8,7 +8,7 @@
     - bind
     - chrony
     - tftp
-    - ca
+    - certs
     - nginx
     - cockpit
     - libvirt

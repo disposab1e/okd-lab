@@ -1,0 +1,106 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: tekton-pipelines
+
+commonLabels:
+  app.kubernetes.io/instance: tekton-pipelines
+
+resources:
+- rbac.yaml
+- https://gitlab.okd.example.com/lab/okd-lab//gitops/manifests/tekton-pipelines?ref=HEAD
+- monitoring.yaml
+
+patchesStrategicMerge:
+- |-
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: tekton-pipelines
+    labels:
+      openshift.io/cluster-monitoring: "true"
+
+# - Enable Prometheus monitoring
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: config-observability
+    namespace: tekton-pipelines
+  data:
+    metrics.backend-destination: prometheus
+
+# Storage
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: config-artifact-pvc
+    namespace: tekton-pipelines
+  data:
+    size: 1Gi
+    storageClassName: rook-ceph-block
+
+# Defaults
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: config-defaults
+    namespace: tekton-pipelines
+  data:
+    default-timeout-minutes: "20"
+    default-service-account: "default"
+    default-managed-by-label-value: "tekton-pipelines"
+    default-task-run-workspace-binding: |
+      emptyDir: {}
+
+
+# Defaults
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: feature-flags
+    namespace: tekton-pipelines
+    labels:
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/part-of: tekton-pipelines
+  data:
+    disable-affinity-assistant: "true"
+    disable-home-env-overwrite: "true"
+    disable-creds-init: "false"
+    require-git-ssh-secret-known-hosts: "false"
+    enable-tekton-oci-bundles: "false"
+    enable-custom-tasks: "false"
+    enable-api-fields: "stable"
+    scope-when-expressions-to-task: "false"
+
+# Remove HorizontalPodAutoscaler
+- |-
+  $patch: delete
+  apiVersion: autoscaling/v2beta1
+  kind: HorizontalPodAutoscaler
+  metadata:
+    name: tekton-pipelines-webhook
+    namespace: tekton-pipelines
+
+# Replicas
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: tekton-pipelines-webhook
+    namespace: tekton-pipelines
+  spec:
+    replicas: 3
+
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: tekton-pipelines-controller
+    namespace: tekton-pipelines
+  spec:
+    replicas: 3
+

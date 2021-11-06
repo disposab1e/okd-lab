@@ -1,0 +1,17 @@
+---
+#######################################################################
+#
+# Import okd-lab repository in GitLab
+# ansible-playbook ~/github/okd-lab/ansible/lab/git-import.yml
+#
+#######################################################################
+- hosts: localhost
+  vars_files:
+    - vars/vars.yaml
+  gather_facts: no
+  become_user: lab
+  become: yes
+  become_flags: '-i'  
+  connection: local
+  roles:
+    - git-import

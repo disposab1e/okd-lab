@@ -1,0 +1,58 @@
+{
+	"folders": [
+		{
+			"path": "../../../"
+		}
+	],
+    "extensions": {
+        "recommendations": [
+            "davidanson.vscode-markdownlint",
+            "shd101wyy.markdown-preview-enhanced",
+            "yzhang.markdown-all-in-one",
+            "slevesque.vscode-zipexplorer",
+            "vscode-ext.sync-rsync",
+            "kelvin.vscode-sshfs",
+            "ms-vscode-remote.remote-ssh-edit",
+            "ms-vscode-remote.remote-ssh",
+            "github.github-vscode-theme",
+            "eamodio.gitlens",
+            "donjayamanne.githistory",
+            "mhutchie.git-graph",
+            "ziyasal.vscode-open-in-github",
+            "techer.open-in-browser",
+            "vscode-icons-team.vscode-icons",
+            "pkief.material-icon-theme",
+            "zhuangtongfa.material-theme",
+            "redhat.vscode-yaml",
+            "github.vscode-pull-request-github",
+            "akamud.vscode-theme-onedark",
+            "redhat.vscode-xml",
+            "dotjoshjohnson.xml",
+            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "ipedrazas.kubernetes-snippets",
+            "codezombiech.gitignore",
+            "mutantdino.resourcemonitor",
+			"esbenp.prettier-vscode",
+			"gitlab.gitlab-workflow",
+			"redhat.vscode-openshift-connector",
+			"redhat.vscode-tekton-pipelines",
+			"tsandall.opa"
+        ]
+    },
+	"settings": {
+		"workbench.startupEditor": "none",
+		"telemetry.telemetryLevel": "off",
+		"editor.minimap.enabled": false,
+		"workbench.enableExperiments": false,
+		"workbench.list.openMode": "doubleClick",
+		"terminal.integrated.tabs.enabled": true,
+		"terminal.integrated.tabs.showActiveTerminal": "always",
+		"remote.SSH.defaultExtensions": [
+			"mutantdino.resourcemonitor"
+		],
+		"remote.SSH.remoteServerListenOnSocket": true,
+		"remote.SSH.remotePlatform": {
+			"idm-root": "linux"
+		},
+	}
+}

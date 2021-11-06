@@ -1,0 +1,4 @@
+---
+- name: Setup installer to use Registry Mirror
+  shell: oc adm -a ${HOME}/installer/secret.json release extract --to="${HOME}/installer" --command=openshift-install "{{ okd_lab_quay_hostname }}/okd/{{ okd_lab_install_okd_name }}:{{ okd_lab_install_okd_version }}"
+  tags: installer-setup

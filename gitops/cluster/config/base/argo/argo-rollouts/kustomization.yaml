@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argo-rollouts
+
+commonLabels:
+  app.kubernetes.io/instance: argo-rollouts
+
+resources:
+- namespace.yaml
+- https://gitlab.okd.example.com/lab/okd-lab.git//gitops/manifests/argo-rollouts?ref=HEAD
+- monitoring.yaml

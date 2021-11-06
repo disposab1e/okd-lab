@@ -1,0 +1,46 @@
+---
+- name: User lab ssh directory
+  file:
+    path: /home/lab/.ssh
+    state: directory
+    owner: lab
+    group: lab
+
+- name: Copy privte ssh key for lab user
+  copy:
+    src: ~/.ssh/id_rsa
+    dest: /home/lab/.ssh/id_rsa
+    owner: lab
+    group: lab
+    mode: '0600'
+
+- name: Copy public ssh key for lab user
+  copy:
+    src: ~/.ssh/id_rsa.pub
+    dest: /home/lab/.ssh/id_rsa.pub
+    owner: lab
+    group: lab
+    mode: '0600'
+
+- name: Copy ssh config for lab user
+  copy:
+    src: ~/.ssh/config
+    dest: /home/lab/.ssh/config
+    owner: lab
+    group: lab
+    mode: '0600'
+
+- name: Copy authorized_keys for lab user
+  copy:
+    src: ~/.ssh/authorized_keys
+    dest: /home/lab/.ssh/authorized_keys
+    owner: lab
+    group: lab
+    mode: '0600'
+
+- name: Ensuring that lab is able to use sudo without password
+  lineinfile:
+    path: /etc/sudoers
+    line: 'lab ALL=(ALL) NOPASSWD:ALL'
+    validate: 'visudo -cf %s'
+

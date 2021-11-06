@@ -1,0 +1,22 @@
+---
+- name: Gitlab directory
+  file:
+    path: /home/lab/gitlab
+    state: directory
+    owner: lab
+    group: lab
+  become_user: lab
+
+- name: Git global config user.name
+  git_config:
+    name: user.name
+    scope: global
+    value: lab
+  become_user: lab
+
+- name: Git global config user.email
+  git_config:
+    name: user.email
+    scope: global
+    value: lab@lab.okd.example.com
+  become_user: lab

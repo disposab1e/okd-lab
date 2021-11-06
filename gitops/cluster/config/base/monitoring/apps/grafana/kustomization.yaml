@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: grafana
+
+commonAnnotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+
+images:
+  - name: registry.redhat.io/openshift4/ose-cli
+    newTag: v4.8
+  - name: registry.redhat.io/openshift4/ose-oauth-proxy
+    newTag: v4.8
+
+resources:
+- session-secret.yaml
+- rbac.yaml
+- instance.yaml
+- prometheus.yaml
+- patch-grafana-ds-sa.yaml
+- patch-grafana-ds-job.yaml

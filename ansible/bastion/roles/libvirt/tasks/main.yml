@@ -1,5 +1,5 @@
 ---
-- name: Install bind
-  yum:
+- name: Install libvirt
+  dnf:
     name: libvirt
     state: installed

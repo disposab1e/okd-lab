@@ -1,0 +1,696 @@
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: buildah
+spec:
+  buildSteps:
+    - name: build-and-push
+      image: quay.io/containers/buildah:v1.20.1
+      workingDir: $(params.shp-source-root)
+      securityContext:
+        privileged: true
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          # Building the image
+          echo '[INFO] Building image $(params.shp-output-image)'
+          buildah bud \
+            --tag='$(params.shp-output-image)' \
+            --file='$(build.dockerfile)' \
+            '$(params.shp-source-context)'
+
+          # Push the image
+          echo '[INFO] Pushing image $(params.shp-output-image)'
+          buildah push \
+            --tls-verify=false \
+            '$(params.shp-output-image)' \
+            'docker://$(params.shp-output-image)'
+
+          # Store the digest result
+          buildah images \
+            --format='{{.Digest}}' \
+            '$(params.shp-output-image)' | tr -d "\n" > '$(results.shp-image-digest.path)'
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+
+---
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: buildkit
+  annotations:
+    # See https://github.com/moby/buildkit/blob/master/docs/rootless.md#about---oci-worker-no-process-sandbox for more information
+    container.apparmor.security.beta.kubernetes.io/step-build-and-push: unconfined
+    # The usage of seccomp annotation will be deprecate in k8s v1.22.0, see
+    # https://kubernetes.io/docs/tutorials/clusters/seccomp/#create-a-pod-with-a-seccomp-profile-for-syscall-auditing for more information
+    container.seccomp.security.alpha.kubernetes.io/step-build-and-push: unconfined
+spec:
+  parameters:
+    - name: insecure-registry
+      description: "enables the push to an insecure registry"
+      default: "false"
+  buildSteps:
+    - name: prepare
+      image: alpine:latest
+      securityContext:
+        runAsUser: 0
+        capabilities:
+          add:
+            - CHOWN
+      command:
+        - /bin/chown
+      args:
+        - -R
+        - 1000:1000
+        - /tekton/home
+    - name: build-and-push
+      image: moby/buildkit:nightly-rootless
+      imagePullPolicy: Always
+      securityContext:
+        allowPrivilegeEscalation: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      workingDir: $(params.shp-source-root)
+      env:
+        - name: DOCKER_CONFIG
+          value: /tekton/home/.docker
+        - name: HOME
+          value: /tekton/home
+        # See https://github.com/moby/buildkit/blob/master/docs/rootless.md#about---oci-worker-no-process-sandbox for more information
+        - name: BUILDKITD_FLAGS
+          value: --oci-worker-no-process-sandbox
+      command:
+        - /bin/ash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          buildctl-daemonless.sh build \
+            --progress=plain \
+            --frontend=dockerfile.v0 \
+            --local=context='$(params.shp-source-context)' \
+            --local=dockerfile='$(params.shp-source-root)/$(build.dockerfile)' \
+            --output=type=image,name='$(params.shp-output-image)',push=true,registry.insecure=$(params.insecure-registry) \
+            --export-cache=type=inline \
+            --import-cache=type=registry,ref='$(params.shp-output-image)' \
+            --metadata-file /tmp/image-metadata.json
+
+          # Store the image digest
+          sed -E 's/.*containerimage.digest":"([^"]*).*/\1/' < /tmp/image-metadata.json > '$(results.shp-image-digest.path)'
+
+---
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: buildpacks-v3-heroku
+spec:
+  buildSteps:
+    - name: prepare
+      image: heroku/buildpacks:18
+      securityContext:
+        runAsUser: 0
+        capabilities:
+          add:
+            - CHOWN
+      command:
+        - chown
+      args:
+        - -R
+        - "1000:1000"
+        - /tekton/home
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+    - name: build-and-push
+      image: heroku/buildpacks:18
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          mkdir /tmp/cache /tmp/layers
+
+          /cnb/lifecycle/creator \
+            '-app=$(params.shp-source-context)' \
+            -cache-dir=/tmp/cache \
+            -layers=/tmp/layers \
+            -report=/tmp/report.toml \
+            '$(params.shp-output-image)'
+
+          # Store the image digest
+          grep digest /tmp/report.toml | tr -d ' \"\n' | sed s/digest=// > "$(results.shp-image-digest.path)"
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+
+---
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: buildpacks-v3
+spec:
+  buildSteps:
+    - name: prepare
+      image: docker.io/paketobuildpacks/builder:full
+      imagePullPolicy: Always
+      securityContext:
+        runAsUser: 0
+        capabilities:
+          add:
+            - CHOWN
+      command:
+        - chown
+      args:
+        - -R
+        - "1000:1000"
+        - /tekton/home
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+    - name: build-and-push
+      image: docker.io/paketobuildpacks/builder:full
+      imagePullPolicy: Always
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          mkdir /tmp/cache /tmp/layers
+
+          /cnb/lifecycle/creator \
+            '-app=$(params.shp-source-context)' \
+            -cache-dir=/tmp/cache \
+            -layers=/tmp/layers \
+            -report=/tmp/report.toml \
+            '$(params.shp-output-image)'
+
+          # Store the image digest
+          grep digest /tmp/report.toml | tr -d ' \"\n' | sed s/digest=// > "$(results.shp-image-digest.path)"
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+
+---
+# This Build Strategy will intentionally fail if the image has any
+# critical CVEs. It will not be pushed into the destination registry
+# if any critical vulnerabilities are found.
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: kaniko-trivy
+spec:
+  buildSteps:
+    - name: kaniko-build
+      image: gcr.io/kaniko-project/executor:v1.6.0
+      workingDir: $(params.shp-source-root)
+      securityContext:
+        runAsUser: 0
+        capabilities:
+          add:
+            - CHOWN
+            - DAC_OVERRIDE
+            - FOWNER
+            - SETGID
+            - SETUID
+            - SETFCAP
+            - KILL
+      env:
+        - name: HOME
+          value: /tekton/home
+        - name: AWS_ACCESS_KEY_ID
+          value: NOT_SET
+        - name: AWS_SECRET_KEY
+          value: NOT_SET
+      command:
+        - /kaniko/executor
+      args:
+        - --skip-tls-verify=true
+        - --dockerfile=$(build.dockerfile)
+        - --context=$(params.shp-source-context)
+        - --destination=$(params.shp-output-image)
+        - --oci-layout-path=/kaniko/oci-image-layout
+        - --snapshotMode=redo
+        - --no-push
+        - --tarPath
+        - /kaniko/tar-image/image.tar
+      volumeMounts:
+        - name: layout
+          mountPath: /kaniko/oci-image-layout
+        - name: tar
+          mountPath: /kaniko/tar-image
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+    - name: trivy-scan
+      image: docker.io/aquasec/trivy:0.20.0
+      volumeMounts:
+        - mountPath: /image/
+          name: tar
+      command:
+        - trivy
+      args:
+        - --exit-code=1
+        - --severity=CRITICAL
+        - --input
+        - /image/image.tar
+      env:
+        - name: HOME
+          value: /tekton/home
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+    - name: crane-push
+      image: gcr.io/go-containerregistry/crane:v0.6.0
+      securityContext:
+        runAsUser: 0
+      volumeMounts:
+        - mountPath: /image/
+          name: tar
+      command:
+        - crane
+      args:
+        - push
+        - /image/image.tar
+        - $(params.shp-output-image)
+      env:
+        - name: HOME
+          value: /tekton/home
+    - name: results
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          # Store the image digest
+          grep digest /kaniko/oci-image-layout/index.json | sed -E 's/.*sha256([^"]*).*/sha256\1/' | tr -d '\n' > "$(results.shp-image-digest.path)"
+
+          # Store the image size
+          du -b -c /kaniko/oci-image-layout/blobs/sha256/* | tail -1 | sed 's/\s*total//' | tr -d '\n' > "$(results.shp-image-size.path)"
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      volumeMounts:
+        - name: layout
+          mountPath: /kaniko/oci-image-layout
+
+---
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: kaniko
+spec:
+  buildSteps:
+    - name: build-and-push
+      image: gcr.io/kaniko-project/executor:v1.6.0
+      workingDir: $(params.shp-source-root)
+      securityContext:
+        runAsUser: 0
+        capabilities:
+          add:
+            - CHOWN
+            - DAC_OVERRIDE
+            - FOWNER
+            - SETGID
+            - SETUID
+            - SETFCAP
+            - KILL
+      env:
+        - name: HOME
+          value: /tekton/home
+        - name: DOCKER_CONFIG
+          value: /tekton/home/.docker
+        - name: AWS_ACCESS_KEY_ID
+          value: NOT_SET
+        - name: AWS_SECRET_KEY
+          value: NOT_SET
+      command:
+        - /kaniko/executor
+      args:
+        - --skip-tls-verify=true
+        - --dockerfile=$(build.dockerfile)
+        - --context=$(params.shp-source-context)
+        - --destination=$(params.shp-output-image)
+        - --oci-layout-path=/kaniko/oci-image-layout
+        - --snapshotMode=redo
+        - --push-retry=3
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+      volumeMounts:
+        - name: layout
+          mountPath: /kaniko/oci-image-layout
+    - name: results
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          # Store the image digest
+          grep digest /kaniko/oci-image-layout/index.json | sed -E 's/.*sha256([^"]*).*/sha256\1/' | tr -d '\n' > "$(results.shp-image-digest.path)"
+
+          # Store the image size
+          du -b -c /kaniko/oci-image-layout/blobs/sha256/* | tail -1 | sed 's/\s*total//' | tr -d '\n' > "$(results.shp-image-size.path)"
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      volumeMounts:
+        - name: layout
+          mountPath: /kaniko/oci-image-layout
+
+---
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: ko
+spec:
+  parameters:
+    - name: go-flags
+      description: "Value for the GOFLAGS environment variable."
+      default: ""
+    - name: go-version
+      description: "Version of Go, must match a tag from https://hub.docker.com/_/golang?tab=tags"
+      default: "1.16"
+    - name: ko-version
+      description: "Version of ko, must be either 'latest', or a release name from https://github.com/google/ko/releases"
+      default: latest
+    - name: package-directory
+      description: "The directory inside the context directory containing the main package."
+      default: "."
+    - name: target-platform
+      description: "Target platform to be built. For example: 'linux/arm64'. Multiple platforms can be provided separated by comma, for example: 'linux/arm64,linux/amd64'. The value 'all' will build all platforms supported by the base image. The value 'current' will build the platform on which the build runs."
+      default: current
+  buildSteps:
+    - name: prepare
+      image: golang:$(params.go-version)
+      imagePullPolicy: Always
+      securityContext:
+        runAsUser: 0
+        capabilities:
+          add:
+            - CHOWN
+      command:
+        - chown
+      args:
+        - -R
+        - "1000:1000"
+        - /tekton/home
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    - name: build-and-push
+      image: golang:$(params.go-version)
+      imagePullPolicy: Always
+      workingDir: $(params.shp-source-root)
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      env:
+        - name: DOCKER_CONFIG
+          value: /tekton/home/.docker
+        - name: HOME
+          value: /tekton/home
+        - name: GOFLAGS
+          value: $(params.go-flags)
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          # Parse image URL to extract repository and tag, must work with
+          # - a URL without a tag and a port: registry/image
+          # - a URL without a tag but a port: registry:port/image
+          # - a URL with a tag but without a port: registry/image:tag
+          # - a URL with both a tag and a port: registry:port/image:tag
+
+          IMAGE=$(params.shp-output-image)
+
+          REPO=
+          TAG=
+
+          IFS=':' read -ra PARTS <<< "${IMAGE}"
+          for PART in "${PARTS[@]}"; do
+            if [ "${REPO}" == "" ]; then
+              REPO="${PART}"
+          	elif [[ "${PART}" == *"/"* ]]; then
+              REPO="${REPO}:${PART}"
+            elif [ "${TAG}" == "" ]; then
+              TAG="${PART}"
+            else
+              REPO="${REPO}:${TAG}"
+              TAG="${PART}"
+            fi
+          done
+
+          # Determine the ko version
+          KO_VERSION='$(params.ko-version)'
+          if [ "${KO_VERSION}" == "latest" ]; then
+            KO_VERSION=$(curl --silent "https://api.github.com/repos/google/ko/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          fi
+
+          # Create one variable with v-suffix and one without as we need both for the download URL
+          if [[ ${KO_VERSION} = v* ]]; then
+            KO_VERSION_WITH_V=${KO_VERSION}
+            KO_VERSION_WITHOUT_V=${KO_VERSION:1}
+          else
+            KO_VERSION_WITH_V=v${KO_VERSION}
+            KO_VERSION_WITHOUT_V=${KO_VERSION}
+          fi
+
+          # Download ko to the temp directory
+          curl -f -s -L "https://github.com/google/ko/releases/download/${KO_VERSION_WITH_V}/ko_${KO_VERSION_WITHOUT_V}_$(uname)_$(uname -m | sed 's/aarch64/arm64/').tar.gz" | tar xzf - -C /tmp ko
+
+          # Determine the platform
+          PLATFORM='$(params.target-platform)'
+          if [ "${PLATFORM}" == "current" ]; then
+            PLATFORM="$(uname | tr '[:upper:]' '[:lower:]')/$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')"
+          fi
+
+          # Print version information
+          go version
+          echo "ko version $(/tmp/ko version)"
+
+          # Run ko
+
+          export GOROOT=$(go env GOROOT)
+          export KO_DOCKER_REPO="${REPO}"
+
+          pushd '$(params.shp-source-context)' > /dev/null
+            if [ "${TAG}" == "" ]; then
+              /tmp/ko publish '$(params.package-directory)' --bare --oci-layout-path=/tmp/layout --platform="${PLATFORM}"
+            else
+              /tmp/ko publish '$(params.package-directory)' --bare --oci-layout-path=/tmp/layout --platform="${PLATFORM}" --tags="${TAG}"
+            fi
+          popd > /dev/null
+
+          # Store the image digest
+          grep digest /tmp/layout/index.json | sed -E 's/.*sha256([^"]*).*/sha256\1/' | tr -d '\n' > '$(results.shp-image-digest.path)'
+
+          # Store the image size
+          du -b -c /tmp/layout/blobs/sha256/* | tail -1 | sed 's/\s*total//' | tr -d '\n' > '$(results.shp-image-size.path)'
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 65Mi
+
+---
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: source-to-image-redhat
+spec:
+  buildSteps:
+    - name: s2i-generate
+      image: registry.redhat.io/ocp-tools-43-tech-preview/source-to-image-rhel8:latest
+      workingDir: $(params.shp-source-root)
+      args:
+        - build
+        - $(params.shp-source-context)
+        - $(build.builder.image)
+        - $(params.shp-output-image)
+        - --as-dockerfile=/s2i/Dockerfile
+      volumeMounts:
+        - name: s2i
+          mountPath: /s2i
+    - name: buildah
+      image: quay.io/containers/buildah:v1.20.1
+      workingDir: /s2i
+      securityContext:
+        privileged: true
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          # Building the image
+          echo '[INFO] Building image $(params.shp-output-image)'
+          buildah bud --tag='$(params.shp-output-image)'
+
+          # Push the image
+          echo '[INFO] Pushing image $(params.shp-output-image)'
+          buildah push \
+            --tls-verify=false \
+            'docker://$(params.shp-output-image)'
+
+          # Store the digest result
+          buildah images \
+            --format='{{.Digest}}' \
+            '$(params.shp-output-image)' | tr -d "\n" > '$(results.shp-image-digest.path)'
+      volumeMounts:
+        - name: s2i
+          mountPath: /s2i
+
+---
+apiVersion: shipwright.io/v1alpha1
+kind: ClusterBuildStrategy
+metadata:
+  name: source-to-image
+spec:
+  buildSteps:
+    - command:
+        - /usr/local/bin/s2i
+        - build
+        - $(params.shp-source-context)
+        - $(build.builder.image)
+        - '--as-dockerfile'
+        - /gen-source/Dockerfile.gen
+      image: quay.io/openshift-pipeline/s2i:nightly
+      imagePullPolicy: Always
+      name: s2i-build-as-dockerfile
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+      workingDir: $(params.shp-source-root)
+    - args:
+        - '--skip-tls-verify=true'
+        - '--dockerfile=/gen-source/Dockerfile.gen'
+        - '--context=/gen-source'
+        - '--destination=$(params.shp-output-image)'
+        - '--oci-layout-path=/kaniko/oci-image-layout'
+        - '--snapshotMode=redo'
+        - '--push-retry=3'
+      command:
+        - /kaniko/executor
+      env:
+        - name: DOCKER_CONFIG
+          value: /tekton/home/.docker
+        - name: HOME
+          value: /tekton/home
+      image: gcr.io/kaniko-project/executor:v1.6.0
+      name: build-and-push
+      securityContext:
+        runAsUser: 0
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+            - CHOWN
+            - DAC_OVERRIDE
+            - FOWNER
+            - SETGID
+            - SETUID
+            - SETFCAP
+            - KILL
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+        - name: layout
+          mountPath: /kaniko/oci-image-layout
+      workingDir: /gen-source
+    - name: results
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          set -euo pipefail
+
+          # Store the image digest
+          grep digest /kaniko/oci-image-layout/index.json | sed -E 's/.*sha256([^"]*).*/sha256\1/' | tr -d '\n' > "$(results.shp-image-digest.path)"
+
+          # Store the image size
+          du -b -c /kaniko/oci-image-layout/blobs/sha256/* | tail -1 | sed 's/\s*total//' | tr -d '\n' > "$(results.shp-image-size.path)"
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      volumeMounts:
+        - name: layout
+          mountPath: /kaniko/oci-image-layout
+
+---

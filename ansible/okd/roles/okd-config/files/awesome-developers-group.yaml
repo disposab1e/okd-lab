@@ -1,6 +1,6 @@
 apiVersion: user.openshift.io/v1
 kind: Group
 metadata:
-  name: awesome-deveopers
+  name: awesome-developers
 users:
-  - awesome-deveoper
+  - awesome-developer

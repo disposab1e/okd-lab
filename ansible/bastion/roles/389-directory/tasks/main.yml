@@ -10,6 +10,8 @@
 
 - name: Install 389 Directoy Server
   shell: dnf -y module install 389-directory-server:stable/default
+  args:
+    warn: false
 
 - name: Publish Directory Server install config
   template: 
@@ -23,12 +25,12 @@
 
 - name: Copy ldap-server.pem
   copy:
-    src: ldap-server.crt
+    src: ~/github/okd-lab/.certs/ldap-server.crt
     dest: /etc/pki/tls/certs/ldap-server.pem
 
 - name: Copy ldap-server.key
   copy:
-    src: ldap-server.key
+    src: ~/github/okd-lab/.certs/ldap-server.key
     dest: /etc/pki/tls/private/ldap-server.key
 
 - name: Import ldap-server.pem

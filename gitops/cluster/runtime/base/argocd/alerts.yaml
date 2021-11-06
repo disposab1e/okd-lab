@@ -1,0 +1,26 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argocd-alert-app-outofsync
+spec:
+  groups:
+  - name: argocd
+    rules:
+    - alert: "ArgoCD App OutOfSync"
+      expr: argocd_app_info{sync_status="OutOfSync"} > 0
+      annotations:
+        message: "ArgoCD App is OutOfSync"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argocd-alert-app-unhealthy
+spec:
+  groups:
+  - name: argocd
+    rules:
+    - alert: ArgoCD App Unhealthy
+      expr: argocd_app_info{health_status!="Healthy"} > 0
+      annotations:
+        message: "ArgoCD App is Unhealthy"

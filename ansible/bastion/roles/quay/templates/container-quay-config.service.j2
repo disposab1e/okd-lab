@@ -24,7 +24,7 @@ ExecStart=/usr/bin/podman run \
     --ip {{ okd_lab_quay_config_ip }} \
     --name quay-config \
     -p 8081:8443 \
-    {{ okd_lab_quay_image }} config secret
+    {{ okd_lab_quay_image }} config {{ okd_lab_quay_config_password }}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
 PIDFile=%t/%n-pid

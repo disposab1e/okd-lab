@@ -55,9 +55,9 @@
     state: started
     enabled: yes
 
-- name: Pause 60 seconds
+- name: Pause 20 seconds
   pause:
-    seconds: '60'
+    seconds: '20'
 
 - name: Copy quay config
   template:
@@ -73,14 +73,6 @@
 - name: Pause 30 seconds
   pause:
     seconds: '30'
-
-- name: Add administrator
-  shell: |
-    podman exec -it quay-postgres /bin/bash -c "psql -d quay -U user -c \"INSERT INTO public.user VALUES (0,'965d4ed1-f6c9-4078-acd3-108399fbcdb2','administrator','$2a$12$2NfONl3aVhM3XJqGhIWfWuESg32jKKjepRkz3RUsEbcdaVaGY46pe','administrator-quay@example.com',true,null,false,false,false,0,'2021-02-02 15:25:07.262604',1209600,true,null,null,null,null,null,null,'2021-02-02 15:25:07.2626',null)\""
-
-- name: Pause 60 seconds
-  pause:
-    seconds: '60'
 
 - name: Start container-quay-mirror.service
   systemd:

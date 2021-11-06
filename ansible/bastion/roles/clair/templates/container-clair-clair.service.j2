@@ -21,13 +21,12 @@ ExecStart=/usr/bin/podman run \
     -d \
     --rm \
     --ip {{ okd_lab_clair_ip }} \
-    -p 6060:6060 \
-    -p 6061:6061 \
+    -e CLAIR_CONF=/clair/config.yaml \
+    -e CLAIR_MODE=combo \
+    -e SSL_CERT_DIR=/clair \
     --name=clair-clair \
-    --privileged=true \
-    -v /var/opt/clair/config:/clair/config:Z \
-    -v /var/opt/clair/config:/etc/pki/ca-trust/source/anchors:Z \
-    {{ okd_lab_quay_clair_image }}
+    -v /var/opt/clair/config:/clair:Z \
+    {{ okd_lab_quay_clair_image }} -conf /clair/config.yaml -mode combo 
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
 PIDFile=%t/%n-pid

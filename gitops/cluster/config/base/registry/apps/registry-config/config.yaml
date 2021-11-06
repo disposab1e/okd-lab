@@ -1,0 +1,24 @@
+---
+apiVersion: imageregistry.operator.openshift.io/v1
+kind: Config
+metadata:
+  name: cluster
+spec:
+  httpSecret: cbd8f616eacb93be87761ecc6ff2abc06d6f1ed37063a7ee3dcb2f48e4cbb97257b9556ce4d5f5206cd874e58f4ca1453af0a653855abacb231f5d20a3c3b524
+  logLevel: Normal
+  managementState: Managed
+  observedConfig: null
+  operatorLogLevel: Normal
+  proxy: {}
+  replicas: 3
+  requests:
+    read:
+      maxWaitInQueue: 0s
+    write:
+      maxWaitInQueue: 0s
+  rolloutStrategy: RollingUpdate
+  storage:
+    pvc:
+      claim: pvc-openshift-image-registry
+    managementState: Managed
+  unsupportedConfigOverrides: null

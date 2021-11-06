@@ -19,7 +19,8 @@ ExecStart=/usr/bin/podman run \
     -d \
     --name quay-redis \
     --ip {{ okd_lab_quay_redis_ip }} \
-    {{ okd_lab_quay_redis_image }} --requirepass strongpassword
+    -e REDIS_PASSWORD={{ okd_lab_quay_redis_password }} \
+    {{ okd_lab_quay_redis_image }} --requirepass {{ okd_lab_quay_redis_password }}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
 PIDFile=%t/%n-pid

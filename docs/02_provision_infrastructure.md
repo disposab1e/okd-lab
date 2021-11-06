@@ -1,6 +1,6 @@
 # Provision infrastructure
 
-< Prerequisite: [Install - lab.okd.example.com](01_setup_lab.md)
+< Prerequisite: [Setup - lab.okd.example.com](01_setup_lab.md)
 
 * * *
 
@@ -9,12 +9,13 @@
 ```bash
 [lab@lab]
 
-cd ~/
+mkdir ~/github
+cd ~/github
 git clone https://github.com/disposab1e/okd-lab.git
 
 ```
 
-...or connect with [Visual Studio Code Insiders](https://code.visualstudio.com/insiders/) and the [Remote - SSH extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) and clone from there.
+...or connect with [Visual Studio Code](https://code.visualstudio.com/) and the [Remote - SSH extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) and clone from there.
 
 ## Initialize default virtualization environment
 
@@ -28,22 +29,11 @@ This small application is a great viewer for the next steps __and__ additionally
 
 ![Virtual Machine Manager - GUI](images/vmm/01.png)
 
-## Install automation software
-
-Install Packer, Terraform, Ansible Collections and generate SSH key for `lab` user.
-
-```bash
-[lab@lab]
-
-ansible-playbook -K ~/okd-lab/ansible/lab/automation.yml
-
-```
-
-## Configure the `lab` 
+## Configure `lab`
 
 Please change these settings to fit your needs!
 
-`[ lab@lab ~/okd-lab/ansible/vars/vars.yaml ]`
+`[ lab@lab ~/github/okd-lab/ansible/vars/vars.yaml ]`
 
 ```yaml
 
@@ -55,38 +45,56 @@ Please change these settings to fit your needs!
 
 ```
 
+## Prepare `lab`    
+
+Install Packer, Terraform, Ansible Collections, generate SSH key for user `lab`, configure chronyd and use custom CA
+
+```bash
+[lab@lab]
+
+ansible-playbook -K ~/github/okd-lab/ansible/lab/lab.yml
+
+Password: root
+
+```
+
 ## Sizing the `lab`
 
-__It is time to think about sizing! Please [check the defaults and change them as needed](02_sizing.md).__
+__It is time to think about sizing! Please [check the defaults and change them as needed](sizing.md).__
 
 ## Build `bastion` VM
 
 ```bash
 [lab@lab]
 
-cd ~/okd-lab/packer/bastion
+cd ~/github/okd-lab/packer/bastion
 packer build -force bastion.json
-mv ~/okd-lab/packer/bastion/output-bastion/bastion.qcow2 /tmp/
+mv ~/github/okd-lab/packer/bastion/output-bastion/bastion.qcow2 /tmp/
 
 ```
+This will take some time! Be patient!
 
 ## Build `lb` VM
 
 ```bash
 [lab@lab]
 
-cd ~/okd-lab/packer/lb
+cd ~/github/okd-lab/packer/lb
 packer build -force lb.json
-mv ~/okd-lab/packer/lb/output-lb/lb.qcow2 /tmp/
+mv ~/github/okd-lab/packer/lb/output-lb/lb.qcow2 /tmp/
 
 ```
 
-## KVM Network
+This will take some time! Be patient!
+
+## OKD - KVM Network
 
 ```bash
 [lab@lab]
 
-ansible-playbook -K ~/okd-lab/ansible/lab/network.yml
+ansible-playbook -K ~/github/okd-lab/ansible/lab/network.yml
+
+Password: root
 
 ```
 
@@ -95,33 +103,34 @@ ansible-playbook -K ~/okd-lab/ansible/lab/network.yml
 ```bash
 [lab@lab]
 
-cd ~/okd-lab/terraform/bastion
+cd ~/github/okd-lab/terraform/bastion
 terraform init
 terraform apply -auto-approve
 
 ```
+
+This will take some time! Be patient!
 
 ## Provision `lb` host
 
 ```bash
 [lab@lab]
 
-cd ~/okd-lab/terraform/lb
+cd ~/github/okd-lab/terraform/lb
 terraform init
 terraform apply -auto-approve
 
 ```
 
+This will take some time! Be patient!
+
 ## Stroll around
 
 It is time to reap the first fruits.
 
-Start Firefox and import bookmarks some `~/okd-lab/bookmarks.json`
+Start Firefox and import bookmarks from `~/github/okd-lab/bookmarks/bookmarks.json`
 
-Have a look at the [Appendix](99_appendix.md) for detailed information.
-
-## Import Bookmarks in Firefox
-
+Have a look at the [Appendix](appendix.md) for more detailed information.
 
 * * *
 

@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: tekton-pipelines
+
+commonLabels:
+  app.kubernetes.io/instance: tekton-triggers
+
+resources:
+- rbac.yaml
+- https://gitlab.okd.example.com/lab/okd-lab.git//gitops/manifests/tekton-triggers?ref=HEAD
+- monitoring.yaml
+
+# - Enable Prometheus monitoring
+patchesStrategicMerge:
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: config-observability-triggers
+    namespace: tekton-pipelines
+  data:
+    metrics.backend-destination: prometheus

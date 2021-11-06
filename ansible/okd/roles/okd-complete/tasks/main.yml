@@ -40,7 +40,7 @@
     timeout: '90'
 
 - name: Apply MachineConfigs for chrony
-  community.kubernetes.k8s:
+  k8s:
     state: present
     definition: "{{ lookup('file', '{{ item }}.yaml') | from_yaml }}"
   with_items:

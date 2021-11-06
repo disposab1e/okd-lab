@@ -3,12 +3,12 @@ prompt 0
 timeout 30
 MENU TITLE OKD-LAB - PXE MENU
 
-LABEL Centos 8.3 - Standard Kickstart
-    MENU LABEL Centos 8.3 - Standard Kickstart
+LABEL Centos 8.4 - Standard Kickstart
+    MENU LABEL Centos 8.4 - Standard Kickstart
     KERNEL /networkboot/vmlinuz
     APPEND  initrd=/networkboot/initrd.img  inst.repo=http://10.0.0.2/centos  ks=http://10.0.0.2/kickstart/ks.cfg
 
-LABEL Centos 8.3 - Graphical Installer
-    MENU LABEL Centos 8.3 - Graphical Installer
+LABEL Centos 8.4 - Graphical Installer
+    MENU LABEL Centos 8.4 - Graphical Installer
     KERNEL /networkboot/vmlinuz
     APPEND  initrd=/networkboot/initrd.img  method=http://10.0.0.2/centos

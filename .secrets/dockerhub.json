@@ -1,6 +1,0 @@
-{
-    "username": "DockerHub Username",
-    "password": "DockerHub Password/Token",
-    "email": "DockerHub Email",
-    "server": "docker.io"
-}
