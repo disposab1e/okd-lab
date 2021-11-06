@@ -54,9 +54,7 @@ __95% of the installation process is copy&paste. No deep Linux or OKD4/Kubernete
 - [Install CentOS 8.4](docs/00_install_centos.md)
 - [Setup - lab.okd.example.com](docs/01_setup_lab.md)
 - [Provision infrastructure](docs/02_provision_infrastructure.md)
-- [Install and configure OKD4](docs/03_install_okd.md)
-- [Day-1 cluster configurations the Gitops way](docs/03_install_okd.md)
-
+- [Install OKD4](docs/03_install_okd.md)
 
 *The missing 5% is a guided [CentOS 8.4](docs/00_install_centos.md) Linux installation and using a Firefox to create some tokens.
 
