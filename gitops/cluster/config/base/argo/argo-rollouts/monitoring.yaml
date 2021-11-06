@@ -1,0 +1,15 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: argo-rollouts-metrics
+  name: argo-rollouts-metrics
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argo-rollouts-metrics
+      app.kubernetes.io/instance: argo-rollouts

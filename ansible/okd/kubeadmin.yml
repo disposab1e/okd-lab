@@ -3,7 +3,7 @@
 #
 # Remove kubeadmin user
 #
-# ansible-playbook ~/okd-lab/ansible/okd/kubeadmin.yml
+# ansible-playbook ~/github/okd-lab/ansible/okd/kubeadmin.yml
 #
 #######################################################################
 - hosts: bastion

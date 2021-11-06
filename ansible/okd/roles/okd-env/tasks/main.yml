@@ -1,0 +1,186 @@
+---
+- name: Create some directories
+  file:
+    path: '~/{{ item.dir }}'
+    state: directory
+  with_items:
+    - { dir: 'bin' }
+    - { dir: 'installer' }
+    - { dir: 'ignition' }
+  tags: env-setup
+
+- name: Download oc client
+  get_url:
+    url: '{{ okd_lab_okd_oc_client }}'
+    dest: ~/bin/
+    mode: 0700
+  tags: env-setup
+
+- name: Unarchive oc client
+  unarchive:
+    src: ~/bin/{{ okd_lab_okd_oc_client_archive }}
+    dest: ~/bin
+    remote_src: yes
+  tags: env-setup
+
+- name: Cleanup some archives
+  file: 
+    path: '~/bin/{{ item }}'
+    state: absent
+  with_items:
+    - 'LICENSE'
+    - '{{ okd_lab_okd_oc_client_archive }}'
+  tags: env-setup
+
+- name: Setup .bashrc 
+  blockinfile:
+    path: ~/.bashrc
+    block: |
+      KUBECONFIG="${HOME}/installer/auth/kubeconfig"
+      export KUBECONFIG
+      PATH="$PATH:${HOME}/bin:${HOME}/installer"
+      export PATH
+  tags: env-setup
+
+- name: Copy secret
+  copy:
+    src: ~/github/okd-lab/.secrets/pull-secret.json
+    dest: ~/installer/pull-secret.json
+    mode: '0660'
+  tags: env-setup
+
+- name: Slurp /pull-secret.json
+  slurp:
+    src: '~/installer/pull-secret.json'
+  register: pull_secret_json
+  tags: env-setup
+
+- name: Trim secrets
+  copy:
+    dest: "~/installer/secret.json"
+    content: |
+      {{ pull_secret_json['content'] | b64decode | trim  }}
+  tags: env-setup
+
+- name: Cleanup secrets
+  file: 
+    path: '~/installer/pull-secret.json'
+    state: absent
+  tags: env-setup
+
+- name: Publish install-config.yaml
+  template: 
+    src:  install-config.yaml.j2
+    dest: ~/installer/install-config.yaml
+  tags: env-setup
+
+- name: Slurp id_rsa_pub
+  slurp:
+    src: '~/.ssh/id_rsa.pub'
+  register: id_rsa_pub_for_install_config
+  tags: env-setup
+
+- name: Set public key
+  replace:
+    path: ~/installer/install-config.yaml
+    regexp: "sshKey:"
+    replace: "sshKey: '{{ id_rsa_pub_for_install_config['content'] | b64decode | trim  }}'"
+  tags: env-setup
+
+- name: Slurp secret.json
+  slurp:
+    src: '~/installer/secret.json'
+  register: pull_secret_json
+  tags: env-setup
+
+- name: Set secret
+  replace:
+    path: ~/installer/install-config.yaml
+    regexp: "pullSecret:"
+    replace: "pullSecret: '{{ pull_secret_json['content'] | b64decode | trim  }}'"
+  tags: env-setup
+
+- name: Archive install-config.yaml
+  copy:
+    src: ~/installer/install-config.yaml
+    dest: ~/installer/install-config.yaml.original
+    remote_src: yes
+  tags: env-setup
+
+- name: Download Installer
+  get_url:
+    url: '{{ okd_lab_okd_installer }}'
+    dest: ~/installer/
+    mode: 0700
+  tags: env-setup
+
+- name: Unarchive Installer
+  unarchive:
+    src: ~/installer/{{ okd_lab_okd_installer_archive }}
+    dest: ~/installer
+    remote_src: yes
+  tags: env-setup
+
+- name: Cleanup installer archive
+  file: 
+    path: ~/installer/{{ okd_lab_okd_installer_archive }}
+    state: absent
+  tags: env-setup
+
+- name: Generate ignition files
+  shell: |
+    openshift-install create ignition-configs --dir "${HOME}/installer"
+  become_user: lab
+  become: true
+  tags: env-setup
+
+- name: Create ignition directory
+  file: 
+    path: ~/ignition/{{ okd_lab_install_okd_name }}
+    state: directory
+  tags: env-setup
+
+- name: Move ignition files
+  shell: mv ~/installer/*.ign ~/ignition/{{ okd_lab_install_okd_name }}
+  tags: env-setup
+
+- name: Sync ignition files
+  shell: |
+    rsync -r ~/ignition/*  /usr/share/nginx/html/ignition
+    chmod -R 777 /usr/share/nginx/html/ignition/*
+  tags: env-setup
+
+- name: Delete directories
+  file:
+    path: '~/{{ item.dir }}'
+    state: absent
+  with_items:
+    - { dir: 'ignition' }
+    - { dir: 'installer' }
+  tags: env-cleanup
+
+- name: Delete clis
+  file:
+    path: '~/bin/{{ item.file }}'
+    state: absent
+  with_items:
+    - { file: 'oc' }
+    - { file: 'kubectl' }
+  tags: env-cleanup
+
+- name: Delete ignitions
+  file:
+    path: /usr/share/nginx/html/ignition/*
+    state: absent
+  tags: env-cleanup
+
+- name: Cleanup .bashrc 
+  blockinfile:
+    path: ~/.bashrc
+    state: absent
+    block: |
+      KUBECONFIG="${HOME}/installer/auth/kubeconfig"
+      export KUBECONFIG
+      PATH="$PATH:${HOME}/bin:${HOME}/installer"
+      export PATH
+  tags: env-cleanup

@@ -1,0 +1,69 @@
+---
+apiVersion: "logging.openshift.io/v1"
+kind: "ClusterLogging"
+metadata:
+  name: "instance" 
+spec:
+  managementState: "Managed"  
+  logStore:
+    type: "elasticsearch"  
+    retentionPolicy: 
+      application:
+        maxAge: 1d
+      infra:
+        maxAge: 7d
+      audit:
+        maxAge: 7d
+    elasticsearch:
+      nodeCount: 3 
+      resources: 
+        limits:
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 1Gi
+      nodeSelector: 
+          node-role.kubernetes.io/infra: ''
+      storage:
+        storageClassName: "rook-ceph-block" 
+        size: 200G
+      redundancyPolicy: "SingleRedundancy"
+  visualization:
+    type: "kibana"  
+    kibana:
+      resources: 
+        limits:
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 2Gi
+      proxy:
+        resources: 
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      replicas: 3
+      nodeSelector: 
+          node-role.kubernetes.io/infra: ''
+  curation:
+    type: "curator"
+    curator:
+      resources: 
+        limits:
+          memory: 200Mi
+        requests:
+          cpu: 200m
+          memory: 200Mi
+      schedule: "30 3 * * *" 
+      nodeSelector: 
+          node-role.kubernetes.io/infra: ''
+  collection:
+    logs:
+      type: "fluentd"  
+      fluentd: 
+        tolerations:
+        - key: "node.ocs.openshift.io/storage"  
+          operator: "Exists"  
+          effect: "NoSchedule"  

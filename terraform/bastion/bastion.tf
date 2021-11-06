@@ -74,7 +74,7 @@ resource "libvirt_domain" "bastion" {
       password = "root"
       host     = "10.0.0.2"
     }
-    source      = "~/okd-lab/.ssh"
+    source      = "~/.ssh"
     destination = "/root/"
   }
 
@@ -91,7 +91,7 @@ resource "libvirt_domain" "bastion" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook --ssh-extra-args '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' -i '10.0.0.2,' --private-key ~/okd-lab/.ssh/id_rsa -T 300 ~/okd-lab/ansible/bastion/terraform.yml"
+    command = "ansible-playbook --ssh-extra-args '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' -i '10.0.0.2,' --private-key ~/.ssh/id_rsa -T 300 ~/github/okd-lab/ansible/bastion/terraform.yml"
   }
 
 }

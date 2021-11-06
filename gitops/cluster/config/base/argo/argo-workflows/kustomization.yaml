@@ -1,0 +1,73 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argo
+
+commonLabels:
+  app.kubernetes.io/instance: argo-workflows
+
+resources:
+- namespace.yaml
+- sso.yaml
+- argo-workflows-ca.yaml
+- https://gitlab.okd.example.com/lab/okd-lab.git//gitops/manifests/argo-workflows?ref=HEAD
+- monitoring.yaml
+- route.yaml
+
+patches:
+- target:
+    version: v1
+    group: apps
+    kind: Deployment
+    name: argo-server
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/readinessProbe/httpGet/scheme
+      value: "HTTP"
+    - op: replace
+      path: /spec/template/spec/containers/0/args
+      value: [
+        "server",
+        "--secure=false",
+        "--auth-mode",
+        "sso"
+      ]
+
+patchesStrategicMerge:
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: workflow-controller-configmap
+  data:
+    containerRuntimeExecutor: pns
+    sso: |
+      issuer: https://argocd.apps.okd.example.com/api/dex
+      clientId:
+        name: argo-workflows-sso
+        key: client-id
+      clientSecret:
+        name: argo-workflows-sso
+        key: client-secret
+      redirectUrl: https://argo.apps.okd.example.com/oauth2/callback
+
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: argo-server
+  spec:
+    template:
+      spec:
+        volumes:
+          - name: ca
+            configMap:
+              name: argo-workflows-ca
+        containers:
+        - name: argo-server
+          volumeMounts:
+            - mountPath: "/etc/ssl/certs"
+              name: ca
+          env:
+            - name: GODEBUG
+              value: "x509ignoreCN=0"

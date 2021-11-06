@@ -1,6 +1,7 @@
-# Install CentOS 8.3
+# Install CentOS 8.4
 
-These Screenshots will guide you through a typical CentOS 8.3 installation. If you follow the Hetzner path, you can easily start a [CentOS 8.3 installation with Hetzner](00_hetzner.md).
+These Screenshots will guide you through a typical CentOS 8.4 installation. If you follow the Hetzner path, you can easily start a [CentOS 8.4 installation with Hetzner](hetzner.md).
+
 
 ## Welcome to Centos
 
@@ -20,11 +21,9 @@ Choose your preferred keyboard layout.
 
 ## Date & Time
 
-Choose your timezone and add a custom NTP server. Disable the default NTP servers.
+Choose your timezone.
 
 ![Date & Time](images/centos/04.png)
-
-![Date & Time](images/centos/05.png)
 
 ## Kdump
 
@@ -58,7 +57,7 @@ Set IPv6 to `Link-Lokal Only`.
 
 ## Installation Destination
 
-This example assumes two hard drives to build a software raid system with LVM. Apply it to your needs.
+This example assumes two hard drives for a `software raid` system with LVM. Apply it to your needs.
 
 ![Installation Destination](images/centos/11.png)
 
@@ -115,4 +114,4 @@ Attention! __DO NOT__ use a different User name!
 
 * * *
 
-Next > [Install - lab.okd.example.com](01_setup_lab.md)
+Next > [Setup - lab.okd.example.com](01_setup_lab.md)

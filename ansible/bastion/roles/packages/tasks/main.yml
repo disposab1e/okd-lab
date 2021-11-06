@@ -1,0 +1,21 @@
+---
+- name: Enable PowerTools repository
+  shell: |
+    dnf config-manager --set-enabled powertools
+
+- name: Install packages
+  dnf:
+    name: ['podman', 'buildah', 'skopeo', 'cockpit-podman', 'git', 'git-lfs', 'ansible', 'jq', 'fuse-sshfs']
+    state: present
+
+- name: Ensure podman.socket is enabled and started
+  service:
+    name: podman.socket
+    state: started
+    enabled: yes
+
+- name: Install openshift python package
+  pip:
+    name: openshift
+    umask: "0022"
+  become: True

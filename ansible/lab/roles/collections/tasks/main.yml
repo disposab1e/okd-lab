@@ -1,0 +1,12 @@
+---
+- name: Install community.kubernetes collection
+  shell: |
+    ansible-galaxy collection install community.kubernetes --force-with-deps
+
+- name: Install community.okd collection
+  shell: |
+    ansible-galaxy collection install community.okd --force-with-deps
+
+- name: Install community.crypto collection
+  shell: |
+    ansible-galaxy collection install community.crypto --force-with-deps

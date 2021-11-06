@@ -1,21 +1,27 @@
 ---
-- name: Kickstart Bastion Host with terraform
+- name: Kickstart Bastion Host with terraform (root)
   hosts: 10.0.0.2
   vars_files:
     - vars/vars.yaml
-  gather_facts: no
   remote_user: root
   roles:
-# required
     - cleanup
-    - automation
-    - ca
     - 389-directory
     - ipxe
-    - git
-    - container-tools
+    - packages
     - clair
     - quay
-# optional
+    - user-lab
+    - clis
     - gitlab
     - artifactory
+
+- name: Kickstart Bastion Host with terraform (lab)
+  hosts: 10.0.0.2
+  vars_files:
+    - vars/vars.yaml
+  become_user: lab
+  become: true
+  become_flags: '-i'  
+  roles:
+    - collections

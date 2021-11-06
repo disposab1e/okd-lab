@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: policy-reporter-metrics
+  name: policy-reporter-metrics
+spec:
+  endpoints:
+  - interval: 30s
+    port: http
+  selector:
+    matchLabels: 
+      app.kubernetes.io/name: policy-reporter

@@ -1,8 +1,0 @@
----
-spec:
-  rolloutStrategy: Recreate
-  managementState: Managed
-  storage:
-    emptyDir:
-    pvc:
-      claim: openshift-image-registry

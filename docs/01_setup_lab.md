@@ -1,14 +1,14 @@
-# Install - lab.okd.example.com
+# Setup - lab.okd.example.com
 
-< Prerequisite: [Install Centos 8.3](00_install_centos.md)
+< Prerequisite: [Install Centos 8.4](00_install_centos.md)
 
 * * *
 
-Typically this is a one time installation. Not to much automation here, just follow step by step and __copy&paste__.
+Typically this is a one time installation. Not to much automation here, just follow step by step with `copy&paste`.
 
 ## Clone `okd-lab`
 
-Clone this project to your home desktop user directory where you start your journey.
+Clone this project to your home desktop e.g. your user home directory.
 
 ```bash
 [home@home]
@@ -18,13 +18,13 @@ git clone https://github.com/disposab1e/okd-lab.git
 
 ```
 
-## Prepare guide (optional)
+## Prepare docs (optional)
 
 To follow the __copy&paste__ style of this guide it can  be useful to set the IP address of your host to some commands. Just use your favorite tool and replace `YO.UR.I.P` in this `README.md` with your public IP address.
 
 ## SSH and user configuration
 
-### Generate new SSH keys (or keep your existing)
+### Generate new SSH keys (or use an existing one)
 
 Accept all settings and use NO passphrase.
 
@@ -53,12 +53,18 @@ vi ~/.ssh/config
 
 # Add to your existing file:
 
-Host YO.UR.I.P
+Host lab
   HostName YO.UR.I.P
   IdentityFile ~/.ssh/okd_lab_id_rsa
   User lab
 
-Host 10.0.0.2
+Host bastion-lab
+  HostName 10.0.0.2
+  ProxyJump YO.UR.I.P
+  User lab
+  ForwardAgent yes
+
+Host bastion-root
   HostName 10.0.0.2
   ProxyJump YO.UR.I.P
   User root
@@ -82,11 +88,18 @@ ssh lab@YO.UR.I.P
 ```bash
 [lab@lab]
 
-sudo visudo
-
-Add line:
-
+sudo tee -a /etc/sudoers << END
 lab ALL=(ALL) NOPASSWD:ALL
+END
+
+```
+
+### Update CentOS
+
+```bash
+[lab@lab]
+
+sudo dnf -y update
 
 ```
 
@@ -95,7 +108,7 @@ lab ALL=(ALL) NOPASSWD:ALL
 ```bash
 [lab@lab]
 
-sudo sed -i "s/#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
+sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 sudo sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g" /etc/ssh/sshd_config
 sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
 sudo sed -i "s/GSSAPIAuthentication yes/GSSAPIAuthentication no/g" /etc/ssh/sshd_config
@@ -125,36 +138,25 @@ choose: root
 
 ```
 
-### Install GNOME Desktop, update all and reboot
+### Install GNOME Desktop
 
 ```bash
 [lab@lab]
 
-sudo yum -y group install "Server with GUI"
-sudo yum -y update
-sudo reboot -h now
+sudo dnf -y groupinstall "Server with GUI"
 
 ```
 
-### Back to `lab`
-
-```bash
-[home@home]
-
-ssh lab@YO.UR.I.P
-
-```
-
-### Install VNC client an and server
+### Install VNC client and server
 
 ```bash
 [lab@lab]
 
-sudo yum -y install tigervnc tigervnc-server
+sudo dnf -y install tigervnc tigervnc-server
 
 ```
 
-### Prepare VNC service for lab user
+### Prepare VNC service for user lab
 
 ```bash
 [lab@lab]
@@ -167,7 +169,7 @@ sudo bash -c 'cat << EOF > /etc/tigervnc/vncserver-config-defaults
 session=gnome
 alwaysshared
 localhost
-geometry=1920x1200    
+geometry=2560x1440    
 EOF'
 
 ```
@@ -181,7 +183,7 @@ vncpasswd
 
 choose: vnclab
 
-Say "no" at the end
+Choose "n" at the end
 
 ```
 
@@ -242,6 +244,10 @@ sudo systemctl stop kdump
 sudo systemctl disable kdump
 sudo systemctl mask kdump
 
+sudo systemctl stop mdmonitor
+sudo systemctl disable mdmonitor
+sudo systemctl mask mdmonitor
+
 ```
 
 ### Remove dhcpv6-client from firewall
@@ -260,7 +266,7 @@ sudo firewall-cmd --zone=public --list-all
 ```bash
 [lab@lab]
 
-sudo yum -y install cockpit cockpit-dashboard cockpit-machines cockpit-networkmanager cockpit-packagekit cockpit-storaged
+sudo dnf -y install cockpit cockpit-machines cockpit-networkmanager
 
 sudo systemctl enable cockpit.socket
 
@@ -277,7 +283,7 @@ sudo systemctl restart cockpit.socket
 
 ```
 
-### Disable cockpit in firewall
+### Remove cockpit from firewall
 
 ```bash
 [lab@lab]
@@ -288,22 +294,12 @@ sudo firewall-cmd --zone=public --list-all
 
 ```
 
-
-### Install nmap
-
-```bash
-[lab@lab]
-
-sudo yum -y install nmap
-
-```
-
 ### Install Virtualization Clients
 
 ```bash
 [lab@lab]
 
-sudo yum -y install @virtualization-client
+sudo dnf -y install @virtualization-client
 
 ```
 
@@ -322,9 +318,9 @@ newgrp libvirt
 ```bash
 [lab@lab]
 
-sudo yum -y install epel-release
+sudo dnf -y install epel-release
 
-sudo yum -y install ansible git git-lfs
+sudo dnf -y install ansible git git-lfs
 
 ```
 
@@ -333,22 +329,24 @@ sudo yum -y install ansible git git-lfs
 ```bash
 [lab@lab]
 
+sudo dnf -y install nmap
+
 sudo lsof -n -i TCP| fgrep LISTEN
 nmap -sT YO.UR.I.P
 sudo nmap -sU YO.UR.I.P
 
 ```
 
-## Finally :-)
+## Reboot
 
 ```bash
 [lab@lab]
 
-sudo reboot -h now
+sudo reboot
 
 ```
 
-## Open your VNC tunnel and connect with your VNC client
+## Open a VNC tunnel and connect with VNC client
 
 ```bash
 [home@home]

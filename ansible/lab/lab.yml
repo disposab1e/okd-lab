@@ -1,0 +1,35 @@
+---
+#######################################################################
+#
+# Install Packer, Terraform, Ansible Collections, 
+# generate SSH key for lab user, configure chronyd and use custom CA
+#
+# ansible-playbook ~/github/okd-lab/ansible/lab/lab.yml
+#
+#######################################################################
+- hosts: localhost (root)
+  vars_files:
+    - vars/vars.yaml
+  gather_facts: no
+  become: yes
+  collections:
+    - community.crypto
+  connection: local
+  tasks:
+    - import_role:
+        name: chrony
+    - import_role:
+        name: packages
+    - import_role:
+        name: ssh
+    - import_role:
+        name: certs
+
+- hosts: localhost (lab)
+  vars_files:
+    - vars/vars.yaml
+  become_user: lab
+  become: true
+  become_flags: '-i'  
+  roles:
+    - collections

@@ -8,13 +8,16 @@ Documentation=man:podman-generate-systemd(1)
 Wants=network.target
 After=container-quay-postgres.service
 After=container-quay-redis.service
+After=container-clair-clair.service
 Requires=container-quay-postgres.service
 Requires=container-quay-redis.service
-
+Requires=container-clair-clair.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
+
 Restart=on-failure
+RestartSec=30
 ExecStartPre=/usr/bin/rm -f %t/%n-pid %t/%n-cid
 ExecStart=/usr/bin/podman run \
     --conmon-pidfile %t/%n-pid \
@@ -22,10 +25,10 @@ ExecStart=/usr/bin/podman run \
     --cgroups=no-conmon \
     --rm \
     -d \
+    --privileged \
     --ip {{ okd_lab_quay_ip }} \
     --name=quay-quay \
-    --privileged=true \
-    -v /var/opt/quay/config:/conf/stack:Z \
+    -v /var/opt/quay/config:/quay-registry/conf/stack:Z \
     -v /var/opt/quay/storage:/datastorage:Z \
     {{ okd_lab_quay_image }}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10

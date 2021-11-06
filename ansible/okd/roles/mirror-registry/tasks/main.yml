@@ -1,50 +1,35 @@
 ---
-- name: Create Mirror Registry organization
+- name: Create organization
   uri: 
     url: '{{ okd_lab_quay_api_url }}/organization/'
     method: POST
     validate_certs: no
     return_content: yes
     headers:
-      Authorization: Bearer {{lookup('file', '{{ playbook_dir }}/../../.secrets/quay-admin-token')}}
+      Authorization: Bearer {{ okd_lab_quay_lab_token }}
     status_code: '201'
-    body: "{\"name\":\"admin_okd_registry\"}"
+    body: "{\"name\":\"okd\"}"
     body_format: json
   tags:
     - registry-mirror
     - mirror
 
-- name: Create Mirror Registry repository {{ okd_lab_install_okd_name }}
-  uri: 
-    url: '{{ okd_lab_quay_api_url }}/repository'
-    method: POST
-    validate_certs: no
-    return_content: yes
-    headers:
-      Authorization: Bearer {{lookup('file', '{{ playbook_dir }}/../../.secrets/quay-admin-token')}}
-    status_code: '201'
-    body: "{\"namespace\":\"admin_okd_registry\",\"repository\":\"{{ okd_lab_install_okd_name }}\",\"description\":\"Repository for {{ okd_lab_install_okd_name }}\",\"visibility\":\"public\"}"
-    body_format: json
-  tags: 
-    - registry-mirror
-    - mirror
-
-- name: Mirror Registry
+- name: Mirror
   shell: oc adm -a ${HOME}/installer/secret.json release mirror \
     --from=quay.io/openshift/okd:{{ okd_lab_install_okd_version }} \
-    --to={{ okd_lab_quay_hostname }}/admin_okd_registry/{{ okd_lab_install_okd_name }} \
-    --to-release-image={{ okd_lab_quay_hostname }}/admin_okd_registry/{{ okd_lab_install_okd_name }}:{{ okd_lab_install_okd_version }}
+    --to={{ okd_lab_quay_hostname }}/okd/{{ okd_lab_install_okd_name }} \
+    --to-release-image={{ okd_lab_quay_hostname }}/okd/{{ okd_lab_install_okd_name }}:{{ okd_lab_install_okd_version }}
   tags: 
     - registry-mirror
     - mirror
 
 - name: Cleanup organization
   uri: 
-    url: '{{ okd_lab_quay_api_url }}/organization/admin_okd_registry'
+    url: '{{ okd_lab_quay_api_url }}/organization/okd'
     method: DELETE
     return_content: yes
     headers:
-      Authorization: Bearer {{lookup('file', '{{ playbook_dir }}/../../.secrets/quay-admin-token')}}
+      Authorization: Bearer {{ okd_lab_quay_lab_token }}
     status_code: '204'
   tags: 
     - registry-cleanup

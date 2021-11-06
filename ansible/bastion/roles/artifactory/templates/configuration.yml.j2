@@ -129,6 +129,30 @@ remoteRepositories:
     listRemoteFolderItems: true
     blockMismatchingMimeTypes: true
     unusedArtifactsCleanupPeriodHours: 0
+  jfrog-plugins-release-remote:
+    type: maven 
+    description: "JFrog Plugin Releases remote"
+    url: https://oss.jfrog.org/artifactory/plugins-release/
+    assumedOfflinePeriodSecs: 300
+    repoLayout: maven-2-default
+    maxUniqueSnapshots: 0
+    remoteRepoChecksumPolicyType: pass-thru
+    fetchJarsEagerly: false
+    fetchSourcesEagerly: false
+    handleReleases: true
+    handleSnapshots: true
+    excludesPattern:
+    includesPattern:  "**/*"
+    socketTimeoutMillis: 45000
+    queryParams: 
+    blackedOut: false
+    enableCookieManagement: false
+    synchronizeProperties: false
+    retrievalCachePeriodSecs: 600
+    missedRetrievalCachePeriodSecs: 1800
+    listRemoteFolderItems: true
+    blockMismatchingMimeTypes: true
+    unusedArtifactsCleanupPeriodHours: 0
   apache-remote:
     type: generic 
     description: "Apache Software Foundation Distribution Directory"
@@ -150,7 +174,7 @@ virtualRepositories:
       - lab.mvn.snapshots
       - redhat-ga-remote
       - redhat-early-remote
-      - maven-central-remote
+      - maven-central-remote      
     description: "LAB - Maven Repository - Development"
     includesPattern:  "**/*"
     excludesPattern:
@@ -169,20 +193,3 @@ virtualRepositories:
     artifactoryRequestsCanRetrieveRemoteArtifacts: false
     pomRepositoryReferencesCleanupPolicy: discard_active_reference
     repoLayout: maven-2-default
-
-backups:   #Manage the automatic and periodic backups of the entire Artifactory instance
-  backup-daily: null
-  backup-weekly: null
-  backup-weekly-saturday:
-    cronExp: "0 0 2 ? * SAT"
-    excludedRepositories:
-      - lab.mvn.snapshots
-      - apache-remote
-      - redhat-ga-remote
-      - redhat-early-remote
-      - maven-central-remote
-    retentionPeriodHours: 1000
-    createArchive: true
-    enabled: true
-    excludeNewRepositories: true
-    sendMailOnError: false

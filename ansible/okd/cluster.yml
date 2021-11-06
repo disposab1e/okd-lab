@@ -2,29 +2,29 @@
 #######################################################################
 #
 # Apply (provision) Cluster with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags apply
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags apply
 #
 # Destroy (unprovision) Cluster with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags destroy
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags destroy
 #
 #
 # Apply Bootstrap with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags bootstrap-apply
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags bootstrap-apply
 #
 # Destroy Bootstrap with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags bootstrap-destroy
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags bootstrap-destroy
 #
 # Apply Master with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags master-apply
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags master-apply
 #
 # Destroy Master with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/cluster.yml --tags master-destroy
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags master-destroy
 #
 # Apply Worker with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/worker.yml --tags worker-apply
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags worker-apply
 #
 # Destroy Worker with Terraform
-# ansible-playbook ~/okd-lab/ansible/okd/worker.yml --tags worker-destroy
+# ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags worker-destroy
 #######################################################################
 - hosts: localhost
   connection: local
@@ -32,5 +32,4 @@
   become: yes
   gather_facts: no
   roles:
-    - cluster
-
+    - okd-cluster

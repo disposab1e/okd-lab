@@ -1,16 +1,22 @@
 ---
 - name: Install tftp
-  yum:
+  dnf:
     name: tftp
     state: installed
 
 - name: Install tftp-server
-  yum:
+  dnf:
     name: tftp-server
     state: installed
 
+- name: Relax permissions in /var/lib/tftpboot
+  file:
+    path: /var/lib/tftpboot
+    state: directory
+    mode: '777'
+
 - name: Install xinetd
-  yum:
+  dnf:
     name: xinetd
     state: installed
 
@@ -41,3 +47,4 @@
   service:
     name: xinetd
     state: started
+

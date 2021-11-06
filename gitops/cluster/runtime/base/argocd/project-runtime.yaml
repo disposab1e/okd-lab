@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: runtime
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  destinations:
+    - namespace: 'argocd'
+      server: 'https://kubernetes.default.svc'
+    - namespace: 'sealed-secrets'
+      server: 'https://kubernetes.default.svc'
+  sourceRepos:
+    - 'https://gitlab.okd.example.com/lab/okd-lab.git'

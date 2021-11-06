@@ -1,0 +1,58 @@
+---
+- name: Init bootstrap
+  command: terraform init
+  args:
+    chdir: ~/github/okd-lab/terraform/bootstrap
+  tags: 
+    - bootstrap-apply
+    - apply
+
+- name: Apply bootstrap
+  terraform:
+    project_path: '~/github/okd-lab/terraform/bootstrap'
+    state: present
+  tags: 
+    - bootstrap-apply
+    - apply
+
+- name: Apply master
+  terraform:
+    project_path: '~/github/okd-lab/terraform/master'
+    force_init: true
+    state: present
+  tags: 
+    - master-apply
+    - apply
+
+- name: Apply worker
+  terraform:
+    project_path: '~/github/okd-lab/terraform/worker'
+    force_init: true
+    state: present
+  tags: 
+    - worker-apply
+    - apply
+
+- name: Destroy bootstrap
+  shell: terraform destroy -auto-approve 
+  args:
+    chdir: ~/github/okd-lab/terraform/bootstrap
+  tags: 
+    - bootstrap-destroy
+    - destroy
+
+- name: Destroy master
+  shell: terraform destroy -auto-approve 
+  args:
+    chdir: ~/github/okd-lab/terraform/master
+  tags: 
+    - master-destroy
+    - destroy
+
+- name: Destroy worker
+  shell: terraform destroy -auto-approve 
+  args:
+    chdir: ~/github/okd-lab/terraform/worker
+  tags: 
+    - worker-destroy
+    - destroy

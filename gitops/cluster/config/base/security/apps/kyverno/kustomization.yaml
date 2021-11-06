@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: kyverno
+
+resources:
+- rbac.yaml
+- https://gitlab.okd.example.com/lab/okd-lab.git//gitops/manifests/kyverno?ref=HEAD
+- monitoring.yaml
+
+patchesStrategicMerge:
+- |-
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: kyverno
+    labels:
+      openshift.io/cluster-monitoring: "true"
+
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: kyverno
+    namespace: kyverno
+  spec:
+    replicas: 1
+    template:
+      spec:
+        containers:
+        - name: kyverno
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi

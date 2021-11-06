@@ -1,6 +1,6 @@
 ---
 - name: Install syslinux
-  yum:
+  dnf:
     name: syslinux
     state: installed
 

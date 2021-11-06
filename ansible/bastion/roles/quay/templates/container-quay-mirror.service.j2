@@ -12,6 +12,7 @@ Requires=container-quay-quay.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
+
 Restart=on-failure
 ExecStartPre=/usr/bin/rm -f %t/%n-pid %t/%n-cid
 ExecStart=/usr/bin/podman run \
@@ -20,10 +21,10 @@ ExecStart=/usr/bin/podman run \
     --cgroups=no-conmon \
     --rm \
     -d \
+    --privileged \
     --ip {{ okd_lab_quay_mirror_ip }} \
-    -v /var/opt/quay/config:/conf/stack:Z \
+    -v /var/opt/quay/config:/quay-registry/conf/stack:Z \
     --name=mirroring-worker \
-    --privileged=true \
     {{ okd_lab_quay_image }} repomirror
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid

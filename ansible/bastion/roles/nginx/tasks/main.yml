@@ -1,6 +1,6 @@
 ---
 - name: Install nginx
-  yum:
+  dnf:
     pkg: nginx
     state: installed
 
@@ -58,6 +58,18 @@
   service:
     name: nginx
     enabled: yes
+
+- name: Create ignition directory
+  file: 
+    path: /usr/share/nginx/html/ignition
+    state: directory
+    mode: '777'
+
+- name: Create fcos directory
+  file: 
+    path: /usr/share/nginx/html/fcos
+    state: directory
+    mode: '777'
 
 - name: Remove files
   file:

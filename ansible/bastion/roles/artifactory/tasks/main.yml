@@ -109,7 +109,7 @@
 - name: Fetch admin-api token
   fetch:
     src: "/tmp/artifactory-admin-api"
-    dest: "~/okd-lab/.secrets/artifactory-admin-api"
+    dest: "~/github/okd-lab/.secrets/artifactory-admin-api"
     flat: yes
 
 - name: Apply Custom Configuration
@@ -117,7 +117,7 @@
     url: '{{ okd_lab_artifactory_api_url }}/system/configuration'
     method: PATCH
     user: admin
-    password: '{{ apikey }}'
+    password: "{{ lookup('file','{{ playbook_dir }}/../../.secrets/artifactory-admin-api') }}"
     return_content: yes
     force_basic_auth: yes
     headers:
@@ -128,7 +128,7 @@
 
 - name: Create Access Token
   command: 
-    curl --insecure -u admin:{{ apikey }} \
+    curl --insecure -u admin:{{ lookup('file','{{ playbook_dir }}/../../.secrets/artifactory-admin-api') }} \
       -XPOST '{{ okd_lab_artifactory_api_url }}/security/token' \
       -d "expires_in=0" \
       -d "refreshable=false" \
@@ -144,7 +144,7 @@
 - name: Fetch token
   fetch:
     src: "/tmp/artifactory-admin"
-    dest: "~/okd-lab/.secrets/artifactory-admin"
+    dest: "~/github/okd-lab/.secrets/artifactory-admin"
     flat: yes
 
 - name: Pause 20 seconds

@@ -2,14 +2,17 @@
 ######################################################################################
 #
 # Complete OKD installation
-# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/okd.yml --tags complete
+# ansible-playbook -i bastion, ~/github/okd-lab/ansible/okd/okd.yml --tags complete
 #
 # Day-1 OKD configurations
-# ansible-playbook -i bastion, ~/okd-lab/ansible/okd/okd.yml --tags config
+# ansible-playbook -i bastion, ~/github/okd-lab/ansible/okd/okd.yml --tags config
 #
 ######################################################################################
 - hosts: bastion
   gather_facts: no
+  become_user: lab
+  become: true
+  become_flags: '-i'  
   collections:
     - community.kubernetes
   vars_files:

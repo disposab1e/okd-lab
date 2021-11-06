@@ -1,4 +1,10 @@
 ---
+#######################################################################
+#
+# Setup KVM network
+# ansible-playbook ~/github/okd-lab/ansible/lab/network.yml
+#
+#######################################################################
 - hosts: localhost
   gather_facts: no
   become: yes

@@ -28,7 +28,7 @@
     name: "okd"
     xml: "{{ lookup('file', 'okd.xml') }}"
 
-- name: Active network okd
+- name: Activate network okd
   virt_net:
     state: active
     name: "okd"

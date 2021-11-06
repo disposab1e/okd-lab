@@ -1,0 +1,23 @@
+---
+- name: Copy ca.crt
+  copy:
+    src: ~/github/okd-lab/.certs/ca.crt
+    dest: /etc/ca.crt
+
+- name: Copy ca.crt
+  copy:
+    src: ~/github/okd-lab/.certs/ca.crt
+    dest: /etc/pki/ca-trust/source/anchors/ca.crt
+
+- name: Update Trust
+  command: update-ca-trust
+
+- name: Directory for private key 
+  file:
+    path: /etc/pki/tls/private
+    state: directory
+
+- name: Directory for certificate
+  file:
+    path: /etc/pki/tls/certs
+    state: directory

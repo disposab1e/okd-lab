@@ -12,7 +12,7 @@ locals {
   # redhat minimum: 120GB
   disk_size_root_partition = "214748364800"
 
-  # partition for ceph storage cluster in bytes
+  # partition for ceph storage cluster in bytes (spare drives not used now)
   disk_size_storage_partition = "429496729600"
 
 }

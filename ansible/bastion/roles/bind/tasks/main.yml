@@ -1,11 +1,11 @@
 ---
 - name: Install bind
-  yum:
+  dnf:
     name: bind
     state: installed
 
 - name: Install bind-utils
-  yum:
+  dnf:
     name: bind-utils
     state: installed
 

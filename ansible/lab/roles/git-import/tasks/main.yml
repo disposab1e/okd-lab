@@ -1,0 +1,49 @@
+---
+- name: Create okd-lab repository in gitlab
+  shell: |
+    curl --silent --header "PRIVATE-TOKEN: {{ okd_lab_gitlab_lab_token }}" -XPOST "{{ okd_lab_gitlab_url }}/api/v4/projects?name=okd-lab&path=okd-lab&visibility=public"
+
+- name: Remove existing gitlab
+  file:
+    path: ~/gitlab
+    state: absent
+
+- name: Create gitlab directory
+  file:
+    path: ~/gitlab
+    state: directory
+
+- name: Git global config user.name
+  git_config:
+    name: user.name
+    scope: global
+    value: lab
+
+- name: Git global config user.email
+  git_config:
+    name: user.email
+    scope: global
+    value: lab@lab.okd.example.com
+
+- name: Clone okd-lab repository
+  shell: git clone ssh://git@{{ okd_lab_gitlab_hostname }}:2222/lab/okd-lab.git
+  args:
+      chdir: ~/gitlab/
+
+- name: Rsync directories
+  shell: rsync -avuP ~/github/okd-lab/ ~/gitlab/okd-lab/ --exclude .git --exclude packer/bastion/packer_cache --exclude packer/lb/packer_cache
+
+- name: Add
+  shell: git add --all
+  args:
+      chdir: ~/gitlab/okd-lab
+
+- name: Initial commit
+  shell: git commit -m "Initial commit"
+  args:
+      chdir: ~/gitlab/okd-lab
+
+- name: Push
+  shell: git push -u origin master
+  args:
+      chdir: ~/gitlab/okd-lab

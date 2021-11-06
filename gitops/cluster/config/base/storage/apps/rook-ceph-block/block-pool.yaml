@@ -1,0 +1,10 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: rook-ceph-block-pool
+spec:
+  failureDomain: host
+  replicated:
+    size: 3
+  deviceClass: hdd

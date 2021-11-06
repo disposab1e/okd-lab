@@ -1,11 +1,11 @@
 ---
 - name: Install bind-utils
-  yum:
+  dnf:
     name: bind-utils
     state: installed
 
 - name: Install haproxy
-  yum:
+  dnf:
     name: haproxy
     state: installed
 

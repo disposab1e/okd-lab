@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- https://gitlab.okd.example.com/lab/okd-lab.git//gitops/manifests/tekton-task-catalog/git-clone/0.4?ref=HEAD
+- https://gitlab.okd.example.com/lab/okd-lab.git//gitops/manifests/tekton-task-catalog/git-cli/0.1?ref=HEAD
+- https://gitlab.okd.example.com/lab/okd-lab.git//gitops/manifests/tekton-task-catalog/yq/0.1?ref=HEAD
+
+patches:
+- target:
+    kind: Task
+  patch: |-
+    - op: replace
+      path: /kind
+      value: ClusterTask

@@ -1,0 +1,11 @@
+---
+- name: Let chrony use your providers NTP server
+  ansible.builtin.lineinfile:
+    path: /etc/chrony.conf
+    regexp: '^pool'
+    line: server {{ okd_lab_ntp_forwarder }}
+
+- name: Restart chrony
+  service:
+    name: chronyd
+    state: restarted

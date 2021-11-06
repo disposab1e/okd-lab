@@ -13,7 +13,7 @@ locals {
   disk_size_root_partition = "214748364800"
 
   # partition for ceph storage cluster in bytes
-  disk_size_storage_partition = "429496729600"
+  disk_size_storage_partition = "858993459200"
 
 }
 

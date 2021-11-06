@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-bootstrap
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    gitops.example.com/component: bootstrap
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  destination:
+    namespace: argocd
+    server: 'https://kubernetes.default.svc'
+  project: monitoring
+  source:
+    path: gitops/cluster/config/base/monitoring/bootstrap
+    repoURL: 'https://gitlab.okd.example.com/lab/okd-lab.git'
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 5m    
