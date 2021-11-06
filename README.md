@@ -62,7 +62,7 @@ __95% of the installation process is copy&paste. No deep Linux or OKD4/Kubernete
 
 ## What's in the box?
 
-Watch a [animated gif at dropbox](https://www.dropbox.com/s/ryehh25b5s9yfij/OKD-LAB.gif?dl=0) and open pandorra's box.
+Watch a [animated gif at dropbox](https://www.dropbox.com/s/qt92j5ohz4k9sqp/OKD-LAB.gif?dl=0) and open pandorra's box.
 
 Operatiing system and virtualization:
 
