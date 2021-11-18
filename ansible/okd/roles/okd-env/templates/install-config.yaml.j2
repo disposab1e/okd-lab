@@ -23,10 +23,12 @@ pullSecret:
 sshKey:
 imageContentSources:
 - mirrors:
-  - quay.okd.example.com/lab_okd/{{ okd_lab_install_okd_name }}
+  - quay.okd.example.com/okd/{{ okd_lab_install_okd_name }}
+  - quay.okd.example.com/okd/releases
   source: quay.io/openshift/okd
 - mirrors:
-  - quay.okd.example.com/lab_okd/{{ okd_lab_install_okd_name }}
+  - quay.okd.example.com/okd/{{ okd_lab_install_okd_name }}
+  - quay.okd.example.com/okd/releases
   source: quay.io/openshift/okd-content
 additionalTrustBundle: |
 {{lookup('file', '/etc/ca.crt') | indent( width=2, indentfirst=True) }}

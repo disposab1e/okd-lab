@@ -538,7 +538,7 @@ ssh lab@bastion "cat ~/installer/auth/kubeadmin-password" > ~/github/okd-lab/.se
 # Apply (provision) Cluster with Terraform
 ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags apply
 
-# In case the bbotstrap will not boot the first time just destroy and apply again
+# In case the a VM will not boot the first time, just destroy and apply again
 ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags destroy
 ansible-playbook ~/github/okd-lab/ansible/okd/cluster.yml --tags apply
 

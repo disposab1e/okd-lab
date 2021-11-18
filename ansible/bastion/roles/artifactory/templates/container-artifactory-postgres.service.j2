@@ -10,6 +10,7 @@ After=network-online.target
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
+TimeoutSec=900
 
 Restart=always
 ExecStartPre=/usr/bin/rm -f %t/%n-pid %t/%n-cid
