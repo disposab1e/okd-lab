@@ -68,7 +68,10 @@
     password: admin
     validate_certs: false
     host: https://api.okd.example.com:6443
+  retries: 30
+  delay: 20
   register: openshift_auth_admin_results
+  until: openshift_auth_admin_results.openshift_auth.api_key is defined
 
 - name: If login succeeded, try to log out (revoke access token)
   when: openshift_auth_admin_results.openshift_auth.api_key is defined

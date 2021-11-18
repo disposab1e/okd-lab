@@ -11,6 +11,7 @@ Requires=container-artifactory-postgres.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
+TimeoutSec=900
 
 Restart=on-failure
 ExecStartPre=/usr/bin/rm -f %t/%n-pid %t/%n-cid
